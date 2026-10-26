@@ -57,7 +57,7 @@ export async function supabaseUpsertUser(user: User): Promise<boolean> {
   const sb = getSupabase();
   if (!sb) return false;
   try {
-    const { error } = await sb.from('users').upsert({
+    const userPayload: any = {
       id: user.id,
       email: user.email.toLowerCase(),
       name: user.name,
@@ -68,7 +68,36 @@ export async function supabaseUpsertUser(user: User): Promise<boolean> {
       email_verified: user.emailVerified ?? false,
       password: user.password || 'unifest123',
       verification_code: user.verificationCode || null,
-    }, { onConflict: 'id' });
+    };
+
+    if (user.fatherPhone !== undefined) userPayload.father_phone = user.fatherPhone;
+    if (user.address !== undefined) userPayload.address = user.address;
+    if (user.collegeName !== undefined) userPayload.college_name = user.collegeName;
+    if (user.rollNo !== undefined) userPayload.roll_no = user.rollNo;
+    if (user.course !== undefined) userPayload.course = user.course;
+    if (user.passingYear !== undefined) userPayload.passing_year = user.passingYear;
+    if (user.avatarUrl !== undefined) userPayload.avatar_url = user.avatarUrl;
+    if (user.isProfileComplete !== undefined) userPayload.is_profile_complete = user.isProfileComplete;
+
+    let { error } = await sb.from('users').upsert(userPayload, { onConflict: 'id' });
+    if (error && error.message.includes('column')) {
+      // Fallback to core columns if optional profile columns not yet added to Supabase
+      const corePayload = {
+        id: user.id,
+        email: user.email.toLowerCase(),
+        name: user.name,
+        phone: user.phone || null,
+        gender: user.gender,
+        role: user.role,
+        college_id: user.collegeId || null,
+        email_verified: user.emailVerified ?? false,
+        password: user.password || 'unifest123',
+        verification_code: user.verificationCode || null,
+      };
+      const retry = await sb.from('users').upsert(corePayload, { onConflict: 'id' });
+      error = retry.error;
+    }
+
     if (error) {
       console.warn('Supabase upsertUser warning:', error.message);
       return false;

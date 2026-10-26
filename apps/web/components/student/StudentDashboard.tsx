@@ -15,15 +15,16 @@ import {
   Sparkles,
   Users,
 } from 'lucide-react';
-import { User, Event } from '@unifest/shared';
+import { User, Event, isUserProfileComplete } from '@unifest/shared';
 
 interface StudentDashboardProps {
   user: User;
   onOpenQrModal: () => void;
   onNavigateTab: (tab: string) => void;
+  onOpenProfileModal?: () => void;
 }
 
-export function StudentDashboard({ user, onOpenQrModal, onNavigateTab }: StudentDashboardProps) {
+export function StudentDashboard({ user, onOpenQrModal, onNavigateTab, onOpenProfileModal }: StudentDashboardProps) {
   const [scheduleData, setScheduleData] = useState<{
     schedule: Event[];
     nextUp: Event | null;
@@ -137,6 +138,33 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab }: Student
           </button>
         </div>
       </div>
+
+      {/* Profile Incomplete Banner */}
+      {!isUserProfileComplete(user) && (
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm mb-6 animate-in fade-in">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-100 border border-amber-200 text-amber-700 flex items-center justify-center shrink-0">
+              <AlertCircle className="w-5 h-5 text-amber-600" />
+            </div>
+            <div>
+              <h4 className="font-heading font-bold text-xs sm:text-sm text-slate-900">
+                Complete Your Student Profile
+              </h4>
+              <p className="text-[11px] text-slate-600">
+                Add your Father&apos;s phone, address, college, roll no, and course to unlock festival event registrations.
+              </p>
+            </div>
+          </div>
+          {onOpenProfileModal && (
+            <button
+              onClick={onOpenProfileModal}
+              className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-sm transition-all shrink-0"
+            >
+              Complete Profile
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Conflicts Banner (if any) */}
       {scheduleData?.conflicts && scheduleData.conflicts.length > 0 && (

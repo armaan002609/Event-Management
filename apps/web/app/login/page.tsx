@@ -62,6 +62,26 @@ function LoginForm() {
     return () => clearInterval(timer);
   }, [resendCooldown]);
 
+  // Handle URL errors such as account_not_found from Google OAuth
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const err = params.get('error');
+    const errEmail = params.get('email');
+    const errName = params.get('name');
+
+    if (err === 'account_not_found') {
+      setTab('register');
+      if (errEmail) setRegEmail(errEmail);
+      if (errName) setRegName(errName);
+      toast.warning(
+        'Account Required',
+        'No account found with this Google email. Please create your account first, then you can log in with Google!'
+      );
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
   // Handle Google OAuth Sign In via Supabase
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);

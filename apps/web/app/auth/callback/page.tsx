@@ -24,6 +24,23 @@ export default function AuthCallbackPage() {
       }
 
       try {
+        // Check if Supabase returned an OAuth error in query or hash
+        if (typeof window !== 'undefined') {
+          const searchParams = new URLSearchParams(window.location.search);
+          const hashParams = new URLSearchParams(window.location.hash.startsWith('#') ? window.location.hash.slice(1) : window.location.hash);
+          const errDesc = searchParams.get('error_description') || hashParams.get('error_description');
+          if (errDesc) {
+            setStatus('error');
+            const cleanErr = decodeURIComponent(errDesc.replace(/\+/g, ' '));
+            if (cleanErr.includes('Unable to exchange external code')) {
+              setErrorMessage('Google rejected the Client Secret in Supabase. Please verify the Client Secret in Supabase Dashboard.');
+            } else {
+              setErrorMessage(cleanErr);
+            }
+            return;
+          }
+        }
+
         // Wait for session or auth state to resolve
         const { data: { session }, error: sessionError } = await sb.auth.getSession();
 
@@ -73,9 +90,14 @@ export default function AuthCallbackPage() {
           body: JSON.stringify({ email, name }),
         });
 
+        const resData = await res.json().catch(() => ({}));
+
         if (!res.ok) {
-          const errData = await res.json().catch(() => ({}));
-          throw new Error(errData.error || 'Failed to initialize session');
+          if (resData.error === 'ACCOUNT_NOT_FOUND') {
+            router.push(`/login?error=account_not_found&email=${encodeURIComponent(email)}&name=${encodeURIComponent(name || '')}`);
+            return;
+          }
+          throw new Error(resData.message || resData.error || 'Failed to initialize session');
         }
 
         if (isMounted) {

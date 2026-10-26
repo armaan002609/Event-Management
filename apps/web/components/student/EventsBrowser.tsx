@@ -14,19 +14,31 @@ import {
   AlertTriangle,
   Filter,
 } from 'lucide-react';
-import { Event } from '@unifest/shared';
+import { Event, User as UserType, isUserProfileComplete } from '@unifest/shared';
 import { useToast } from '@/components/ui/Toast';
+import { CompleteProfileModal } from '@/components/profile/CompleteProfileModal';
 
 export function EventsBrowser() {
   const toast = useToast();
   const [events, setEvents] = useState<Event[]>([]);
+  const [currentUser, setCurrentUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState<'ALL' | 'SPORTS' | 'FOLK'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [actingEventId, setActingEventId] = useState<string | null>(null);
 
+  // Profile completion gating modal state
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [pendingEventId, setPendingEventId] = useState<string | null>(null);
+
   useEffect(() => {
     loadEvents();
+    fetch('/api/auth/me')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.user) setCurrentUser(d.user);
+      })
+      .catch(() => {});
   }, []);
 
   const loadEvents = () => {
@@ -40,12 +52,17 @@ export function EventsBrowser() {
       .catch(() => setLoading(false));
   };
 
-  const handleRegister = async (eventId: string) => {
+  const executeRegister = async (eventId: string) => {
     setActingEventId(eventId);
     try {
       const res = await fetch(`/api/events/${eventId}/register`, { method: 'POST' });
       const data = await res.json();
       if (!res.ok) {
+        if (data.error === 'PROFILE_INCOMPLETE') {
+          toast.warning('Profile Required', data.message || 'Please complete your profile details first.');
+          setShowProfileModal(true);
+          return;
+        }
         toast.error('Registration Failed', data.error || 'Could not register for this event.');
       } else {
         // Optimistic state update
@@ -70,6 +87,31 @@ export function EventsBrowser() {
       toast.error('Network Error', 'Could not reach the server. Please try again.');
     } finally {
       setActingEventId(null);
+    }
+  };
+
+  const handleRegister = (eventId: string) => {
+    // REQUIREMENT: Must complete profile details first
+    if (currentUser && !isUserProfileComplete(currentUser)) {
+      setPendingEventId(eventId);
+      const targetEvent = events.find((e) => e.id === eventId);
+      toast.warning(
+        'Profile Required',
+        `Please complete your student profile details before registering for ${targetEvent?.title || 'events'}.`
+      );
+      setShowProfileModal(true);
+      return;
+    }
+
+    executeRegister(eventId);
+  };
+
+  const handleProfileUpdated = (updatedUser: UserType) => {
+    setCurrentUser(updatedUser);
+    if (pendingEventId) {
+      const targetId = pendingEventId;
+      setPendingEventId(null);
+      executeRegister(targetId);
     }
   };
 
@@ -314,6 +356,18 @@ export function EventsBrowser() {
           })}
         </div>
       )}
+
+      {/* Complete Profile Modal for Event Registration Gating */}
+      <CompleteProfileModal
+        isOpen={showProfileModal}
+        onClose={() => {
+          setShowProfileModal(false);
+          setPendingEventId(null);
+        }}
+        user={currentUser}
+        onProfileUpdated={handleProfileUpdated}
+        reason="Required before registering for festival events"
+      />
     </div>
   );
 }

@@ -16,7 +16,8 @@ import { BroadcastView } from '@/components/manager/BroadcastView';
 import { AuditLogView } from '@/components/manager/AuditLogView';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
 import { ToastProvider } from '@/components/ui/Toast';
-import { User } from '@unifest/shared';
+import { User, isUserProfileComplete } from '@unifest/shared';
+import { CompleteProfileModal } from '@/components/profile/CompleteProfileModal';
 
 // Animated wrapper for tab content — triggers CSS entry animation on key change
 function AnimatedTabPanel({ tabKey, children }: { tabKey: string; children: React.ReactNode }) {
@@ -51,6 +52,7 @@ export default function HomePage() {
   const [activeUser, setActiveUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [showQrModal, setShowQrModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -61,6 +63,10 @@ export default function HomePage() {
           setActiveUser(data.user);
           if (data.user.role === 'STUDENT') {
             setActiveTab('dashboard');
+            // Check if profile needs completion and has not been skipped this session
+            if (!isUserProfileComplete(data.user) && !sessionStorage.getItem('unifest_profile_skipped')) {
+              setShowProfileModal(true);
+            }
           } else if (data.user.role === 'ADMIN') {
             setActiveTab('admin-center');
           } else {
@@ -133,6 +139,7 @@ export default function HomePage() {
           onUserSwitched={handleUserSwitched}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
+          onOpenProfileModal={() => setShowProfileModal(true)}
         />
 
         {/* Main Page Body */}
@@ -156,6 +163,7 @@ export default function HomePage() {
                     user={activeUser}
                     onOpenQrModal={() => setShowQrModal(true)}
                     onNavigateTab={(tab) => setActiveTab(tab)}
+                    onOpenProfileModal={() => setShowProfileModal(true)}
                   />
                 )}
                 {activeTab === 'events' && <EventsBrowser />}
@@ -202,6 +210,16 @@ export default function HomePage() {
               if (activeTab === 'qr') setActiveTab('dashboard');
             }}
             user={activeUser}
+          />
+        )}
+
+        {/* Complete Profile Modal for Student */}
+        {isStudent && (
+          <CompleteProfileModal
+            isOpen={showProfileModal}
+            onClose={() => setShowProfileModal(false)}
+            user={activeUser}
+            onProfileUpdated={(updated) => setActiveUser(updated)}
           />
         )}
 

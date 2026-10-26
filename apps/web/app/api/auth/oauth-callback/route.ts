@@ -16,29 +16,35 @@ export async function POST(req: NextRequest) {
     const db = readDatabase();
     let user = db.users.find((u) => u.email.toLowerCase() === cleanEmail);
 
-    if (user) {
-      // Existing user: mark email verified since Google authenticated it
-      user.emailVerified = true;
-      if (name && (!user.name || user.name === cleanEmail)) {
-        user.name = name.trim();
+    if (!user) {
+      // Check Supabase if not in local cache
+      const { supabaseGetUserByEmail } = await import('@/lib/supabase');
+      const sbUser = await supabaseGetUserByEmail(cleanEmail);
+      if (sbUser) {
+        db.users.push(sbUser);
+        writeDatabase(db);
+        user = sbUser;
       }
-      writeDatabase(db);
-    } else {
-      // New user from Google OAuth
-      const newUser: User = {
-        id: `usr-g-${Date.now()}`,
-        name: name && name.trim().length > 0 ? name.trim() : cleanEmail.split('@')[0],
-        email: cleanEmail,
-        gender: 'MALE',
-        role: 'STUDENT',
-        collegeId: 'col-pce',
-        emailVerified: true,
-      };
-
-      db.users.push(newUser);
-      writeDatabase(db);
-      user = newUser;
     }
+
+    if (!user) {
+      // REQUIREMENT: User must have an account first!
+      return NextResponse.json(
+        {
+          error: 'ACCOUNT_NOT_FOUND',
+          message: 'No account found for this Google email. Please register your account first, then you can sign in with Google.',
+          email: cleanEmail,
+        },
+        { status: 404 }
+      );
+    }
+
+    // Existing user: mark email verified since Google authenticated it
+    user.emailVerified = true;
+    if (name && (!user.name || user.name === cleanEmail)) {
+      user.name = name.trim();
+    }
+    writeDatabase(db);
 
     // Sync to Supabase in background
     supabaseUpsertUser(user).catch(() => {});

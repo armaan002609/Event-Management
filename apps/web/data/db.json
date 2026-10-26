@@ -164,6 +164,15 @@
       "collegeId": null,
       "emailVerified": true,
       "password": "unifest123"
+    },
+    {
+      "id": "usr-g-1793019998926",
+      "name": "Armaan",
+      "email": "armaan002609@gmail.com",
+      "gender": "MALE",
+      "role": "STUDENT",
+      "collegeId": "col-pce",
+      "emailVerified": true
     }
   ],
   "events": [

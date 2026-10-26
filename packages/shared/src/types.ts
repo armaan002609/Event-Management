@@ -31,13 +31,37 @@ export interface User {
   email: string;
   name: string;
   phone?: string | null;
+  fatherPhone?: string | null;
+  address?: string | null;
+  collegeId?: string | null;
+  collegeName?: string | null;
+  college?: College | null;
+  rollNo?: string | null;
+  course?: string | null;
+  passingYear?: number | string | null;
+  avatarUrl?: string | null;
+  isProfileComplete?: boolean;
   gender: Gender;
   role: Role;
-  collegeId?: string | null;
-  college?: College | null;
   emailVerified: boolean;
   password?: string;
   verificationCode?: string;
+}
+
+export function isUserProfileComplete(user: User | null | undefined): boolean {
+  if (!user) return false;
+  // Non-students don't need student academic profile
+  if (user.role !== 'STUDENT') return true;
+  return Boolean(
+    user.name?.trim() &&
+    user.phone?.trim() &&
+    user.fatherPhone?.trim() &&
+    user.address?.trim() &&
+    (user.collegeId || user.collegeName?.trim()) &&
+    user.rollNo?.trim() &&
+    user.course?.trim() &&
+    user.passingYear
+  );
 }
 
 export interface Event {

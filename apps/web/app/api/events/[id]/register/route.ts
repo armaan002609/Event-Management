@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getActiveUser } from '@/lib/auth';
 import { readDatabase, writeDatabase } from '@/lib/db';
 import { emitDomainNotification } from '@/lib/notification-service';
+import { isUserProfileComplete } from '@unifest/shared';
 
 export async function POST(
   _req: NextRequest,
@@ -10,6 +11,17 @@ export async function POST(
   const activeUser = getActiveUser();
   if (activeUser.role !== 'STUDENT') {
     return NextResponse.json({ error: 'Only students can register for events' }, { status: 403 });
+  }
+
+  // REQUIREMENT: Must complete profile before event registration
+  if (!isUserProfileComplete(activeUser)) {
+    return NextResponse.json(
+      {
+        error: 'PROFILE_INCOMPLETE',
+        message: 'Please complete your profile details (Father phone, address, college, roll no, course) before registering for events.',
+      },
+      { status: 400 }
+    );
   }
 
   const db = readDatabase();

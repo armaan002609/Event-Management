@@ -17,14 +17,32 @@ CREATE TABLE IF NOT EXISTS users (
   email TEXT NOT NULL UNIQUE,
   name TEXT NOT NULL,
   phone TEXT,
+  father_phone TEXT,
+  address TEXT,
+  college_id TEXT REFERENCES colleges(id) ON DELETE SET NULL,
+  college_name TEXT,
+  roll_no TEXT,
+  course TEXT,
+  passing_year INT,
+  avatar_url TEXT,
+  is_profile_complete BOOLEAN DEFAULT FALSE,
   gender TEXT NOT NULL CHECK (gender IN ('MALE', 'FEMALE')),
   role TEXT NOT NULL CHECK (role IN ('STUDENT', 'MANAGER', 'SCANNER', 'ADMIN')),
-  college_id TEXT REFERENCES colleges(id) ON DELETE SET NULL,
   email_verified BOOLEAN DEFAULT FALSE,
   password TEXT DEFAULT 'unifest123',
   verification_code TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- If users table already exists, safe column additions:
+ALTER TABLE users ADD COLUMN IF NOT EXISTS father_phone TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS address TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS college_name TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS roll_no TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS course TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS passing_year INT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS is_profile_complete BOOLEAN DEFAULT FALSE;
 
 -- 3. EVENTS TABLE
 CREATE TABLE IF NOT EXISTS events (

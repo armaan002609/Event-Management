@@ -9,7 +9,7 @@ import {
   QrCode,
   Bell,
   RefreshCw,
-  UserCheck,
+  User as UserIcon,
   ChevronDown,
   Shield,
   Layers,
@@ -25,16 +25,17 @@ import {
   LogOut,
   LogIn,
 } from 'lucide-react';
-import { User, NotificationLog } from '@unifest/shared';
+import { User, NotificationLog, isUserProfileComplete } from '@unifest/shared';
 
 interface NavbarProps {
   activeUser: User | null;
   onUserSwitched: (user: User) => void;
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  onOpenProfileModal?: () => void;
 }
 
-export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab }: NavbarProps) {
+export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, onOpenProfileModal }: NavbarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -349,6 +350,31 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab }: 
                           </span>
                         </div>
                       </div>
+
+                      {/* Student Profile Action */}
+                      {activeUser.role === 'STUDENT' && onOpenProfileModal && (
+                        <button
+                          onClick={() => {
+                            setShowUserDropdown(false);
+                            onOpenProfileModal();
+                          }}
+                          className="w-full flex items-center justify-between py-2 px-3 rounded-xl text-xs font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-100"
+                        >
+                          <span className="flex items-center gap-1.5">
+                            <UserIcon className="w-3.5 h-3.5 text-primary" />
+                            <span>My Student Details</span>
+                          </span>
+                          {!isUserProfileComplete(activeUser) ? (
+                            <span className="text-[9px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-full font-bold">
+                              Incomplete
+                            </span>
+                          ) : (
+                            <span className="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded-full font-bold">
+                              Complete
+                            </span>
+                          )}
+                        </button>
+                      )}
 
                       {/* Sign Out Action */}
                       <button
