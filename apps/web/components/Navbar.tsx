@@ -237,7 +237,7 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
             {/* Right Controls: Admin shortcut, Scanner shortcut, Notifications, Profile */}
             <div className="flex items-center gap-2.5">
               {/* Quick Admin Portal button for authorized administrators */}
-              {(activeUser?.role === 'ADMIN' || activeUser?.email === 'armaan002609@gmail.com') && (
+              {activeUser?.role === 'ADMIN' && (
                 <Link
                   href="/admin"
                   className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold hover:bg-rose-100 transition-colors shadow-sm"
@@ -396,7 +396,7 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                       </button>
 
                       {/* Admin Command Center for Administrators */}
-                      {(activeUser.role === 'ADMIN' || activeUser.email === 'armaan002609@gmail.com') && (
+                      {activeUser?.role === 'ADMIN' && (
                         <Link
                           href="/admin"
                           onClick={() => setShowUserDropdown(false)}

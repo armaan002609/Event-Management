@@ -15,11 +15,10 @@ export function getOptionalActiveUserId(): string | null {
   return null;
 }
 
-export const ADMIN_EMAILS = ['armaan002609@gmail.com', 'admin@unifest.org'];
-
+// Admin status is assigned strictly from the database (users.role === 'ADMIN')
 export function isAdminUser(user?: User | null): boolean {
   if (!user) return false;
-  return user.role === 'ADMIN' || (!!user.email && ADMIN_EMAILS.includes(user.email.toLowerCase()));
+  return user.role === 'ADMIN';
 }
 
 export function getOptionalActiveUser(): User | null {
@@ -28,9 +27,6 @@ export function getOptionalActiveUser(): User | null {
   const db = readDatabase();
   const user = db.users.find((u) => u.id === userId);
   if (user) {
-    if (user.email && ADMIN_EMAILS.includes(user.email.toLowerCase())) {
-      user.role = 'ADMIN';
-    }
     const college = db.colleges.find((c) => c.id === user.collegeId);
     return { ...user, college };
   }
@@ -43,32 +39,25 @@ export async function getOptionalActiveUserAsync(): Promise<User | null> {
   const db = readDatabase();
   let user = db.users.find((u) => u.id === userId);
 
-  if (!user) {
-    try {
-      const { supabaseGetUserById } = await import('./supabase');
-      const sbUser = await supabaseGetUserById(userId);
-      if (sbUser) {
-        if (sbUser.email && ADMIN_EMAILS.includes(sbUser.email.toLowerCase())) {
-          sbUser.role = 'ADMIN';
-        }
-        const existingIdx = db.users.findIndex((u) => u.id === sbUser.id);
-        if (existingIdx >= 0) {
-          db.users[existingIdx] = sbUser;
-        } else {
-          db.users.push(sbUser);
-        }
-        writeDatabase(db);
-        user = sbUser;
+  // Authoritatively fetch latest role and profile from Supabase database
+  try {
+    const { supabaseGetUserById } = await import('./supabase');
+    const sbUser = await supabaseGetUserById(userId);
+    if (sbUser) {
+      const existingIdx = db.users.findIndex((u) => u.id === sbUser.id);
+      if (existingIdx >= 0) {
+        db.users[existingIdx] = sbUser;
+      } else {
+        db.users.push(sbUser);
       }
-    } catch {
-      // Supabase unavailable or mock mode
+      writeDatabase(db);
+      user = sbUser;
     }
+  } catch {
+    // Supabase unavailable, fallback to db.json
   }
 
   if (user) {
-    if (user.email && ADMIN_EMAILS.includes(user.email.toLowerCase())) {
-      user.role = 'ADMIN';
-    }
     const college = db.colleges.find((c) => c.id === user.collegeId);
     return { ...user, college };
   }

@@ -60,18 +60,18 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<string>('admin-center');
   const [showQrModal, setShowQrModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [unauthorized, setUnauthorized] = useState(false);
 
   useEffect(() => {
     fetch('/api/auth/me')
       .then((r) => r.json())
       .then((data) => {
         if (data.user) {
-          // Grant admin view to active user in Admin portal
-          const adminUser = {
-            ...data.user,
-            role: 'ADMIN' as const,
-          };
-          setActiveUser(adminUser);
+          setActiveUser(data.user);
+          // Only users whose role in the database is ADMIN are permitted
+          if (data.user.role !== 'ADMIN') {
+            setUnauthorized(true);
+          }
         } else {
           router.push('/login?redirect=/admin');
         }
@@ -120,6 +120,52 @@ export default function AdminPage() {
 
   if (!activeUser) {
     return null;
+  }
+
+  if (unauthorized) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center text-white shadow-2xl">
+          <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 flex items-center justify-center mx-auto mb-4">
+            <Shield className="w-8 h-8 text-rose-500" />
+          </div>
+          <h2 className="font-heading font-black text-xl text-white mb-2">Access Restricted</h2>
+          <p className="text-xs text-slate-400 mb-6 leading-relaxed">
+            Your account (<strong className="text-slate-200">{activeUser.email}</strong>) currently has role{' '}
+            <span className="px-2 py-0.5 rounded-md bg-slate-800 text-amber-300 font-mono font-bold text-[11px] border border-slate-700">
+              {activeUser.role}
+            </span>{' '}
+            in the database. Access to the Admin Command Center requires the{' '}
+            <span className="text-rose-400 font-bold">ADMIN</span> role assigned in the database.
+          </p>
+          <div className="p-3 bg-slate-950/80 rounded-xl border border-slate-800/80 text-left text-[11px] font-mono text-slate-400 mb-6 overflow-x-auto">
+            <span className="text-slate-500">-- SQL to promote user in Supabase:</span>
+            <br />
+            <span className="text-emerald-400">UPDATE</span> users{' '}
+            <span className="text-emerald-400">SET</span> role ={' '}
+            <span className="text-amber-300">'ADMIN'</span>
+            <br />
+            <span className="text-emerald-400">WHERE</span> email ={' '}
+            <span className="text-amber-300">'{activeUser.email}'</span>;
+          </div>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/"
+              className="flex-1 py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-all text-center"
+            >
+              Back to Home
+            </Link>
+            <button
+              onClick={() => window.location.reload()}
+              className="py-2.5 px-4 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>Retry</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

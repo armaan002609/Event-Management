@@ -133,6 +133,24 @@ export async function PATCH(req: NextRequest) {
     if (typeof emailVerified === 'boolean') db.users[userIndex].emailVerified = emailVerified;
     if (collegeId !== undefined) db.users[userIndex].collegeId = collegeId;
 
+    // Directly persist to Supabase PostgreSQL database
+    try {
+      const { getSupabase } = await import('@/lib/supabase');
+      const sb = getSupabase();
+      if (sb) {
+        await sb
+          .from('users')
+          .update({
+            ...(role ? { role } : {}),
+            ...(typeof emailVerified === 'boolean' ? { email_verified: emailVerified } : {}),
+            ...(collegeId !== undefined ? { college_id: collegeId } : {}),
+          })
+          .eq('id', userId);
+      }
+    } catch (e) {
+      console.warn('Failed to sync role update to Supabase:', e);
+    }
+
     // Audit log
     const auditEntry: AuditLog = {
       id: `audit-${Date.now()}`,
