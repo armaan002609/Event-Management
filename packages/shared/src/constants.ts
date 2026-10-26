@@ -34,6 +34,7 @@ export interface NorthIndiaCollegeItem {
 
 export const NORTH_INDIA_COLLEGES: NorthIndiaCollegeItem[] = [
   // ── Punjab & Chandigarh ──
+  { id: 'col-cgc-univ-mohali', name: 'CGC University, Mohali', shortName: 'CGC University Mohali', region: 'Punjab & Chandigarh' },
   { id: 'col-cgc-jhanjeri', name: 'Chandigarh Group of Colleges (CGC) Jhanjeri, Mohali', shortName: 'CGC Jhanjeri', region: 'Punjab & Chandigarh' },
   { id: 'col-cgc-landran', name: 'Chandigarh Group of Colleges (CGC) Landran, Mohali', shortName: 'CGC Landran', region: 'Punjab & Chandigarh' },
   { id: 'col-cu', name: 'Chandigarh University (CU), Gharuan / Mohali', shortName: 'CU Mohali', region: 'Punjab & Chandigarh' },

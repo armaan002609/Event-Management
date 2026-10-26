@@ -241,6 +241,7 @@ CREATE POLICY "Allow all operations for audit_logs" ON audit_logs FOR ALL USING 
 
 -- Colleges
 INSERT INTO colleges (id, name, code, color) VALUES
+  ('col-cgc-univ-mohali', 'CGC University Mohali', 'CGC', '#4F46E5'),
   ('col-pce', 'Punjab College of Engineering', 'PCE', '#2563EB'),
   ('col-lpu', 'Lovely Professional University', 'LPU', '#7C3AED'),
   ('col-iitd', 'IIT Delhi', 'IITD', '#059669'),

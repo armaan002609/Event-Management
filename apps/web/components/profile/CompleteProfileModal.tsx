@@ -66,7 +66,7 @@ export function CompleteProfileModal({
   const [fatherName, setFatherName] = useState('');
   const [fatherPhone, setFatherPhone] = useState('');
   const [address, setAddress] = useState('');
-  const [collegeId, setCollegeId] = useState('col-cgc-jhanjeri');
+  const [collegeId, setCollegeId] = useState('col-cgc-univ-mohali');
   const [customCollegeName, setCustomCollegeName] = useState('');
   const [rollNo, setRollNo] = useState('');
   const [course, setCourse] = useState('B.Tech CSE');
@@ -93,7 +93,7 @@ export function CompleteProfileModal({
         setCollegeId('col-other');
         setCustomCollegeName(user.collegeName);
       } else {
-        setCollegeId('col-cgc-jhanjeri');
+        setCollegeId('col-cgc-univ-mohali');
         setCustomCollegeName('');
       }
 
