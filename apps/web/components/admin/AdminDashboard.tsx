@@ -42,7 +42,12 @@ import {
   Clock,
   ArrowRight,
   Hash,
+  Upload,
+  FileSpreadsheet,
+  Eye,
+  Info,
 } from 'lucide-react';
+import * as XLSX from 'xlsx';
 import { User, College, Hostel, Role, NORTH_INDIA_COLLEGES, NorthIndiaCollegeItem, Gender } from '@unifest/shared';
 import { useToast } from '@/components/ui/Toast';
 
@@ -114,6 +119,22 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
   const [gracePeriod, setGracePeriod] = useState('15');
   const [cutoffHours, setCutoffHours] = useState('2');
   const [configSaved, setConfigSaved] = useState(false);
+
+  // Bulk Student Allotment Modal State
+  const [showBulkAllotModal, setShowBulkAllotModal] = useState(false);
+  const [uploadedStudentsPreview, setUploadedStudentsPreview] = useState<any[]>([]);
+  const [isBulkAllotting, setIsBulkAllotting] = useState(false);
+  const [bulkAllotResult, setBulkAllotResult] = useState<any>(null);
+
+  // Room Occupants Modal State
+  const [showRoomDetailsModal, setShowRoomDetailsModal] = useState(false);
+  const [selectedRoomDetails, setSelectedRoomDetails] = useState<any>(null);
+  const [selectedRoomHostel, setSelectedRoomHostel] = useState<any>(null);
+
+  // Hostel Roster Modal State
+  const [showRosterModal, setShowRosterModal] = useState(false);
+  const [selectedRosterHostelId, setSelectedRosterHostelId] = useState<string>('ALL');
+  const [rosterSearch, setRosterSearch] = useState('');
 
   useEffect(() => {
     loadAllAdminData();
@@ -457,6 +478,219 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
     link.click();
     document.body.removeChild(link);
     toast.success('Export Generated', `Exported ${filteredUsers.length} records to CSV.`);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      try {
+        const bstr = evt.target?.result;
+        const wb = XLSX.read(bstr, { type: 'binary' });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        const data: any[] = XLSX.utils.sheet_to_json(ws, { header: 1 });
+
+        if (!data || data.length < 2) {
+          toast.error('Empty File', 'Uploaded file has no data rows.');
+          return;
+        }
+
+        // Header mapping
+        const headers = (data[0] as string[]).map((h) => String(h || '').trim().toLowerCase());
+        const nameIdx = headers.findIndex((h) => h.includes('name'));
+        const emailIdx = headers.findIndex((h) => h.includes('email') || h.includes('mail'));
+        const genderIdx = headers.findIndex((h) => h.includes('gender') || h.includes('sex'));
+        const collegeIdx = headers.findIndex((h) => h.includes('college') || h.includes('univ') || h.includes('inst'));
+        const phoneIdx = headers.findIndex((h) => h.includes('phone') || h.includes('mobile') || h.includes('contact'));
+        const codeIdx = headers.findIndex((h) => h.includes('code'));
+
+        if (nameIdx === -1 || genderIdx === -1 || collegeIdx === -1) {
+          toast.error(
+            'Missing Required Headers',
+            'File must contain columns: Name, Gender, and College. (Email and Phone are optional).'
+          );
+          return;
+        }
+
+        const parsed: any[] = [];
+        for (let i = 1; i < data.length; i++) {
+          const row = data[i];
+          if (!row || row.length === 0) continue;
+          const name = String(row[nameIdx] || '').trim();
+          const gender = String(row[genderIdx] || '').trim();
+          const collegeName = String(row[collegeIdx] || '').trim();
+          if (!name || !gender || !collegeName) continue;
+
+          parsed.push({
+            name,
+            email: emailIdx !== -1 ? String(row[emailIdx] || '').trim() : undefined,
+            gender,
+            collegeName,
+            collegeCode: codeIdx !== -1 ? String(row[codeIdx] || '').trim() : undefined,
+            phone: phoneIdx !== -1 ? String(row[phoneIdx] || '').trim() : undefined,
+          });
+        }
+
+        if (parsed.length === 0) {
+          toast.error('No Records Found', 'No valid student rows found in file.');
+          return;
+        }
+
+        setUploadedStudentsPreview(parsed);
+        setBulkAllotResult(null);
+        toast.success('File Loaded', `Parsed ${parsed.length} student records ready for allotment.`);
+      } catch (err: any) {
+        toast.error('File Error', err.message || 'Could not parse spreadsheet.');
+      }
+    };
+    reader.readAsBinaryString(file);
+  };
+
+  const handleDownloadSampleTemplate = () => {
+    const csvContent =
+      'data:text/csv;charset=utf-8,' +
+      [
+        'Name,Email,Gender,College,Phone',
+        'Aarav Sharma,aarav.sharma@cgc.edu,MALE,CGC University Mohali,9876543210',
+        'Priya Verma,priya.verma@cgc.edu,FEMALE,CGC University Mohali,9876543211',
+        'Rohan Mehta,rohan.mehta@cgc.edu,MALE,CGC University Mohali,9876543212',
+        'Sneha Singh,sneha.singh@du.ac.in,FEMALE,Delhi University,9876543213',
+        'Kabir Kapoor,kabir.kapoor@iitd.ac.in,MALE,IIT Delhi,9876543214',
+      ].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', 'unifest_students_room_allotment_template.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success('Template Downloaded', 'Use this format to prepare your student records.');
+  };
+
+  const handleExecuteBulkAllotment = async () => {
+    if (uploadedStudentsPreview.length === 0) return;
+    setIsBulkAllotting(true);
+    try {
+      const res = await fetch('/api/admin/hostels/bulk-allot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ students: uploadedStudentsPreview }),
+      });
+      const result = await res.json();
+      if (res.ok) {
+        setBulkAllotResult(result);
+        toast.success(
+          'Allotment Finished',
+          `Allotted ${result.allottedCount} students! Same-college room condition strictly preserved.`
+        );
+        loadAllAdminData();
+      } else {
+        toast.error('Allotment Failed', result.error || 'Failed to allot rooms.');
+      }
+    } catch {
+      toast.error('Network Error', 'Failed to reach server.');
+    } finally {
+      setIsBulkAllotting(false);
+    }
+  };
+
+  const handleUnassignBed = async (allocationId: string, studentName: string) => {
+    if (!confirm(`Are you sure you want to unassign ${studentName} from this bed?`)) return;
+    try {
+      const res = await fetch(`/api/admin/hostels?allocationId=${encodeURIComponent(allocationId)}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        toast.success('Bed Unassigned', `${studentName} was removed from this room.`);
+        if (selectedRoomDetails) {
+          setSelectedRoomDetails((prev: any) => ({
+            ...prev,
+            occupiedCount: Math.max(0, (prev.occupiedCount || 1) - 1),
+            occupants: prev.occupants?.filter((o: any) => o.allocationId !== allocationId) || [],
+          }));
+        }
+        loadAllAdminData();
+      } else {
+        const err = await res.json();
+        toast.error('Failed to unassign', err.error);
+      }
+    } catch {
+      toast.error('Error', 'Failed to reach server.');
+    }
+  };
+
+  const handleDownloadAllotmentReport = () => {
+    if (!bulkAllotResult?.allocations || bulkAllotResult.allocations.length === 0) {
+      toast.error('No Report', 'No allocations data available to download.');
+      return;
+    }
+    const headers = ['Student Name', 'Email', 'Gender', 'College', 'Hostel Facility', 'Room Number', 'Bed'];
+    const rows = bulkAllotResult.allocations.map((a: any) => [
+      `"${(a.userName || '').replace(/"/g, '""')}"`,
+      `"${(a.userEmail || '').replace(/"/g, '""')}"`,
+      `"${a.gender || ''}"`,
+      `"${(a.collegeName || '').replace(/"/g, '""')}"`,
+      `"${(a.hostelName || '').replace(/"/g, '""')}"`,
+      `"${a.roomNumber || ''}"`,
+      `"${a.bedLabel || ''}"`,
+    ]);
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e: any) => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `unifest_room_allotments_report_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success('Report Exported', 'Room allotments report downloaded as CSV.');
+  };
+
+  const handleExportHostelRoster = (hostelId: string, hostelName: string) => {
+    const targetHostel = hostelsList.find((h) => h.id === hostelId);
+    const allOccupants: any[] = [];
+    if (targetHostel?.rooms) {
+      targetHostel.rooms.forEach((r: any) => {
+        (r.occupants || []).forEach((occ: any) => {
+          allOccupants.push({
+            ...occ,
+            roomNumber: r.number,
+            floor: r.floor,
+            hostelName: targetHostel.name,
+          });
+        });
+      });
+    }
+
+    if (allOccupants.length === 0) {
+      toast.error('Empty Roster', `No students currently allotted to ${hostelName}.`);
+      return;
+    }
+
+    const headers = ['Hostel', 'Room No', 'Floor', 'Bed', 'Student Name', 'Email', 'Phone', 'College', 'Gender'];
+    const rows = allOccupants.map((o: any) => [
+      `"${(o.hostelName || '').replace(/"/g, '""')}"`,
+      `"${o.roomNumber || ''}"`,
+      `"${o.floor || ''}"`,
+      `"${o.bedLabel || ''}"`,
+      `"${(o.userName || '').replace(/"/g, '""')}"`,
+      `"${(o.userEmail || '').replace(/"/g, '""')}"`,
+      `"${(o.userPhone || '').replace(/"/g, '""')}"`,
+      `"${(o.collegeName || '').replace(/"/g, '""')}"`,
+      `"${o.userGender || ''}"`,
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e: any) => e.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `${hostelName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_occupants_roster.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success('Roster Downloaded', `Exported ${allOccupants.length} occupants for ${hostelName}.`);
   };
 
   // Filtered queries
@@ -1370,7 +1604,28 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
               </div>
             </div>
 
-            <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+            <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto shrink-0">
+              <button
+                onClick={() => {
+                  setUploadedStudentsPreview([]);
+                  setBulkAllotResult(null);
+                  setShowBulkAllotModal(true);
+                }}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-indigo-600 to-primary text-white rounded-xl text-xs font-bold shadow-md hover:from-indigo-700 hover:to-primary-dark transition-all active:scale-95"
+              >
+                <Upload className="w-3.5 h-3.5" /> Allot from Excel / CSV
+              </button>
+              <button
+                onClick={() => {
+                  setSelectedRosterHostelId('ALL');
+                  setRosterSearch('');
+                  setShowRosterModal(true);
+                }}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all shadow-sm"
+                title="View full occupant roster across all hostels"
+              >
+                <Users className="w-3.5 h-3.5 text-slate-600" /> All Roster
+              </button>
               <button
                 onClick={() => {
                   if (hostelsList.length > 0) setRoomHostelId(hostelsList[0].id);
@@ -1473,6 +1728,25 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                         <div className="flex items-center gap-1 ml-2">
                           <button
                             onClick={() => {
+                              setSelectedRosterHostelId(h.id);
+                              setRosterSearch('');
+                              setShowRosterModal(true);
+                            }}
+                            title={`View Occupants Roster for ${h.name}`}
+                            className="p-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 transition-colors flex items-center gap-1 text-xs font-bold"
+                          >
+                            <Users className="w-3.5 h-3.5" />
+                            <span className="hidden md:inline">Roster</span>
+                          </button>
+                          <button
+                            onClick={() => handleExportHostelRoster(h.id, h.name)}
+                            title={`Export Roster CSV for ${h.name}`}
+                            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => {
                               setRoomHostelId(h.id);
                               setShowAddRoomModal(true);
                             }}
@@ -1516,7 +1790,12 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                         {h.rooms.map((r: any) => (
                           <div
                             key={r.id}
-                            className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-slate-300 text-xs space-y-1.5 relative group transition-all"
+                            onClick={() => {
+                              setSelectedRoomDetails(r);
+                              setSelectedRoomHostel(h);
+                              setShowRoomDetailsModal(true);
+                            }}
+                            className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-primary/60 hover:bg-white hover:shadow-md text-xs space-y-1.5 relative group transition-all cursor-pointer"
                           >
                             <div className="flex items-center justify-between">
                               <span className="font-heading font-black text-slate-800">Room {r.number}</span>
@@ -1525,7 +1804,10 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                                   F{r.floor}
                                 </span>
                                 <button
-                                  onClick={() => handleDeleteRoom(r.id, r.number)}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleDeleteRoom(r.id, r.number);
+                                  }}
                                   title="Delete Room"
                                   className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-rose-600 transition-opacity"
                                 >
@@ -1534,8 +1816,13 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                               </div>
                             </div>
 
-                            <p className="text-[11px] text-slate-500 font-semibold">
-                              {r.occupiedCount || 0}/{r.capacity} beds
+                            <p className="text-[11px] text-slate-500 font-semibold flex items-center justify-between">
+                              <span>{r.occupiedCount || 0}/{r.capacity} beds</span>
+                              {r.occupants && r.occupants.length > 0 && (
+                                <span className="text-[10px] text-indigo-600 font-bold group-hover:underline flex items-center gap-0.5">
+                                  <Eye className="w-2.5 h-2.5" /> Details
+                                </span>
+                              )}
                             </p>
 
                             {/* Bed visual dots */}
@@ -1553,16 +1840,26 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                               ))}
                             </div>
 
-                            {r.lockedCollege ? (
-                              <span 
-                                className="text-[9px] font-black px-1.5 py-0.5 rounded text-white inline-block shadow-sm"
-                                style={{ backgroundColor: r.lockedCollege.color || '#4F46E5' }}
-                              >
-                                {r.lockedCollege.code}
-                              </span>
-                            ) : (
-                              <span className="text-[9px] text-slate-400 font-semibold">Unlocked</span>
-                            )}
+                            <div className="flex items-center justify-between pt-0.5">
+                              {r.lockedCollege ? (
+                                <span 
+                                  className="text-[9px] font-black px-1.5 py-0.5 rounded text-white inline-block shadow-sm truncate max-w-[90px]"
+                                  style={{ backgroundColor: r.lockedCollege.color || '#4F46E5' }}
+                                  title={r.lockedCollege.name}
+                                >
+                                  {r.lockedCollege.code}
+                                </span>
+                              ) : (
+                                <span className="text-[9px] text-slate-400 font-semibold">Unlocked</span>
+                              )}
+
+                              {r.occupants && r.occupants.length > 0 && (
+                                <span className="text-[9px] font-semibold text-slate-500 truncate max-w-[80px]" title={r.occupants[0].userName}>
+                                  {r.occupants[0].userName.split(' ')[0]}
+                                  {r.occupants.length > 1 ? ` +${r.occupants.length - 1}` : ''}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -2112,6 +2409,528 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
               </button>
             </div>
           </form>
+        </div>
+      )}
+
+      {/* MODAL 5: BULK STUDENT IMPORT & ROOM ALLOTMENT */}
+      {showBulkAllotModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-5 border border-slate-100 my-8 max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center">
+                  <Upload className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-heading font-black text-base text-slate-900">
+                    Bulk Student Import & Room Allotment
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Upload spreadsheet (.xlsx, .xls, .csv) with automatic same-college room allocation.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setShowBulkAllotModal(false);
+                  setUploadedStudentsPreview([]);
+                  setBulkAllotResult(null);
+                }}
+                className="p-1 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Invariant Rule Callout */}
+            <div className="p-4 rounded-2xl bg-blue-50/70 border border-blue-100 text-xs space-y-2">
+              <div className="flex items-center gap-2 font-heading font-black text-blue-900">
+                <CheckCircle2 className="w-4 h-4 text-blue-600" />
+                <span>Strict Constraint Enforcement Active</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-600 text-[11px] leading-relaxed">
+                <div className="p-2.5 rounded-xl bg-white border border-blue-100">
+                  <strong className="text-slate-800">BR-2: Same College Rule:</strong> Students sharing a room must strictly belong to the same college. No mixing of institutions in any room under any circumstance.
+                </div>
+                <div className="p-2.5 rounded-xl bg-white border border-blue-100">
+                  <strong className="text-slate-800">BR-1: Gender Segregation:</strong> Male students are placed exclusively in Boys Hostels; Female students in Girls Hostels.
+                </div>
+              </div>
+            </div>
+
+            {/* Result Report (If already executed) */}
+            {bulkAllotResult ? (
+              <div className="space-y-4">
+                <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-heading font-black text-sm flex items-center gap-1.5 text-emerald-800">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-600" /> Room Allotment Finished Successfully!
+                    </span>
+                    <button
+                      onClick={handleDownloadAllotmentReport}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm"
+                    >
+                      <Download className="w-3.5 h-3.5" /> Download Report (CSV)
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 pt-2 text-center text-xs">
+                    <div className="bg-white/80 p-2 rounded-xl">
+                      <span className="text-[10px] text-slate-500 uppercase font-bold">Total In File</span>
+                      <p className="font-heading font-black text-slate-800 text-base">{bulkAllotResult.totalRowsProcessed}</p>
+                    </div>
+                    <div className="bg-white/80 p-2 rounded-xl">
+                      <span className="text-[10px] text-emerald-600 uppercase font-bold">Beds Allotted</span>
+                      <p className="font-heading font-black text-emerald-700 text-base">{bulkAllotResult.allottedCount}</p>
+                    </div>
+                    <div className="bg-white/80 p-2 rounded-xl">
+                      <span className="text-[10px] text-slate-500 uppercase font-bold">Rooms Locked</span>
+                      <p className="font-heading font-black text-indigo-700 text-base">{bulkAllotResult.roomsLockedCount}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Shortfalls Warning if any */}
+                {bulkAllotResult.shortfalls && bulkAllotResult.shortfalls.length > 0 && (
+                  <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs space-y-1.5">
+                    <span className="font-bold flex items-center gap-1.5 text-amber-800">
+                      <AlertTriangle className="w-4 h-4 text-amber-600" /> Capacity Shortfall Notice:
+                    </span>
+                    {bulkAllotResult.shortfalls.map((s: any, idx: number) => (
+                      <p key={idx} className="text-[11px] text-amber-800">
+                        • <strong>{s.collegeName} ({s.gender === 'MALE' ? 'Boys' : 'Girls'}):</strong> {s.unallocatedCount} unallocated students ({s.reason})
+                      </p>
+                    ))}
+                  </div>
+                )}
+
+                {/* Table of new allocations */}
+                <div className="space-y-2">
+                  <h4 className="font-heading font-black text-xs text-slate-700 uppercase tracking-wider">
+                    Allotment Roster Summary ({bulkAllotResult.allocations?.length || 0} students)
+                  </h4>
+                  <div className="border border-slate-200 rounded-2xl overflow-hidden max-h-60 overflow-y-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-slate-50 text-slate-500 font-bold text-[10px] uppercase border-b border-slate-200">
+                        <tr>
+                          <th className="py-2.5 px-3">Student</th>
+                          <th className="py-2.5 px-3">College</th>
+                          <th className="py-2.5 px-3">Facility</th>
+                          <th className="py-2.5 px-3">Room</th>
+                          <th className="py-2.5 px-3">Bed</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {bulkAllotResult.allocations?.map((a: any, i: number) => (
+                          <tr key={i} className="hover:bg-slate-50">
+                            <td className="py-2 px-3 font-bold text-slate-800">{a.userName}</td>
+                            <td className="py-2 px-3 text-slate-600">{a.collegeName}</td>
+                            <td className="py-2 px-3 text-slate-600">{a.hostelName}</td>
+                            <td className="py-2 px-3 font-mono font-bold text-indigo-600">Room {a.roomNumber}</td>
+                            <td className="py-2 px-3 font-mono text-slate-500">{a.bedLabel}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div className="pt-2 flex justify-end">
+                  <button
+                    onClick={() => {
+                      setShowBulkAllotModal(false);
+                      setUploadedStudentsPreview([]);
+                      setBulkAllotResult(null);
+                    }}
+                    className="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold shadow-md hover:bg-slate-800 transition-all"
+                  >
+                    Done & Inspect Hostels
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* Upload & Preview Step */
+              <div className="space-y-4">
+                {/* Upload Zone */}
+                <div className="border-2 border-dashed border-slate-200 hover:border-primary rounded-3xl p-6 text-center space-y-3 bg-slate-50/50 hover:bg-slate-50 transition-all">
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center mx-auto">
+                    <FileSpreadsheet className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <p className="font-heading font-black text-sm text-slate-800">
+                      Choose Excel or CSV file
+                    </p>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      Accepts <strong className="text-slate-600">.xlsx, .xls, .csv</strong> files with Name, Gender, and College columns.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
+                    <label className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-xl text-xs font-bold transition-all shadow-md">
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>Select File</span>
+                      <input
+                        type="file"
+                        accept=".csv, .xlsx, .xls"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                      />
+                    </label>
+
+                    <button
+                      type="button"
+                      onClick={handleDownloadSampleTemplate}
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 rounded-xl text-xs font-bold transition-all shadow-sm"
+                    >
+                      <Download className="w-3.5 h-3.5 text-slate-500" />
+                      <span>Download Sample Template</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Preview Table if File Loaded */}
+                {uploadedStudentsPreview.length > 0 && (
+                  <div className="space-y-3 pt-2">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="font-heading font-black text-xs text-slate-900">
+                          File Preview: {uploadedStudentsPreview.length} Students Detected
+                        </span>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
+                          {uploadedStudentsPreview.filter((s) => s.gender === 'MALE').length} Boys · {uploadedStudentsPreview.filter((s) => s.gender === 'FEMALE').length} Girls
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setUploadedStudentsPreview([])}
+                        className="text-xs text-rose-600 hover:underline font-bold"
+                      >
+                        Clear File
+                      </button>
+                    </div>
+
+                    <div className="border border-slate-200 rounded-2xl overflow-hidden max-h-52 overflow-y-auto">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-slate-50 text-slate-500 font-bold text-[10px] uppercase border-b border-slate-200">
+                          <tr>
+                            <th className="py-2 px-3">Name</th>
+                            <th className="py-2 px-3">Gender</th>
+                            <th className="py-2 px-3">College / University</th>
+                            <th className="py-2 px-3">Email</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100">
+                          {uploadedStudentsPreview.slice(0, 8).map((s, idx) => (
+                            <tr key={idx} className="hover:bg-slate-50">
+                              <td className="py-2 px-3 font-bold text-slate-800">{s.name}</td>
+                              <td className="py-2 px-3 text-slate-600">{s.gender === 'MALE' ? '♂ Male' : '♀ Female'}</td>
+                              <td className="py-2 px-3 text-slate-600">{s.collegeName}</td>
+                              <td className="py-2 px-3 text-slate-400 font-mono text-[11px]">{s.email || 'auto-generated'}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    {uploadedStudentsPreview.length > 8 && (
+                      <p className="text-[11px] text-slate-400 italic text-right">
+                        Showing first 8 of {uploadedStudentsPreview.length} students...
+                      </p>
+                    )}
+
+                    <div className="pt-2 flex justify-between items-center">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowBulkAllotModal(false);
+                          setUploadedStudentsPreview([]);
+                        }}
+                        className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleExecuteBulkAllotment}
+                        disabled={isBulkAllotting}
+                        className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-primary text-white text-xs font-bold shadow-md hover:from-indigo-700 hover:to-primary-dark transition-all disabled:opacity-50 flex items-center gap-2"
+                      >
+                        {isBulkAllotting && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
+                        <span>{isBulkAllotting ? 'Running Allotment...' : 'Confirm & Run Room Allotment'}</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 6: ROOM OCCUPANTS & DETAILS MODAL */}
+      {showRoomDetailsModal && selectedRoomDetails && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md animate-in fade-in">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-slate-100 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-heading font-black text-lg text-slate-900">
+                    Room {selectedRoomDetails.number}
+                  </h3>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">
+                    Floor {selectedRoomDetails.floor}
+                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-50 text-blue-700">
+                    {selectedRoomDetails.gender === 'MALE' ? '♂ Boys Room' : '♀ Girls Room'}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Hostel: <strong className="text-slate-700">{selectedRoomHostel?.name || 'Hostel'}</strong>
+                </p>
+              </div>
+              <button
+                onClick={() => setShowRoomDetailsModal(false)}
+                className="p-1 rounded-xl text-slate-400 hover:text-slate-600"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Room Invariant Status */}
+            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between text-xs">
+              <div>
+                <span className="text-slate-400 text-[10px] uppercase font-bold block">Locked College Status</span>
+                {selectedRoomDetails.lockedCollege ? (
+                  <span
+                    className="font-heading font-bold text-xs px-2 py-0.5 rounded-md text-white inline-block mt-0.5 shadow-sm"
+                    style={{ backgroundColor: selectedRoomDetails.lockedCollege.color || '#4F46E5' }}
+                  >
+                    {selectedRoomDetails.lockedCollege.name} ({selectedRoomDetails.lockedCollege.code})
+                  </span>
+                ) : (
+                  <span className="font-semibold text-slate-500">Unlocked (Open to any college)</span>
+                )}
+              </div>
+              <div className="text-right">
+                <span className="text-slate-400 text-[10px] uppercase font-bold block">Occupancy</span>
+                <span className="font-heading font-black text-sm text-slate-800">
+                  {selectedRoomDetails.occupiedCount || 0} / {selectedRoomDetails.capacity} Beds
+                </span>
+              </div>
+            </div>
+
+            {/* Occupants List */}
+            <div className="space-y-2">
+              <h4 className="font-heading font-black text-xs text-slate-700 uppercase tracking-wider">
+                Assigned Occupants ({selectedRoomDetails.occupants?.length || 0})
+              </h4>
+
+              {!selectedRoomDetails.occupants || selectedRoomDetails.occupants.length === 0 ? (
+                <div className="p-8 rounded-2xl bg-slate-50 border border-dashed border-slate-200 text-center text-slate-400 space-y-1">
+                  <p className="font-bold text-xs text-slate-600">No students currently allotted to this room</p>
+                  <p className="text-[11px]">Beds are completely vacant and ready for same-college student allotment.</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-slate-100 border border-slate-100 rounded-2xl overflow-hidden">
+                  {selectedRoomDetails.occupants.map((occ: any, i: number) => (
+                    <div key={i} className="p-3 bg-white hover:bg-slate-50 transition-colors flex items-center justify-between gap-3 text-xs">
+                      <div className="flex items-center gap-2.5">
+                        <span className="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 font-bold font-mono text-[11px] flex items-center justify-center shrink-0">
+                          {occ.bedLabel || `B${i + 1}`}
+                        </span>
+                        <div>
+                          <p className="font-bold text-slate-900 leading-snug">{occ.userName}</p>
+                          <p className="text-[11px] text-slate-400">
+                            <span>{occ.collegeName || selectedRoomDetails.lockedCollege?.name}</span>
+                            {occ.userEmail && <span> · {occ.userEmail}</span>}
+                          </p>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => handleUnassignBed(occ.allocationId, occ.userName)}
+                        className="px-2.5 py-1 rounded-lg text-[10px] font-bold text-rose-600 hover:bg-rose-50 border border-rose-200 transition-colors shrink-0"
+                        title="Unassign student from this bed"
+                      >
+                        Unassign
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="pt-2 flex justify-end">
+              <button
+                onClick={() => setShowRoomDetailsModal(false)}
+                className="px-5 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition-all"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 7: HOSTEL FACILITY OCCUPANTS ROSTER MODAL */}
+      {showRosterModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl space-y-4 border border-slate-100 my-8 max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center">
+                  <Users className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-heading font-black text-base text-slate-900">
+                    Hostel Allotment Occupants Roster
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Inspect all students assigned to beds across accommodation facilities.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowRosterModal(false)}
+                className="p-1 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Filter & Actions Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+              <div className="flex items-center gap-2 flex-1">
+                <div className="relative flex-1 max-w-xs">
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
+                  <input
+                    type="text"
+                    value={rosterSearch}
+                    onChange={(e) => setRosterSearch(e.target.value)}
+                    placeholder="Search by student, room, or college..."
+                    className="w-full pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 text-xs bg-slate-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary"
+                  />
+                </div>
+
+                <select
+                  value={selectedRosterHostelId}
+                  onChange={(e) => setSelectedRosterHostelId(e.target.value)}
+                  className="py-1.5 px-3 rounded-xl border border-slate-200 text-xs font-bold bg-slate-50 text-slate-700"
+                >
+                  <option value="ALL">All Hostels ({hostelsList.length})</option>
+                  {hostelsList.map((h) => (
+                    <option key={h.id} value={h.id}>
+                      {h.name} ({h.gender === 'MALE' ? 'Boys' : 'Girls'})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <button
+                onClick={() => {
+                  const targetName = selectedRosterHostelId === 'ALL' ? 'all_hostels' : (hostelsList.find((h) => h.id === selectedRosterHostelId)?.name || 'hostel');
+                  handleExportHostelRoster(selectedRosterHostelId, targetName);
+                }}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all shadow-sm self-start sm:self-auto"
+              >
+                <Download className="w-3.5 h-3.5 text-slate-600" />
+                <span>Export CSV</span>
+              </button>
+            </div>
+
+            {/* Roster Table */}
+            {(() => {
+              // Aggregate all occupants
+              const allOccupantsList: any[] = [];
+              const targetHostels = selectedRosterHostelId === 'ALL' ? hostelsList : hostelsList.filter((h) => h.id === selectedRosterHostelId);
+
+              targetHostels.forEach((h) => {
+                (h.rooms || []).forEach((r: any) => {
+                  (r.occupants || []).forEach((occ: any) => {
+                    allOccupantsList.push({
+                      ...occ,
+                      hostelName: h.name,
+                      roomNumber: r.number,
+                      floor: r.floor,
+                      gender: r.gender,
+                    });
+                  });
+                });
+              });
+
+              const filteredRoster = allOccupantsList.filter((occ) => {
+                if (!rosterSearch.trim()) return true;
+                const q = rosterSearch.toLowerCase();
+                return (
+                  occ.userName.toLowerCase().includes(q) ||
+                  occ.roomNumber.toLowerCase().includes(q) ||
+                  occ.collegeName.toLowerCase().includes(q) ||
+                  (occ.userEmail && occ.userEmail.toLowerCase().includes(q))
+                );
+              });
+
+              return filteredRoster.length === 0 ? (
+                <div className="p-12 rounded-3xl bg-slate-50 border border-slate-200 text-center text-slate-400 space-y-2">
+                  <Users className="w-10 h-10 text-slate-300 mx-auto" />
+                  <p className="font-heading font-bold text-sm text-slate-700">No occupants found</p>
+                  <p className="text-xs text-slate-400">
+                    {allOccupantsList.length === 0
+                      ? 'No students have been allotted rooms in this facility yet. Use "Allot from Excel / CSV" to allot students.'
+                      : 'No students match your search query.'}
+                  </p>
+                </div>
+              ) : (
+                <div className="border border-slate-200 rounded-2xl overflow-hidden max-h-80 overflow-y-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50 text-slate-500 font-bold text-[10px] uppercase border-b border-slate-200 sticky top-0">
+                      <tr>
+                        <th className="py-2.5 px-3">Student</th>
+                        <th className="py-2.5 px-3">College</th>
+                        <th className="py-2.5 px-3">Hostel</th>
+                        <th className="py-2.5 px-3">Room & Bed</th>
+                        <th className="py-2.5 px-3 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {filteredRoster.map((occ, idx) => (
+                        <tr key={idx} className="hover:bg-slate-50/80 transition-colors">
+                          <td className="py-2.5 px-3">
+                            <p className="font-bold text-slate-900">{occ.userName}</p>
+                            <p className="text-[10px] text-slate-400">{occ.userEmail}</p>
+                          </td>
+                          <td className="py-2.5 px-3">
+                            <span className="font-semibold text-slate-700">{occ.collegeName}</span>
+                          </td>
+                          <td className="py-2.5 px-3 text-slate-600">{occ.hostelName}</td>
+                          <td className="py-2.5 px-3">
+                            <span className="font-mono font-bold text-indigo-600">Room {occ.roomNumber}</span>
+                            <span className="text-[10px] text-slate-400 ml-1.5 font-mono">({occ.bedLabel || 'Bed'})</span>
+                          </td>
+                          <td className="py-2.5 px-3 text-right">
+                            <button
+                              onClick={() => handleUnassignBed(occ.allocationId, occ.userName)}
+                              className="px-2 py-0.5 rounded-lg text-[10px] font-bold text-rose-600 hover:bg-rose-50 border border-rose-200 transition-colors"
+                            >
+                              Unassign
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            })()}
+
+            <div className="pt-2 flex justify-end">
+              <button
+                onClick={() => setShowRosterModal(false)}
+                className="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition-all"
+              >
+                Close
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

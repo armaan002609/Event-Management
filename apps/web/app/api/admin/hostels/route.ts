@@ -19,12 +19,14 @@ export async function GET() {
         { data: sbBeds },
         { data: sbAllocations },
         { data: sbColleges },
+        { data: sbUsers },
       ] = await Promise.all([
         sb.from('hostels').select('*'),
         sb.from('rooms').select('*'),
         sb.from('beds').select('*'),
         sb.from('allocations').select('*'),
         sb.from('colleges').select('*'),
+        sb.from('users').select('*'),
       ]);
 
       if (sbHostels) {
@@ -32,13 +34,36 @@ export async function GET() {
         const bedsList = sbBeds || [];
         const allocsList = sbAllocations || [];
         const colsList = sbColleges || [];
+        const usersList = sbUsers || [];
 
         const hostelsWithDetails = sbHostels.map((hostel: any) => {
           const rooms = roomsList.filter((r: any) => r.hostel_id === hostel.id);
           const roomsWithBeds = rooms.map((room: any) => {
             const beds = bedsList.filter((b: any) => b.room_id === room.id);
             const lockedCol = colsList.find((c: any) => c.id === room.locked_college_id);
-            const occupiedCount = allocsList.filter((a: any) => beds.some((b: any) => b.id === a.bed_id)).length;
+            const roomAllocs = allocsList.filter((a: any) => beds.some((b: any) => b.id === a.bed_id));
+            const occupiedCount = roomAllocs.length;
+
+            const occupants = roomAllocs.map((a: any) => {
+              const u = usersList.find((usr: any) => usr.id === a.user_id);
+              const b = beds.find((bed: any) => bed.id === a.bed_id);
+              const uCol = colsList.find((c: any) => c.id === (u?.college_id || u?.collegeId));
+              return {
+                allocationId: a.id,
+                userId: u?.id || a.user_id,
+                userName: u?.name || 'Unknown Student',
+                userEmail: u?.email || '',
+                userPhone: u?.phone || '',
+                userGender: u?.gender || room.gender,
+                collegeId: u?.college_id || lockedCol?.id || '',
+                collegeName: u?.college_name || uCol?.name || lockedCol?.name || 'Assigned College',
+                collegeCode: uCol?.code || lockedCol?.code || '',
+                collegeColor: uCol?.color || lockedCol?.color || '#2563EB',
+                bedId: b?.id,
+                bedLabel: b?.label || 'Bed',
+                allocatedAt: a.created_at || a.at,
+              };
+            });
 
             return {
               id: room.id,
@@ -47,6 +72,7 @@ export async function GET() {
               floor: room.floor,
               capacity: room.capacity,
               occupiedCount,
+              occupants,
               lockedCollegeId: room.locked_college_id,
               lockedCollege: lockedCol,
               beds: beds.map((b: any) => ({
@@ -85,11 +111,34 @@ export async function GET() {
     const roomsWithBeds = rooms.map((room) => {
       const beds = db.beds.filter((b) => b.roomId === room.id);
       const lockedCol = db.colleges.find((c) => c.id === room.lockedCollegeId);
-      const occupiedCount = db.allocations.filter((a) => beds.some((b) => b.id === a.bedId)).length;
+      const roomAllocs = db.allocations.filter((a) => beds.some((b) => b.id === a.bedId));
+      const occupiedCount = roomAllocs.length;
+
+      const occupants = roomAllocs.map((a) => {
+        const u = db.users.find((usr) => usr.id === a.userId);
+        const b = beds.find((bed) => bed.id === a.bedId);
+        const uCol = db.colleges.find((c) => c.id === u?.collegeId);
+        return {
+          allocationId: a.id,
+          userId: u?.id || a.userId,
+          userName: u?.name || 'Unknown Student',
+          userEmail: u?.email || '',
+          userPhone: u?.phone || '',
+          userGender: u?.gender || room.gender,
+          collegeId: u?.collegeId || lockedCol?.id || '',
+          collegeName: u?.collegeName || uCol?.name || lockedCol?.name || 'Assigned College',
+          collegeCode: uCol?.code || lockedCol?.code || '',
+          collegeColor: uCol?.color || lockedCol?.color || '#2563EB',
+          bedId: b?.id,
+          bedLabel: b?.label || 'Bed',
+          allocatedAt: a.createdAt,
+        };
+      });
 
       return {
         ...room,
         occupiedCount,
+        occupants,
         lockedCollege: lockedCol,
         beds,
       };
@@ -288,9 +337,49 @@ export async function DELETE(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const hostelId = searchParams.get('hostelId');
     const roomId = searchParams.get('roomId');
+    const allocationId = searchParams.get('allocationId');
 
-    if (!hostelId && !roomId) {
-      return NextResponse.json({ error: 'hostelId or roomId is required.' }, { status: 400 });
+    if (!hostelId && !roomId && !allocationId) {
+      return NextResponse.json({ error: 'hostelId, roomId, or allocationId is required.' }, { status: 400 });
+    }
+
+    if (allocationId) {
+      try {
+        const { getSupabase } = await import('@/lib/supabase');
+        const sb = getSupabase();
+        if (sb) {
+          const { data: alloc } = await sb.from('allocations').select('*, bed:beds(room_id)').eq('id', allocationId).single();
+          await sb.from('allocations').delete().eq('id', allocationId);
+          if (alloc?.bed?.room_id) {
+            const { data: bList } = await sb.from('beds').select('id').eq('room_id', alloc.bed.room_id);
+            const bIds = (bList || []).map((b: any) => b.id);
+            const { count } = await sb.from('allocations').select('*', { count: 'exact', head: true }).in('bed_id', bIds);
+            if (count === 0) {
+              await sb.from('rooms').update({ locked_college_id: null }).eq('id', alloc.bed.room_id);
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Supabase delete allocation error:', e);
+      }
+
+      const db = readDatabase();
+      const alloc = db.allocations.find((a) => a.id === allocationId);
+      if (alloc) {
+        const bed = db.beds.find((b) => b.id === alloc.bedId);
+        db.allocations = db.allocations.filter((a) => a.id !== allocationId);
+        if (bed?.roomId) {
+          const rBeds = db.beds.filter((b) => b.roomId === bed.roomId).map((b) => b.id);
+          const remaining = db.allocations.filter((a) => rBeds.includes(a.bedId));
+          if (remaining.length === 0) {
+            const room = db.rooms.find((r) => r.id === bed.roomId);
+            if (room) room.lockedCollegeId = null;
+          }
+        }
+        writeDatabase(db);
+      }
+
+      return NextResponse.json({ success: true, message: 'Bed allocation removed.' });
     }
 
     try {
