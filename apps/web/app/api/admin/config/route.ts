@@ -21,19 +21,57 @@ export async function GET() {
   }
 
   const db = readDatabase();
+  let stats = {
+    usersCount: db.users.length,
+    collegesCount: db.colleges.length,
+    hostelsCount: db.hostels.length,
+    roomsCount: db.rooms.length,
+    bedsCount: db.beds.length,
+    allocationsCount: db.allocations.length,
+    eventsCount: db.events.length,
+    scansCount: db.scanLogs.length,
+    auditLogsCount: db.auditLogs.length,
+  };
+
+  try {
+    const { getSupabase } = await import('@/lib/supabase');
+    const sb = getSupabase();
+    if (sb) {
+      const [
+        { count: uCount },
+        { count: cCount },
+        { count: hCount },
+        { count: rCount },
+        { count: bCount },
+        { count: aCount },
+        { count: eCount },
+      ] = await Promise.all([
+        sb.from('users').select('*', { count: 'exact', head: true }),
+        sb.from('colleges').select('*', { count: 'exact', head: true }),
+        sb.from('hostels').select('*', { count: 'exact', head: true }),
+        sb.from('rooms').select('*', { count: 'exact', head: true }),
+        sb.from('beds').select('*', { count: 'exact', head: true }),
+        sb.from('allocations').select('*', { count: 'exact', head: true }),
+        sb.from('events').select('*', { count: 'exact', head: true }),
+      ]);
+
+      stats = {
+        usersCount: uCount ?? db.users.length,
+        collegesCount: cCount ?? db.colleges.length,
+        hostelsCount: hCount ?? db.hostels.length,
+        roomsCount: rCount ?? db.rooms.length,
+        bedsCount: bCount ?? db.beds.length,
+        allocationsCount: aCount ?? db.allocations.length,
+        eventsCount: eCount ?? db.events.length,
+        scansCount: db.scanLogs.length,
+        auditLogsCount: db.auditLogs.length,
+      };
+    }
+  } catch {}
+
   return NextResponse.json({
     config: systemConfig,
-    stats: {
-      usersCount: db.users.length,
-      collegesCount: db.colleges.length,
-      hostelsCount: db.hostels.length,
-      roomsCount: db.rooms.length,
-      bedsCount: db.beds.length,
-      allocationsCount: db.allocations.length,
-      eventsCount: db.events.length,
-      scansCount: db.scanLogs.length,
-      auditLogsCount: db.auditLogs.length,
-    },
+    stats,
   });
 }
 

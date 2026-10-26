@@ -67,15 +67,25 @@ export async function getOptionalActiveUserAsync(): Promise<User | null> {
 export function getActiveUserId(): string {
   const id = getOptionalActiveUserId();
   if (id) return id;
-  return 'usr-aarav'; // Default fallback user ID
+  const db = readDatabase();
+  return db.users[0]?.id || 'usr-guest';
 }
 
 export function getActiveUser(): User {
   const optional = getOptionalActiveUser();
   if (optional) return optional;
-  // Fallback to first user
   const db = readDatabase();
   const fallback = db.users[0];
+  if (!fallback) {
+    return {
+      id: 'usr-guest',
+      email: 'guest@unifest.org',
+      name: 'Guest User',
+      gender: 'MALE',
+      role: 'STUDENT',
+      emailVerified: false,
+    };
+  }
   const college = db.colleges.find((c) => c.id === fallback.collegeId);
   return { ...fallback, college };
 }

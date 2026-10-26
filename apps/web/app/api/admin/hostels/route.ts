@@ -9,6 +9,74 @@ export async function GET() {
     return NextResponse.json({ error: 'Forbidden: Admin access required.' }, { status: 403 });
   }
 
+  try {
+    const { getSupabase } = await import('@/lib/supabase');
+    const sb = getSupabase();
+    if (sb) {
+      const [
+        { data: sbHostels },
+        { data: sbRooms },
+        { data: sbBeds },
+        { data: sbAllocations },
+        { data: sbColleges },
+      ] = await Promise.all([
+        sb.from('hostels').select('*'),
+        sb.from('rooms').select('*'),
+        sb.from('beds').select('*'),
+        sb.from('allocations').select('*'),
+        sb.from('colleges').select('*'),
+      ]);
+
+      if (sbHostels && sbHostels.length > 0) {
+        const roomsList = sbRooms || [];
+        const bedsList = sbBeds || [];
+        const allocsList = sbAllocations || [];
+        const colsList = sbColleges || [];
+
+        const hostelsWithDetails = sbHostels.map((hostel: any) => {
+          const rooms = roomsList.filter((r: any) => r.hostel_id === hostel.id);
+          const roomsWithBeds = rooms.map((room: any) => {
+            const beds = bedsList.filter((b: any) => b.room_id === room.id);
+            const lockedCol = colsList.find((c: any) => c.id === room.locked_college_id);
+            const occupiedCount = allocsList.filter((a: any) => beds.some((b: any) => b.id === a.bed_id)).length;
+
+            return {
+              id: room.id,
+              hostelId: room.hostel_id,
+              number: room.number,
+              floor: room.floor,
+              capacity: room.capacity,
+              occupiedCount,
+              lockedCollegeId: room.locked_college_id,
+              lockedCollege: lockedCol,
+              beds: beds.map((b: any) => ({
+                id: b.id,
+                roomId: b.room_id,
+                label: b.label,
+              })),
+            };
+          });
+
+          const totalCapacity = rooms.reduce((acc: number, r: any) => acc + (r.capacity || 0), 0);
+          const totalOccupied = roomsWithBeds.reduce((acc: number, r: any) => acc + r.occupiedCount, 0);
+
+          return {
+            id: hostel.id,
+            name: hostel.name,
+            gender: hostel.gender,
+            roomsCount: rooms.length,
+            totalCapacity,
+            totalOccupied,
+            vacantBeds: totalCapacity - totalOccupied,
+            rooms: roomsWithBeds,
+          };
+        });
+
+        return NextResponse.json(hostelsWithDetails);
+      }
+    }
+  } catch {}
+
   const db = readDatabase();
   const hostelsWithDetails = db.hostels.map((hostel) => {
     const rooms = db.rooms.filter((r) => r.hostelId === hostel.id);

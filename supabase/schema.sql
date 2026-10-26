@@ -325,3 +325,9 @@ INSERT INTO meal_batches (id, slot_id, college_id, gender, starts_at, ends_at) V
   ('batch-lunch-lpu-m', 'slot-lunch-1', 'col-lpu', 'MALE', NOW() + INTERVAL '30 minutes', NOW() + INTERVAL '90 minutes'),
   ('batch-lunch-du-f', 'slot-lunch-1', 'col-du', 'FEMALE', NOW() - INTERVAL '15 minutes', NOW() + INTERVAL '45 minutes')
 ON CONFLICT (id) DO NOTHING;
+
+
+
+UPDATE users
+SET role = 'ADMIN'
+WHERE email = 'user@example.com';

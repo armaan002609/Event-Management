@@ -514,59 +514,71 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {filteredUsers.map((user) => (
-                  <tr key={user.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="py-3 px-4">
-                      <p className="font-bold text-slate-800">{user.name}</p>
-                      <p className="text-[10px] text-slate-400">{user.email}</p>
-                    </td>
-                    <td className="py-3 px-4">
-                      {user.college ? (
-                        <span className="font-semibold text-slate-700">{user.college.code}</span>
-                      ) : (
-                        <span className="text-slate-400 italic">Festival Staff</span>
-                      )}
-                    </td>
-                    <td className="py-3 px-4">
-                      <span>{user.gender === 'MALE' ? '♂ Male' : '♀ Female'}</span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <select
-                        value={user.role}
-                        onChange={(e) => handleRoleChange(user.id, e.target.value as Role)}
-                        className={`text-[11px] font-bold p-1 rounded-lg border ${
-                          user.role === 'ADMIN'
-                            ? 'bg-rose-50 text-rose-700 border-rose-200'
-                            : user.role === 'MANAGER'
-                            ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
-                            : user.role === 'SCANNER'
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                            : 'bg-slate-50 text-slate-700 border-slate-200'
-                        }`}
-                      >
-                        <option value="STUDENT">STUDENT</option>
-                        <option value="MANAGER">MANAGER</option>
-                        <option value="SCANNER">SCANNER</option>
-                        <option value="ADMIN">ADMIN</option>
-                      </select>
-                    </td>
-                    <td className="py-3 px-4">
-                      <button
-                        onClick={() => handleToggleVerification(user.id, user.emailVerified)}
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                          user.emailVerified
-                            ? 'bg-emerald-100 text-emerald-800'
-                            : 'bg-amber-100 text-amber-800'
-                        }`}
-                      >
-                        {user.emailVerified ? 'Verified' : 'Unverified'}
-                      </button>
-                    </td>
-                    <td className="py-3 px-4 text-right">
-                      <span className="text-[10px] text-slate-400 font-mono">ID: {user.id.slice(0, 10)}</span>
+                {filteredUsers.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="py-12 text-center text-slate-400">
+                      <Users className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                      <p className="font-semibold text-xs text-slate-600">No users found</p>
+                      <p className="text-[11px] text-slate-400 mt-0.5">
+                        Real user accounts will appear here as users sign in or register.
+                      </p>
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  filteredUsers.map((user) => (
+                    <tr key={user.id} className="hover:bg-slate-50/80 transition-colors">
+                      <td className="py-3 px-4">
+                        <p className="font-bold text-slate-800">{user.name}</p>
+                        <p className="text-[10px] text-slate-400">{user.email}</p>
+                      </td>
+                      <td className="py-3 px-4">
+                        {user.college ? (
+                          <span className="font-semibold text-slate-700">{user.college.code}</span>
+                        ) : (
+                          <span className="text-slate-400 italic">Festival Staff</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-4">
+                        <span>{user.gender === 'MALE' ? '♂ Male' : '♀ Female'}</span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <select
+                          value={user.role}
+                          onChange={(e) => handleRoleChange(user.id, e.target.value as Role)}
+                          className={`text-[11px] font-bold p-1 rounded-lg border ${
+                            user.role === 'ADMIN'
+                              ? 'bg-rose-50 text-rose-700 border-rose-200'
+                              : user.role === 'MANAGER'
+                              ? 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                              : user.role === 'SCANNER'
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                              : 'bg-slate-50 text-slate-700 border-slate-200'
+                          }`}
+                        >
+                          <option value="STUDENT">STUDENT</option>
+                          <option value="MANAGER">MANAGER</option>
+                          <option value="SCANNER">SCANNER</option>
+                          <option value="ADMIN">ADMIN</option>
+                        </select>
+                      </td>
+                      <td className="py-3 px-4">
+                        <button
+                          onClick={() => handleToggleVerification(user.id, user.emailVerified)}
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            user.emailVerified
+                              ? 'bg-emerald-100 text-emerald-800'
+                              : 'bg-amber-100 text-amber-800'
+                          }`}
+                        >
+                          {user.emailVerified ? 'Verified' : 'Unverified'}
+                        </button>
+                      </td>
+                      <td className="py-3 px-4 text-right">
+                        <span className="text-[10px] text-slate-400 font-mono">ID: {user.id.slice(0, 10)}</span>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

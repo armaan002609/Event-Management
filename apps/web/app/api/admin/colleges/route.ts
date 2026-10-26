@@ -9,6 +9,42 @@ export async function GET() {
     return NextResponse.json({ error: 'Forbidden: Admin access required.' }, { status: 403 });
   }
 
+  try {
+    const { getSupabase } = await import('@/lib/supabase');
+    const sb = getSupabase();
+    if (sb) {
+      const [{ data: sbColleges }, { data: sbUsers }, { data: sbRooms }] = await Promise.all([
+        sb.from('colleges').select('*'),
+        sb.from('users').select('*'),
+        sb.from('rooms').select('*'),
+      ]);
+
+      if (sbColleges && sbColleges.length > 0) {
+        const usersList = sbUsers || [];
+        const roomsList = sbRooms || [];
+        const collegesWithStats = sbColleges.map((col: any) => {
+          const students = usersList.filter((u: any) => u.college_id === col.id && u.role === 'STUDENT');
+          const maleStudents = students.filter((u: any) => u.gender === 'MALE').length;
+          const femaleStudents = students.filter((u: any) => u.gender === 'FEMALE').length;
+          const lockedRooms = roomsList.filter((r: any) => r.locked_college_id === col.id).length;
+
+          return {
+            id: col.id,
+            name: col.name,
+            code: col.code,
+            color: col.color,
+            totalStudents: students.length,
+            maleStudents,
+            femaleStudents,
+            lockedRooms,
+          };
+        });
+
+        return NextResponse.json(collegesWithStats);
+      }
+    }
+  } catch {}
+
   const db = readDatabase();
   const collegesWithStats = db.colleges.map((col) => {
     const students = db.users.filter((u) => u.collegeId === col.id && u.role === 'STUDENT');

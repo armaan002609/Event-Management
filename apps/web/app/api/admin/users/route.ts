@@ -9,19 +9,56 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Forbidden: Admin access required.' }, { status: 403 });
   }
 
-  const db = readDatabase();
   const { searchParams } = new URL(req.url);
   const roleFilter = searchParams.get('role');
   const collegeFilter = searchParams.get('collegeId');
   const search = searchParams.get('search')?.toLowerCase();
 
-  let users = db.users.map((u) => {
-    const col = db.colleges.find((c) => c.id === u.collegeId);
-    return {
-      ...u,
-      college: col,
-    };
-  });
+  let users: any[] = [];
+
+  try {
+    const { getSupabase } = await import('@/lib/supabase');
+    const sb = getSupabase();
+    if (sb) {
+      const { data: sbUsers, error } = await sb
+        .from('users')
+        .select('*, college:colleges(*)');
+      if (!error && Array.isArray(sbUsers) && sbUsers.length > 0) {
+        users = sbUsers.map((u: any) => ({
+          id: u.id,
+          name: u.name,
+          email: u.email,
+          phone: u.phone,
+          fatherName: u.father_name,
+          fatherPhone: u.father_phone,
+          address: u.address,
+          collegeId: u.college_id,
+          collegeName: u.college_name || u.college?.name || null,
+          college: u.college,
+          rollNo: u.roll_no,
+          course: u.course,
+          passingYear: u.passing_year,
+          avatarUrl: u.avatar_url,
+          isProfileComplete: u.is_profile_complete,
+          gender: u.gender,
+          role: u.role,
+          emailVerified: u.email_verified,
+        }));
+      }
+    }
+  } catch {}
+
+  // Fallback to local db if Supabase not reachable
+  if (users.length === 0) {
+    const db = readDatabase();
+    users = db.users.map((u) => {
+      const col = db.colleges.find((c) => c.id === u.collegeId);
+      return {
+        ...u,
+        college: col,
+      };
+    });
+  }
 
   if (roleFilter) {
     users = users.filter((u) => u.role === roleFilter);
@@ -32,8 +69,8 @@ export async function GET(req: NextRequest) {
   if (search) {
     users = users.filter(
       (u) =>
-        u.name.toLowerCase().includes(search) ||
-        u.email.toLowerCase().includes(search) ||
+        u.name?.toLowerCase().includes(search) ||
+        u.email?.toLowerCase().includes(search) ||
         (u.college?.name && u.college.name.toLowerCase().includes(search)) ||
         (u.college?.code && u.college.code.toLowerCase().includes(search))
     );
