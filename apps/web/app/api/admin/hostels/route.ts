@@ -64,6 +64,8 @@ export async function GET() {
             id: hostel.id,
             name: hostel.name,
             gender: hostel.gender,
+            collegeId: hostel.college_id || hostel.collegeId || null,
+            collegeName: hostel.college_name || hostel.collegeName || null,
             roomsCount: rooms.length,
             totalCapacity,
             totalOccupied,
@@ -98,6 +100,8 @@ export async function GET() {
 
     return {
       ...hostel,
+      collegeId: hostel.collegeId || null,
+      collegeName: hostel.collegeName || null,
       roomsCount: rooms.length,
       totalCapacity,
       totalOccupied,
@@ -121,7 +125,7 @@ export async function POST(req: NextRequest) {
     const db = readDatabase();
 
     if (action === 'ADD_HOSTEL') {
-      const { name, gender } = body;
+      const { name, gender, collegeId, collegeName } = body;
       if (!name || !gender) {
         return NextResponse.json({ error: 'Hostel name and gender (MALE/FEMALE) are required.' }, { status: 400 });
       }
@@ -130,6 +134,8 @@ export async function POST(req: NextRequest) {
         id: `hostel-${Date.now()}`,
         name,
         gender: gender as Gender,
+        collegeId: collegeId || null,
+        collegeName: collegeName || null,
       };
 
       try {
@@ -140,6 +146,8 @@ export async function POST(req: NextRequest) {
             id: newHostel.id,
             name: newHostel.name,
             gender: newHostel.gender,
+            college_id: newHostel.collegeId,
+            college_name: newHostel.collegeName,
           });
         }
       } catch (e) {
@@ -156,7 +164,7 @@ export async function POST(req: NextRequest) {
         action: 'HOSTEL_CREATE',
         entity: 'Hostel',
         entityId: newHostel.id,
-        reason: `Admin created new hostel facility: ${name} (${gender})`,
+        reason: `Admin created new hostel facility: ${name} (${gender}) for ${collegeName || 'Campus'}`,
         before: null,
         after: newHostel as unknown as Record<string, unknown>,
         at: new Date().toISOString(),

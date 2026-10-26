@@ -74,7 +74,9 @@ CREATE TABLE IF NOT EXISTS registrations (
 CREATE TABLE IF NOT EXISTS hostels (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
-  gender TEXT NOT NULL CHECK (gender IN ('MALE', 'FEMALE'))
+  gender TEXT NOT NULL CHECK (gender IN ('MALE', 'FEMALE')),
+  college_id TEXT REFERENCES colleges(id) ON DELETE SET NULL,
+  college_name TEXT
 );
 
 -- 6. ROOMS TABLE

@@ -822,6 +822,24 @@
   ],
   "auditLogs": [
     {
+      "id": "audit-1793036231820",
+      "actorId": "usr-g-1793019998926",
+      "actorName": "Armaan",
+      "action": "HOSTEL_CREATE",
+      "entity": "Hostel",
+      "entityId": "hostel-1793036231524",
+      "reason": "Admin created new hostel facility: CGC Boys Block A (MALE) for CGC University, Mohali",
+      "before": null,
+      "after": {
+        "id": "hostel-1793036231524",
+        "name": "CGC Boys Block A",
+        "gender": "MALE",
+        "collegeId": "col-cgc-univ-mohali",
+        "collegeName": "CGC University, Mohali"
+      },
+      "at": "2026-10-26T17:37:11.820Z"
+    },
+    {
       "id": "audit-1793035391500",
       "actorId": "usr-g-1793019998926",
       "actorName": "Armaan",

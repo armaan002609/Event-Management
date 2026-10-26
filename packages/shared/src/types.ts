@@ -95,6 +95,8 @@ export interface Hostel {
   id: string;
   name: string;
   gender: Gender;
+  collegeId?: string | null;
+  collegeName?: string | null;
   rooms?: Room[];
 }
 
