@@ -22,6 +22,7 @@ import {
 import { ToastProvider, useToast } from '@/components/ui/Toast';
 import confetti from 'canvas-confetti';
 import { getBrowserSupabaseClient } from '@/lib/supabase';
+import { NORTH_INDIA_COLLEGES } from '@unifest/shared';
 
 function LoginForm() {
   const router = useRouter();
@@ -51,7 +52,7 @@ function LoginForm() {
   const [regPassword, setRegPassword] = useState('');
   const [regGender, setRegGender] = useState<'MALE' | 'FEMALE'>('MALE');
   const [regRole, setRegRole] = useState<'STUDENT' | 'MANAGER'>('STUDENT');
-  const [regCollege, setRegCollege] = useState('col-pce');
+  const [regCollege, setRegCollege] = useState('col-cgc-univ-mohali');
 
   // Countdown timer for resend code
   useEffect(() => {
@@ -76,16 +77,21 @@ function LoginForm() {
       if (errName) setRegName(errName);
       toast.warning(
         'Account Required',
-        'No account found with this Google email. Please create your account first, then you can log in with Google!'
+        'No account found with this Google email. Click "Sign Up with Google" above or complete the registration below!'
       );
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, []);
 
-  // Handle Google OAuth Sign In via Supabase
+  // Handle Google OAuth Sign In / Sign Up via Supabase
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     try {
+      const intent = tab === 'register' ? 'signup' : 'signin';
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('unifest_google_oauth_intent', intent);
+      }
+
       const sb = getBrowserSupabaseClient();
       if (!sb) {
         toast.error('Config Error', 'Supabase configuration is missing in environment.');
@@ -93,7 +99,7 @@ function LoginForm() {
         return;
       }
 
-      const redirectUrl = `${window.location.origin}/auth/callback`;
+      const redirectUrl = `${window.location.origin}/auth/callback?intent=${intent}`;
       const { error } = await sb.auth.signInWithOAuth({
         provider: 'google',
         options: {
@@ -434,7 +440,13 @@ function LoginForm() {
                       />
                     </svg>
                   )}
-                  <span>{isGoogleLoading ? 'Connecting to Google...' : 'Continue with Google'}</span>
+                  <span>
+                    {isGoogleLoading
+                      ? 'Connecting to Google...'
+                      : tab === 'register'
+                      ? 'Sign Up with Google'
+                      : 'Sign In with Google'}
+                  </span>
                 </button>
 
                 {/* Divider */}
@@ -614,11 +626,11 @@ function LoginForm() {
                       onChange={(e) => setRegCollege(e.target.value)}
                       className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs text-slate-900 bg-white"
                     >
-                      <option value="col-pce">Punjab College of Engineering (PCE)</option>
-                      <option value="col-lpu">Lovely Professional University (LPU)</option>
-                      <option value="col-du">Delhi University (DU)</option>
-                      <option value="col-iitd">IIT Delhi (IITD)</option>
-                      <option value="col-bits">BITS Pilani (BITS)</option>
+                      {NORTH_INDIA_COLLEGES.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.name}
+                        </option>
+                      ))}
                     </select>
                   </div>
 

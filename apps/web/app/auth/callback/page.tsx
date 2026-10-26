@@ -83,11 +83,18 @@ export default function AuthCallbackPage() {
           user.user_metadata?.full_name ||
           user.user_metadata?.name ||
           user.email.split('@')[0];
+        let intent = 'signin';
+        if (typeof window !== 'undefined') {
+          const storedIntent = sessionStorage.getItem('unifest_google_oauth_intent');
+          const urlIntent = new URLSearchParams(window.location.search).get('intent');
+          intent = storedIntent || urlIntent || 'signin';
+          sessionStorage.removeItem('unifest_google_oauth_intent');
+        }
 
         const res = await fetch('/api/auth/oauth-callback', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, name }),
+          body: JSON.stringify({ email, name, intent }),
         });
 
         const resData = await res.json().catch(() => ({}));

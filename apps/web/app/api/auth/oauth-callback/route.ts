@@ -6,7 +6,7 @@ import { User } from '@unifest/shared';
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, name } = await req.json();
+    const { email, name, intent } = await req.json();
 
     if (!email) {
       return NextResponse.json({ error: 'Email is required' }, { status: 400 });
@@ -28,15 +28,35 @@ export async function POST(req: NextRequest) {
     }
 
     if (!user) {
-      // REQUIREMENT: User must have an account first!
-      return NextResponse.json(
-        {
-          error: 'ACCOUNT_NOT_FOUND',
-          message: 'No account found for this Google email. Please register your account first, then you can sign in with Google.',
+      if (intent === 'signup') {
+        // Signing up with Google -> Create the account!
+        const newUser: User = {
+          id: `usr-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`,
           email: cleanEmail,
-        },
-        { status: 404 }
-      );
+          name: name?.trim() || cleanEmail.split('@')[0],
+          gender: 'MALE',
+          role: 'STUDENT',
+          collegeId: 'col-cgc-univ-mohali',
+          collegeName: 'CGC University, Mohali',
+          emailVerified: true,
+          password: 'unifest_google_oauth',
+          isProfileComplete: false,
+        };
+        db.users.push(newUser);
+        writeDatabase(db);
+        supabaseUpsertUser(newUser).catch(() => {});
+        user = newUser;
+      } else {
+        // User clicked "Sign In with Google" without having an account first
+        return NextResponse.json(
+          {
+            error: 'ACCOUNT_NOT_FOUND',
+            message: 'No account found for this Google email. Please register your account first, then you can sign in with Google.',
+            email: cleanEmail,
+          },
+          { status: 404 }
+        );
+      }
     }
 
     // Existing user: mark email verified since Google authenticated it
