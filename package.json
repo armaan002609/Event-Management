@@ -1,0 +1,18 @@
+{
+  "name": "unifest-manager",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm --workspace @unifest/web run dev",
+    "build": "npm --workspace @unifest/web run build",
+    "start": "npm --workspace @unifest/web run start",
+    "test": "tsx apps/web/test/business-rules.test.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.15"
+  }
+}
