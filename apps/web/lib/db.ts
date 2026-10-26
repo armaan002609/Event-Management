@@ -97,11 +97,7 @@ function safeWriteToDisk(filePath: string, content: string): boolean {
 
 export function getInitialSeedData(): DatabaseSchema {
   const colleges: College[] = [
-    { id: 'col-pce', name: 'Punjab College of Engineering', code: 'PCE', color: '#2563EB' },
-    { id: 'col-lpu', name: 'Lovely Professional University', code: 'LPU', color: '#7C3AED' },
-    { id: 'col-iitd', name: 'IIT Delhi', code: 'IITD', color: '#059669' },
-    { id: 'col-du', name: 'Delhi University', code: 'DU', color: '#D97706' },
-    { id: 'col-bits', name: 'BITS Pilani', code: 'BITS', color: '#DC2626' },
+    { id: 'col-cgc-univ-mohali', name: 'CGC University, Mohali', code: 'CGC', color: '#D97706' },
   ];
 
   const hostels: Hostel[] = [
@@ -111,14 +107,14 @@ export function getInitialSeedData(): DatabaseSchema {
 
   const rooms: Room[] = [
     // Boys Hostel - Floor 1
-    { id: 'room-b101', hostelId: 'hostel-boys-1', number: '101', floor: 1, capacity: 3, gender: 'MALE', lockedCollegeId: 'col-pce' },
-    { id: 'room-b102', hostelId: 'hostel-boys-1', number: '102', floor: 1, capacity: 3, gender: 'MALE', lockedCollegeId: 'col-lpu' },
+    { id: 'room-b101', hostelId: 'hostel-boys-1', number: '101', floor: 1, capacity: 3, gender: 'MALE', lockedCollegeId: null },
+    { id: 'room-b102', hostelId: 'hostel-boys-1', number: '102', floor: 1, capacity: 3, gender: 'MALE', lockedCollegeId: null },
     // Boys Hostel - Floor 2
     { id: 'room-b201', hostelId: 'hostel-boys-1', number: '201', floor: 2, capacity: 2, gender: 'MALE', lockedCollegeId: null },
     { id: 'room-b202', hostelId: 'hostel-boys-1', number: '202', floor: 2, capacity: 4, gender: 'MALE', lockedCollegeId: null },
 
     // Girls Hostel - Floor 1
-    { id: 'room-g101', hostelId: 'hostel-girls-1', number: '101', floor: 1, capacity: 3, gender: 'FEMALE', lockedCollegeId: 'col-du' },
+    { id: 'room-g101', hostelId: 'hostel-girls-1', number: '101', floor: 1, capacity: 3, gender: 'FEMALE', lockedCollegeId: null },
     { id: 'room-g102', hostelId: 'hostel-girls-1', number: '102', floor: 1, capacity: 2, gender: 'FEMALE', lockedCollegeId: null },
     // Girls Hostel - Floor 2
     { id: 'room-g201', hostelId: 'hostel-girls-1', number: '201', floor: 2, capacity: 3, gender: 'FEMALE', lockedCollegeId: null },
@@ -168,50 +164,23 @@ export function getInitialSeedData(): DatabaseSchema {
   ];
 
   const users: User[] = [
-    // Students
-    { id: 'usr-aarav', email: 'aarav.sharma@pce.edu', name: 'Aarav Sharma', phone: '+91 98765 43210', gender: 'MALE', role: 'STUDENT', collegeId: 'col-pce', emailVerified: true, password: 'unifest123' },
-    { id: 'usr-amit', email: 'amit.verma@pce.edu', name: 'Amit Verma', phone: '+91 98765 43211', gender: 'MALE', role: 'STUDENT', collegeId: 'col-pce', emailVerified: true, password: 'unifest123' },
-    { id: 'usr-priya', email: 'priya.singh@du.ac.in', name: 'Priya Singh', phone: '+91 98765 43212', gender: 'FEMALE', role: 'STUDENT', collegeId: 'col-du', emailVerified: true, password: 'unifest123' },
-    { id: 'usr-rohit', email: 'rohit.kumar@lpu.co.in', name: 'Rohit Kumar', phone: '+91 98765 43213', gender: 'MALE', role: 'STUDENT', collegeId: 'col-lpu', emailVerified: true, password: 'unifest123' },
-    { id: 'usr-sneha', email: 'sneha.patel@pce.edu', name: 'Sneha Patel', phone: '+91 98765 43214', gender: 'FEMALE', role: 'STUDENT', collegeId: 'col-pce', emailVerified: false, verificationCode: '749215', password: 'unifest123' },
-    { id: 'usr-simran', email: 'simran.kaur@lpu.co.in', name: 'Simran Kaur', phone: '+91 98765 43215', gender: 'FEMALE', role: 'STUDENT', collegeId: 'col-lpu', emailVerified: true, password: 'unifest123' },
-    { id: 'usr-kabir', email: 'kabir.mehta@iitd.ac.in', name: 'Kabir Mehta', phone: '+91 98765 43216', gender: 'MALE', role: 'STUDENT', collegeId: 'col-iitd', emailVerified: true, password: 'unifest123' },
-    { id: 'usr-ananya', email: 'ananya.iyer@du.ac.in', name: 'Ananya Iyer', phone: '+91 98765 43217', gender: 'FEMALE', role: 'STUDENT', collegeId: 'col-du', emailVerified: true, password: 'unifest123' },
-    { id: 'usr-divya', email: 'divya.joshi@bits.ac.in', name: 'Divya Joshi', phone: '+91 98765 43218', gender: 'FEMALE', role: 'STUDENT', collegeId: 'col-bits', emailVerified: true, password: 'unifest123' },
-
-    // Staff
-    { id: 'usr-manager', email: 'manager@unifest.org', name: 'Vikram Malhotra (Manager)', phone: '+91 99999 11111', gender: 'MALE', role: 'MANAGER', collegeId: null, emailVerified: true, password: 'unifest123' },
-    { id: 'usr-scanner', email: 'scanner@unifest.org', name: 'Dev Raj (Hostel/Mess Scanner)', phone: '+91 99999 22222', gender: 'MALE', role: 'SCANNER', collegeId: null, emailVerified: true, password: 'unifest123' },
-    { id: 'usr-admin', email: 'admin@unifest.org', name: 'Dr. Sunita Rao (System Admin)', phone: '+91 99999 33333', gender: 'FEMALE', role: 'ADMIN', collegeId: null, emailVerified: true, password: 'unifest123' },
+    {
+      id: 'usr-g-1793019998926',
+      email: 'armaan002609@gmail.com',
+      name: 'Armaan',
+      phone: '',
+      gender: 'MALE',
+      role: 'ADMIN',
+      collegeId: 'col-cgc-univ-mohali',
+      collegeName: 'CGC University, Mohali',
+      emailVerified: true,
+      password: 'unifest_google_oauth',
+    },
   ];
 
-  const allocations: RoomAllocation[] = [
-    // Aarav and Amit in B101 (PCE, Male)
-    { id: 'alloc-1', userId: 'usr-aarav', bedId: 'bed-b101-1', allocatedBy: 'SYSTEM', isOverride: false, createdAt: new Date().toISOString() },
-    { id: 'alloc-2', userId: 'usr-amit', bedId: 'bed-b101-2', allocatedBy: 'SYSTEM', isOverride: false, createdAt: new Date().toISOString() },
-    // Rohit in B102 (LPU, Male)
-    { id: 'alloc-3', userId: 'usr-rohit', bedId: 'bed-b102-1', allocatedBy: 'SYSTEM', isOverride: false, createdAt: new Date().toISOString() },
-    // Priya in G101 (DU, Female)
-    { id: 'alloc-4', userId: 'usr-priya', bedId: 'bed-g101-1', allocatedBy: 'SYSTEM', isOverride: false, createdAt: new Date().toISOString() },
-    // Ananya in G101 (DU, Female)
-    { id: 'alloc-5', userId: 'usr-ananya', bedId: 'bed-g101-2', allocatedBy: 'SYSTEM', isOverride: false, createdAt: new Date().toISOString() },
-  ];
-
-  const checkinLogs: CheckinLog[] = [
-    { id: 'chk-1', userId: 'usr-aarav', type: 'CHECK_IN', scannedBy: 'usr-scanner', at: new Date(Date.now() - 3600000 * 4).toISOString() },
-    { id: 'chk-2', userId: 'usr-amit', type: 'CHECK_IN', scannedBy: 'usr-scanner', at: new Date(Date.now() - 3600000 * 3).toISOString() },
-    { id: 'chk-3', userId: 'usr-priya', type: 'CHECK_IN', scannedBy: 'usr-scanner', at: new Date(Date.now() - 3600000 * 2).toISOString() },
-  ];
-
-  const qrTickets: QrTicket[] = users
-    .filter((u) => u.role === 'STUDENT')
-    .map((u, idx) => ({
-      id: `ticket-${u.id}`,
-      userId: u.id,
-      tokenId: `jti-${u.id}-${idx + 100}`,
-      version: 1,
-      issuedAt: new Date().toISOString(),
-    }));
+  const allocations: RoomAllocation[] = [];
+  const checkinLogs: CheckinLog[] = [];
+  const qrTickets: QrTicket[] = [];
 
   const now = new Date();
   const todayStr = now.toISOString().split('T')[0];

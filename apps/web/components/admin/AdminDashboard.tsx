@@ -569,13 +569,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       'data:text/csv;charset=utf-8,' +
       [
         'Student Roll No,Name,Gender,Age,College/University,City,State/UT,Course,Year,Activity Category,Specific Activity',
-        'CGC2026-101,Aarav Sharma,MALE,20,CGC University Mohali,Mohali,Punjab,B.Tech CSE,3rd Year,Sports,100m Sprint Men',
-        'CGC2026-102,Priya Verma,FEMALE,19,CGC University Mohali,Mohali,Punjab,B.Tech AI,2nd Year,Folk,Punjab Folk Bhangra Championship',
-        'CGC2026-103,Rohan Mehta,MALE,21,CGC University Mohali,Mohali,Punjab,BBA,3rd Year,Sports,Inter-College Football 7s',
-        'DU2026-201,Sneha Singh,FEMALE,20,Delhi University,New Delhi,Delhi,B.Sc Physics,3rd Year,Folk,Ghazal & Sufi Fusion Night',
-        'DU2026-202,Diya Patel,FEMALE,19,Delhi University,New Delhi,Delhi,BA English,2nd Year,Sports,Badminton Singles Men & Women',
-        'IITD2026-301,Kabir Kapoor,MALE,21,IIT Delhi,New Delhi,Delhi,B.Tech EE,4th Year,Sports,Badminton Singles Men & Women',
-        'PU2026-401,Ananya Roy,FEMALE,20,Panjab University,Chandigarh,Chandigarh,B.Com,3rd Year,Folk,Punjab Folk Bhangra Championship',
+        'ROLL-001,Full Name,Male,20,College or University Name,City,State,B.Tech CSE,1st Year,Sports,100m Sprint Men',
       ].join('\n');
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
