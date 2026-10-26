@@ -822,6 +822,23 @@
   ],
   "auditLogs": [
     {
+      "id": "audit-1793035391500",
+      "actorId": "usr-g-1793019998926",
+      "actorName": "Armaan",
+      "action": "COLLEGE_CREATE",
+      "entity": "College",
+      "entityId": "col-chitkara",
+      "reason": "Admin registered new participating institution: Chitkara University, Rajpura / Punjab (CHITKARA)",
+      "before": null,
+      "after": {
+        "id": "col-chitkara",
+        "name": "Chitkara University, Rajpura / Punjab",
+        "code": "CHITKARA",
+        "color": "#E11D48"
+      },
+      "at": "2026-10-26T17:23:11.500Z"
+    },
+    {
       "id": "audit-1",
       "actorId": "usr-admin",
       "actorName": "Dr. Sunita Rao (System Admin)",

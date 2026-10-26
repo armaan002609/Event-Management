@@ -26,8 +26,18 @@ import {
   ShieldAlert,
   Trash2,
 } from 'lucide-react';
-import { User, College, Hostel, Role } from '@unifest/shared';
+import { User, College, Hostel, Role, NORTH_INDIA_COLLEGES, NorthIndiaCollegeItem } from '@unifest/shared';
 import { useToast } from '@/components/ui/Toast';
+
+const COLLEGE_REGIONS: Array<NorthIndiaCollegeItem['region']> = [
+  'Punjab & Chandigarh',
+  'Delhi NCR',
+  'Haryana',
+  'HP, Uttarakhand & J&K',
+  'Uttar Pradesh',
+  'Rajasthan',
+  'Other',
+];
 
 interface AdminDashboardProps {
   currentUser: User;
@@ -57,9 +67,26 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
   // Colleges State
   const [collegesList, setCollegesList] = useState<any[]>([]);
   const [showAddCollegeModal, setShowAddCollegeModal] = useState(false);
+  const [selectedDirectoryCollegeId, setSelectedDirectoryCollegeId] = useState('');
   const [newColName, setNewColName] = useState('');
   const [newColCode, setNewColCode] = useState('');
   const [newColColor, setNewColColor] = useState('#2563EB');
+
+  const handleDirectoryCollegeSelect = (selectedId: string) => {
+    setSelectedDirectoryCollegeId(selectedId);
+    if (!selectedId || selectedId === 'custom') {
+      return;
+    }
+    const matched = NORTH_INDIA_COLLEGES.find((c) => c.id === selectedId);
+    if (matched) {
+      setNewColName(matched.name);
+      // Clean short code: take alphanumeric short code up to 8 chars
+      const codeSuggestion = (matched.shortName.match(/\b([A-Z0-9]+)\b/g)?.join('') || matched.shortName.replace(/[^A-Za-z0-9]/g, ''))
+        .slice(0, 8)
+        .toUpperCase();
+      setNewColCode(codeSuggestion || 'COL');
+    }
+  };
 
   // Hostels State
   const [hostelsList, setHostelsList] = useState<any[]>([]);
@@ -185,6 +212,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          id: selectedDirectoryCollegeId && selectedDirectoryCollegeId !== 'custom' ? selectedDirectoryCollegeId : undefined,
           name: newColName,
           code: newColCode,
           color: newColColor,
@@ -195,6 +223,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
         setShowAddCollegeModal(false);
         setNewColName('');
         setNewColCode('');
+        setSelectedDirectoryCollegeId('');
         toast.success('College Created', `College ${newColName || ''} registered successfully`);
         loadAllAdminData();
       } else {
@@ -1013,11 +1042,56 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm animate-in fade-in">
           <form
             onSubmit={handleCreateCollege}
-            className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-3.5 border border-slate-100"
+            className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-3.5 border border-slate-100 max-h-[90vh] overflow-y-auto"
           >
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <h3 className="font-heading font-bold text-base text-slate-900">Register Participating College</h3>
-              <button type="button" onClick={() => setShowAddCollegeModal(false)} className="text-slate-400">✕</button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowAddCollegeModal(false);
+                  setSelectedDirectoryCollegeId('');
+                }}
+                className="text-slate-400 hover:text-slate-600"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Dropdown for colleges from User Profile Directory */}
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Select from User Profile Colleges Directory
+              </label>
+              <select
+                value={selectedDirectoryCollegeId}
+                onChange={(e) => handleDirectoryCollegeSelect(e.target.value)}
+                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs bg-slate-50 focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all"
+              >
+                <option value="">-- Choose from Directory or Enter Custom Below --</option>
+                {COLLEGE_REGIONS.map((region) => {
+                  const collegesInRegion = NORTH_INDIA_COLLEGES.filter((c) => c.region === region);
+                  if (collegesInRegion.length === 0) return null;
+                  return (
+                    <optgroup key={region} label={region}>
+                      {collegesInRegion.map((col) => {
+                        const isAlreadyAdded = collegesList.some(
+                          (c) => c.id === col.id || c.name.toLowerCase() === col.name.toLowerCase()
+                        );
+                        return (
+                          <option key={col.id} value={col.id} disabled={isAlreadyAdded}>
+                            {col.name} ({col.shortName}) {isAlreadyAdded ? '✓ Added' : ''}
+                          </option>
+                        );
+                      })}
+                    </optgroup>
+                  );
+                })}
+                <option value="custom">✍️ Custom College (Enter Manually Below)</option>
+              </select>
+              <p className="text-[11px] text-slate-400 mt-1">
+                Selecting a college automatically fills the name and code. You can also edit them directly.
+              </p>
             </div>
 
             <div>
@@ -1027,7 +1101,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 value={newColName}
                 onChange={(e) => setNewColName(e.target.value)}
                 placeholder="e.g., IIT Bombay"
-                className="w-full p-2 rounded-xl border border-slate-200 text-xs"
+                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                 required
               />
             </div>
@@ -1040,7 +1114,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   value={newColCode}
                   onChange={(e) => setNewColCode(e.target.value)}
                   placeholder="e.g., IITB"
-                  className="w-full p-2 rounded-xl border border-slate-200 text-xs uppercase"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 text-xs uppercase focus:ring-2 focus:ring-primary focus:outline-none"
                   required
                 />
               </div>
@@ -1051,7 +1125,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   type="color"
                   value={newColColor}
                   onChange={(e) => setNewColColor(e.target.value)}
-                  className="w-full h-8 p-1 rounded-xl border border-slate-200"
+                  className="w-full h-9 rounded-xl border border-slate-200 cursor-pointer"
                 />
               </div>
             </div>
@@ -1059,14 +1133,17 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
             <div className="pt-2 flex justify-between">
               <button
                 type="button"
-                onClick={() => setShowAddCollegeModal(false)}
-                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500"
+                onClick={() => {
+                  setShowAddCollegeModal(false);
+                  setSelectedDirectoryCollegeId('');
+                }}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-md"
+                className="px-5 py-2 rounded-xl bg-primary text-white text-xs font-bold shadow-md hover:bg-primary-dark transition-all"
               >
                 Register
               </button>

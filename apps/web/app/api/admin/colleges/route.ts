@@ -71,23 +71,25 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { name, code, color } = await req.json();
+    const { id, name, code, color } = await req.json();
 
     if (!name || !code) {
       return NextResponse.json({ error: 'College name and code are required.' }, { status: 400 });
     }
 
+    const collegeId = id || `col-${code.toLowerCase().replace(/[^a-z0-9]/g, '')}`;
+
     const db = readDatabase();
     const existing = db.colleges.find(
-      (c) => c.code.toLowerCase() === code.toLowerCase() || c.name.toLowerCase() === name.toLowerCase()
+      (c) => c.id === collegeId || c.code.toLowerCase() === code.toLowerCase() || c.name.toLowerCase() === name.toLowerCase()
     );
 
     if (existing) {
-      return NextResponse.json({ error: 'College with this name or code already exists.' }, { status: 400 });
+      return NextResponse.json({ error: 'College with this name, code, or ID already exists.' }, { status: 400 });
     }
 
     const newCollege: College = {
-      id: `col-${code.toLowerCase().replace(/[^a-z0-9]/g, '')}`,
+      id: collegeId,
       name,
       code: code.toUpperCase(),
       color: color || '#4F46E5',
