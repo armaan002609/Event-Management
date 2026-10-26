@@ -10,6 +10,7 @@ import {
   CheckinLog,
   MealLog,
   QrTicketPayload,
+  RoomAllocation,
 } from '@unifest/shared';
 import { readDatabase, writeDatabase } from './db';
 
@@ -154,73 +155,335 @@ export async function processScan(
           gender: user.gender,
           collegeCode: college?.code || 'N/A',
           collegeName: user.collegeName || college?.name || 'Unknown',
+          rollNo: (user as any).rollNo || (user as any).roll_no || undefined,
         };
 
         // 3. Process Contextual logic
         if (context === 'HOSTEL_CHECKIN') {
           let allocation = db.allocations.find((a) => a.userId === user.id);
-          if (!allocation) {
-            // Find an open bed matching gender, or auto-allocate
-            const matchingHostels = db.hostels.filter((h) => h.gender === user.gender);
-            const hostelIds = matchingHostels.map((h) => h.id);
-            const rooms = db.rooms.filter((r) => hostelIds.includes(r.hostelId));
-            const roomIds = rooms.map((r) => r.id);
-            const allocatedBedIds = db.allocations.map((a) => a.bedId);
-            const availableBed = db.beds.find((b) => roomIds.includes(b.roomId) && !allocatedBedIds.includes(b.id));
+          let sbClient: any = null;
+          try {
+            const { getSupabase } = await import('./supabase');
+            sbClient = getSupabase();
+            if (sbClient && !allocation) {
+              const { data: sbAlloc } = await sbClient
+                .from('allocations')
+                .select('*')
+                .eq('user_id', user.id)
+                .maybeSingle();
+              if (sbAlloc) {
+                allocation = {
+                  id: sbAlloc.id,
+                  userId: sbAlloc.user_id,
+                  bedId: sbAlloc.bed_id,
+                  allocatedBy: sbAlloc.allocated_by,
+                  isOverride: Boolean(sbAlloc.is_override),
+                  createdAt: sbAlloc.created_at,
+                };
+                db.allocations.push(allocation);
+              }
+            }
+          } catch (e) {
+            console.warn('QR service: error fetching allocation from Supabase:', e);
+          }
 
-            if (availableBed) {
-              const newAllocation = {
-                id: `alloc-${user.id}`,
+          let isNewlyAllocated = false;
+
+          // If student is not assigned a room, auto-allot an eligible vacant bed in a vacant/available room!
+          if (!allocation) {
+            let liveHostels = db.hostels;
+            let liveRooms = db.rooms;
+            let liveBeds = db.beds;
+            let liveAllocs = db.allocations;
+            let liveUsers = db.users;
+
+            if (sbClient) {
+              try {
+                const [
+                  { data: hData },
+                  { data: rData },
+                  { data: bData },
+                  { data: aData },
+                  { data: uData },
+                ] = await Promise.all([
+                  sbClient.from('hostels').select('*'),
+                  sbClient.from('rooms').select('*'),
+                  sbClient.from('beds').select('*'),
+                  sbClient.from('allocations').select('*'),
+                  sbClient.from('users').select('*'),
+                ]);
+
+                if (hData && hData.length > 0) {
+                  liveHostels = hData.map((h: any) => ({
+                    id: h.id,
+                    name: h.name,
+                    gender: h.gender,
+                    collegeId: h.college_id,
+                    collegeName: h.college_name,
+                  }));
+                }
+                if (rData && rData.length > 0) {
+                  liveRooms = rData.map((r: any) => ({
+                    id: r.id,
+                    hostelId: r.hostel_id,
+                    number: r.number,
+                    floor: r.floor,
+                    capacity: r.capacity || 5,
+                    gender: r.gender,
+                    lockedCollegeId: r.locked_college_id || null,
+                  }));
+                }
+                if (bData && bData.length > 0) {
+                  liveBeds = bData.map((b: any) => ({
+                    id: b.id,
+                    roomId: b.room_id,
+                    label: b.label,
+                  }));
+                }
+                if (aData) {
+                  liveAllocs = aData.map((a: any) => ({
+                    id: a.id,
+                    userId: a.user_id,
+                    bedId: a.bed_id,
+                    allocatedBy: a.allocated_by,
+                    isOverride: Boolean(a.is_override),
+                    createdAt: a.created_at,
+                  }));
+                }
+                if (uData && uData.length > 0) {
+                  liveUsers = uData.map((u: any) => ({
+                    id: u.id,
+                    name: u.name,
+                    email: u.email,
+                    gender: u.gender,
+                    role: u.role,
+                    collegeId: u.college_id,
+                    collegeName: u.college_name,
+                  }));
+                }
+              } catch (e) {
+                console.warn('QR service: error fetching live inventory from Supabase:', e);
+              }
+            }
+
+            // Resolve student's collegeId if missing
+            let studentCollegeId = user.collegeId;
+            if (!studentCollegeId && user.collegeName) {
+              const matchedCol = db.colleges.find((c) => c.name.toLowerCase() === user.collegeName!.toLowerCase());
+              if (matchedCol) studentCollegeId = matchedCol.id;
+            }
+
+            // Find matching hostels by student gender (Boys -> Chanakya Hall, Girls -> Rosewood Hall)
+            const matchingHostels = liveHostels.filter((h) => h.gender === user.gender);
+            const matchingHostelIds = new Set(matchingHostels.map((h) => h.id));
+            const candidateRooms = liveRooms.filter(
+              (r) => matchingHostelIds.has(r.hostelId) && (r.gender === user.gender || !r.gender)
+            );
+
+            // Map each room's current occupants and free beds
+            const occupiedBedIds = new Set(liveAllocs.map((a) => a.bedId));
+
+            interface RoomCandidate {
+              room: typeof liveRooms[0];
+              hostel: typeof liveHostels[0];
+              freeBeds: typeof liveBeds;
+              isSameCollegeRoom: boolean;
+              isEmpty: boolean;
+            }
+
+            const roomCandidates: RoomCandidate[] = [];
+
+            for (const r of candidateRooms) {
+              const hostel = matchingHostels.find((h) => h.id === r.hostelId)!;
+              const rBeds = liveBeds.filter((b) => b.roomId === r.id);
+              const freeBeds = rBeds.filter((b) => !occupiedBedIds.has(b.id));
+
+              if (freeBeds.length === 0) continue; // room is full
+
+              // Find current occupants of this room
+              const roomAllocs = liveAllocs.filter((a) => rBeds.some((b) => b.id === a.bedId));
+              const occupantCollegeIds = new Set<string>();
+              for (const a of roomAllocs) {
+                const occUser = liveUsers.find((u) => u.id === a.userId);
+                if (occUser?.collegeId) occupantCollegeIds.add(occUser.collegeId);
+              }
+
+              // Enforce Same College Rule: NO mixing of different colleges!
+              let isLockedToOtherCollege = false;
+              let isSameCollegeRoom = false;
+              const isEmpty = roomAllocs.length === 0;
+
+              if (r.lockedCollegeId && studentCollegeId && r.lockedCollegeId !== studentCollegeId) {
+                isLockedToOtherCollege = true;
+              }
+
+              for (const occColId of occupantCollegeIds) {
+                if (studentCollegeId && occColId !== studentCollegeId) {
+                  isLockedToOtherCollege = true;
+                }
+              }
+
+              if (!isLockedToOtherCollege && !isEmpty) {
+                isSameCollegeRoom = true;
+              }
+
+              if (!isLockedToOtherCollege) {
+                roomCandidates.push({
+                  room: r,
+                  hostel,
+                  freeBeds,
+                  isSameCollegeRoom,
+                  isEmpty,
+                });
+              }
+            }
+
+            // Priority 1: Fill up a room already containing students from the SAME college
+            // Priority 2: Use an entirely empty room and lock it to this student's college
+            let chosen = roomCandidates.find((rc) => rc.isSameCollegeRoom && rc.freeBeds.length > 0);
+            if (!chosen) {
+              chosen = roomCandidates.find((rc) => rc.isEmpty && rc.freeBeds.length > 0);
+            }
+
+            if (chosen) {
+              const targetRoom = chosen.room;
+              const targetBed = chosen.freeBeds[0];
+              const targetHostel = chosen.hostel;
+
+              const allocId = `alloc-${user.id}-${Date.now().toString(36)}`;
+              const newAlloc: RoomAllocation = {
+                id: allocId,
                 userId: user.id,
-                bedId: availableBed.id,
-                allocatedBy: operatorId,
+                bedId: targetBed.id,
+                allocatedBy: operatorId || 'QR_SCAN_AUTO',
                 isOverride: false,
+                reason: 'Auto-allotted on QR Check-in (Same College Rule Enforced)',
                 createdAt: new Date().toISOString(),
               };
-              db.allocations.push(newAllocation);
+
+              // Persist to Supabase if available
+              if (sbClient) {
+                try {
+                  await sbClient.from('allocations').insert({
+                    id: newAlloc.id,
+                    user_id: newAlloc.userId,
+                    bed_id: newAlloc.bedId,
+                    allocated_by: newAlloc.allocatedBy,
+                    is_override: false,
+                    reason: newAlloc.reason,
+                    created_at: newAlloc.createdAt,
+                  });
+                  if (studentCollegeId) {
+                    await sbClient.from('rooms').update({ locked_college_id: studentCollegeId }).eq('id', targetRoom.id);
+                  }
+                } catch (e) {
+                  console.warn('QR service: error inserting allocation into Supabase:', e);
+                }
+              }
+
+              // Persist to local DB
+              db.allocations.push(newAlloc);
+              const localRoom = db.rooms.find((r) => r.id === targetRoom.id);
+              if (localRoom && studentCollegeId) {
+                localRoom.lockedCollegeId = studentCollegeId;
+              }
+
+              db.auditLogs.unshift({
+                id: `audit-${Date.now()}`,
+                actorId: operatorId || 'SCANNER',
+                actorName: operator?.name || 'Gate Scanner Staff',
+                action: 'AUTO_ALLOCATION_RUN',
+                entity: 'HOSTEL_ALLOCATION',
+                entityId: newAlloc.id,
+                reason: `Auto-allotted Room ${targetRoom.number} (${targetHostel.name}, ${targetBed.label}) to ${user.name} on check-in.`,
+                before: null,
+                after: { userId: user.id, bedId: targetBed.id, roomId: targetRoom.id, hostelId: targetHostel.id },
+                at: new Date().toISOString(),
+              });
               writeDatabase(db);
-              allocation = newAllocation;
+
+              allocation = newAlloc;
+              isNewlyAllocated = true;
             }
           }
 
           if (!allocation) {
             scanResult = 'DENIED_NO_ALLOCATION';
-            message = 'No hostel room allocated for this student. Visit Help Desk.';
+            message = `No vacant rooms available in ${user.gender === 'MALE' ? 'Boys' : 'Girls'} Hostels matching college guidelines. Please visit Help Desk.`;
           } else {
+            // Find student's allocated bed, room & hostel
+            let bed = db.beds.find((b) => b.id === allocation.bedId);
+            let room = db.rooms.find((r) => r.id === bed?.roomId);
+            let hostel = db.hostels.find((h) => h.id === room?.hostelId);
+
+            if ((!bed || !room || !hostel) && sbClient) {
+              try {
+                if (!bed) {
+                  const { data: bData } = await sbClient.from('beds').select('*').eq('id', allocation.bedId).maybeSingle();
+                  if (bData) bed = { id: bData.id, roomId: bData.room_id, label: bData.label };
+                }
+                if (bed && !room) {
+                  const { data: rData } = await sbClient.from('rooms').select('*').eq('id', bed.roomId).maybeSingle();
+                  if (rData) room = { id: rData.id, hostelId: rData.hostel_id, number: rData.number, floor: rData.floor, capacity: rData.capacity, gender: rData.gender, lockedCollegeId: rData.locked_college_id };
+                }
+                if (room && !hostel) {
+                  const { data: hData } = await sbClient.from('hostels').select('*').eq('id', room.hostelId).maybeSingle();
+                  if (hData) hostel = { id: hData.id, name: hData.name, gender: hData.gender, collegeId: hData.college_id, collegeName: hData.college_name };
+                }
+              } catch {}
+            }
+
             // Find student's last check-in log
             const userCheckins = db.checkinLogs
               .filter((l) => l.userId === user.id)
               .sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
             const lastLog = userCheckins[0];
 
-            if (lastLog && lastLog.type === 'CHECK_IN') {
-              scanResult = 'DENIED_ALREADY_CHECKED_IN';
-              message = `Already checked in on ${new Date(lastLog.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}.`;
+            allowed = true;
+            scanResult = 'ALLOWED';
+
+            const checkinRecord: CheckinLog = {
+              id: `chk-${Date.now()}`,
+              userId: user.id,
+              type: 'CHECK_IN',
+              scannedBy: operatorId,
+              at: new Date().toISOString(),
+            };
+
+            if (lastLog && lastLog.type === 'CHECK_IN' && !isNewlyAllocated) {
+              message = `ALREADY CHECKED IN: ${hostel?.name || 'Hostel'} - Room ${room?.number || '101'}, ${bed?.label || 'Bed A'}`;
             } else {
-              // ALLOW CHECK-IN
-              allowed = true;
-              scanResult = 'ALLOWED';
-              const bed = db.beds.find((b) => b.id === allocation.bedId);
-              const room = db.rooms.find((r) => r.id === bed?.roomId);
-              const hostel = db.hostels.find((h) => h.id === room?.hostelId);
-
-              const checkinRecord: CheckinLog = {
-                id: `chk-${Date.now()}`,
-                userId: user.id,
-                type: 'CHECK_IN',
-                scannedBy: operatorId,
-                at: new Date().toISOString(),
-              };
               db.checkinLogs.unshift(checkinRecord);
+              if (sbClient) {
+                try {
+                  await sbClient.from('checkin_logs').insert({
+                    id: checkinRecord.id,
+                    user_id: checkinRecord.userId,
+                    type: 'CHECK_IN',
+                    scanned_by: checkinRecord.scannedBy,
+                  });
+                } catch (e) {
+                  console.warn('QR service: error inserting checkin log into Supabase:', e);
+                }
+              }
+              writeDatabase(db);
 
-              message = `CHECK-IN CONFIRMED: ${hostel?.name || 'Hostel'} - Room ${room?.number || '101'}, ${bed?.label || 'Bed A'}`;
-              details = {
-                hostelName: hostel?.name,
-                roomNumber: room?.number,
-                bedLabel: bed?.label,
-                timestamp: checkinRecord.at,
-              };
+              if (isNewlyAllocated) {
+                message = `✨ ROOM ALLOTTED & CHECKED IN: ${hostel?.name || 'Hostel'} - Room ${room?.number || '101'}, ${bed?.label || 'Bed A'}`;
+              } else {
+                message = `CHECK-IN CONFIRMED: ${hostel?.name || 'Hostel'} - Room ${room?.number || '101'}, ${bed?.label || 'Bed A'}`;
+              }
             }
+
+            details = {
+              hostelName: hostel?.name,
+              roomNumber: room?.number,
+              bedLabel: bed?.label,
+              floor: room?.floor,
+              collegeName: user.collegeName || userDetails?.collegeName,
+              isNewlyAllocated,
+              timestamp: checkinRecord.at,
+            };
           }
         } else if (context === 'HOSTEL_CHECKOUT') {
           const userCheckins = db.checkinLogs
@@ -243,8 +506,43 @@ export async function processScan(
               at: new Date().toISOString(),
             };
             db.checkinLogs.unshift(checkoutRecord);
-            message = 'CHECK-OUT CONFIRMED. Safe travels!';
+
+            // Sync checkout to Supabase if available
+            let sbClient: any = null;
+            try {
+              const { getSupabase } = await import('./supabase');
+              sbClient = getSupabase();
+              if (sbClient) {
+                await sbClient.from('checkin_logs').insert({
+                  id: checkoutRecord.id,
+                  user_id: checkoutRecord.userId,
+                  type: 'CHECK_OUT',
+                  scanned_by: checkoutRecord.scannedBy,
+                });
+              }
+            } catch (e) {
+              console.warn('QR service: error inserting checkout log into Supabase:', e);
+            }
+            writeDatabase(db);
+
+            // Fetch student's room allocation for display
+            let userAlloc = db.allocations.find((a) => a.userId === user.id);
+            let bed = userAlloc ? db.beds.find((b) => b.id === userAlloc.bedId) : null;
+            let room = bed ? db.rooms.find((r) => r.id === bed.roomId) : null;
+            let hostel = room ? db.hostels.find((h) => h.id === room.hostelId) : null;
+
+            if (room && hostel) {
+              message = `CHECK-OUT CONFIRMED: Room ${room.number} (${hostel.name}) vacated. Safe travels!`;
+            } else {
+              message = 'CHECK-OUT CONFIRMED. Safe travels!';
+            }
+
             details = {
+              hostelName: hostel?.name,
+              roomNumber: room?.number,
+              bedLabel: bed?.label,
+              floor: room?.floor,
+              collegeName: user.collegeName || userDetails?.collegeName,
               timestamp: checkoutRecord.at,
             };
           }

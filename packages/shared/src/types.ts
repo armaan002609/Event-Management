@@ -171,11 +171,15 @@ export interface ScanResponse {
     gender: Gender;
     collegeCode: string;
     collegeName: string;
+    rollNo?: string;
   };
   details?: {
     hostelName?: string;
     roomNumber?: string;
     bedLabel?: string;
+    floor?: number;
+    collegeName?: string;
+    isNewlyAllocated?: boolean;
     mealBatchWindow?: string;
     timestamp: string;
     isException?: boolean;

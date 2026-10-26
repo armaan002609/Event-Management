@@ -915,13 +915,121 @@
       "label": "Bed E"
     }
   ],
-  "allocations": [],
-  "qrTickets": [],
-  "checkinLogs": [],
+  "allocations": [
+    {
+      "id": "alloc-usr-mvpbtfrm-8777-mvpq3mj6",
+      "userId": "usr-mvpbtfrm-8777",
+      "bedId": "bed-room-1793047023855-1",
+      "allocatedBy": "usr-scanner",
+      "isOverride": false,
+      "reason": "Auto-allotted on QR Check-in (Same College Rule Enforced)",
+      "createdAt": "2026-10-26T20:42:36.114Z"
+    }
+  ],
+  "qrTickets": [
+    {
+      "id": "ticket-usr-mvpbtfrm-8777",
+      "userId": "usr-mvpbtfrm-8777",
+      "tokenId": "jti-usr-mvpbtfrm-8777-1793047354078",
+      "version": 1,
+      "issuedAt": "2026-10-26T20:42:34.112Z"
+    }
+  ],
+  "checkinLogs": [
+    {
+      "id": "chk-1793047395192",
+      "userId": "usr-mvpbtfrm-8777",
+      "type": "CHECK_OUT",
+      "scannedBy": "usr-scanner",
+      "at": "2026-10-26T20:43:15.192Z"
+    },
+    {
+      "id": "chk-1793047357545",
+      "userId": "usr-mvpbtfrm-8777",
+      "type": "CHECK_IN",
+      "scannedBy": "usr-scanner",
+      "at": "2026-10-26T20:42:37.545Z"
+    }
+  ],
   "mealSlots": [],
   "mealBatches": [],
   "mealLogs": [],
-  "scanLogs": [],
+  "scanLogs": [
+    {
+      "id": "scan-1793047395452",
+      "ticketId": "jti-usr-mvpbtfrm-8777-1793047391806",
+      "userId": "usr-mvpbtfrm-8777",
+      "userName": "Armaan",
+      "collegeCode": "CGC-M",
+      "context": "HOSTEL_CHECKOUT",
+      "result": "ALLOWED",
+      "scannedBy": "usr-scanner",
+      "deviceInfo": "Test Gate Scanner #1",
+      "at": "2026-10-26T20:43:15.452Z"
+    },
+    {
+      "id": "scan-1793047395183",
+      "ticketId": "jti-usr-mvpbtfrm-8777-1793047391806",
+      "userId": "usr-mvpbtfrm-8777",
+      "userName": "Armaan",
+      "collegeCode": "CGC-M",
+      "context": "HOSTEL_CHECKIN",
+      "result": "ALLOWED",
+      "scannedBy": "usr-scanner",
+      "deviceInfo": "Test Gate Scanner #1",
+      "at": "2026-10-26T20:43:15.183Z"
+    },
+    {
+      "id": "scan-1793047393267",
+      "ticketId": "jti-usr-mvpbtfrm-8777-1793047391806",
+      "userId": "usr-mvpbtfrm-8777",
+      "userName": "Armaan",
+      "collegeCode": "CGC-M",
+      "context": "HOSTEL_CHECKIN",
+      "result": "ALLOWED",
+      "scannedBy": "usr-scanner",
+      "deviceInfo": "Test Gate Scanner #1",
+      "at": "2026-10-26T20:43:13.267Z"
+    },
+    {
+      "id": "scan-1793047358053",
+      "ticketId": "jti-usr-mvpbtfrm-8777-1793047354078",
+      "userId": "usr-mvpbtfrm-8777",
+      "userName": "Armaan",
+      "collegeCode": "CGC-M",
+      "context": "HOSTEL_CHECKIN",
+      "result": "ALLOWED",
+      "scannedBy": "usr-scanner",
+      "deviceInfo": "Test Gate Scanner #1",
+      "at": "2026-10-26T20:42:38.053Z"
+    },
+    {
+      "id": "scan-1793047304347",
+      "context": "HOSTEL_CHECKIN",
+      "result": "DENIED_INVALID",
+      "scannedBy": "usr-scanner",
+      "deviceInfo": "Test Gate Scanner #1",
+      "at": "2026-10-26T20:41:44.347Z"
+    }
+  ],
   "notificationLogs": [],
-  "auditLogs": []
+  "auditLogs": [
+    {
+      "id": "audit-1793047356860",
+      "actorId": "usr-scanner",
+      "actorName": "Gate Scanner Staff",
+      "action": "AUTO_ALLOCATION_RUN",
+      "entity": "HOSTEL_ALLOCATION",
+      "entityId": "alloc-usr-mvpbtfrm-8777-mvpq3mj6",
+      "reason": "Auto-allotted Room 301 (Chanakya Hall, Bed A) to Armaan on check-in.",
+      "before": null,
+      "after": {
+        "userId": "usr-mvpbtfrm-8777",
+        "bedId": "bed-room-1793047023855-1",
+        "roomId": "room-1793047023855",
+        "hostelId": "hostel-1793036398955"
+      },
+      "at": "2026-10-26T20:42:36.860Z"
+    }
+  ]
 }
