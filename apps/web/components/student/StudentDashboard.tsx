@@ -14,8 +14,6 @@ import {
   ChevronRight,
   Sparkles,
   Users,
-  Key,
-  Wifi,
 } from 'lucide-react';
 import { User, Event } from '@unifest/shared';
 
@@ -220,24 +218,19 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab }: Student
         </div>
       )}
 
-      {/* Two Grid Cards: STAY (Digital Key Card) and MEALS (Timeline) */}
+      {/* Two Grid Cards: STAY and MEALS */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* STAY: Digital Room Key Card */}
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm flex flex-col justify-between relative overflow-hidden transition-all duration-300 hover:shadow-md">
+        {/* STAY Card */}
+        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow-md">
           <div>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-2xl bg-indigo-50 text-primary flex items-center justify-center font-bold shadow-sm">
-                  <Key className="w-4 h-4" />
+                <div className="w-9 h-9 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold shadow-sm">
+                  <Home className="w-4.5 h-4.5" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-bold text-sm text-slate-900 flex items-center gap-1.5">
-                    Digital Room Key
-                    <span className="text-[10px] font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.2 rounded-full border border-indigo-100">
-                      NFC Pass
-                    </span>
-                  </h3>
-                  <p className="text-[11px] text-slate-500">Auto-allocated room & bed</p>
+                  <h3 className="font-heading font-bold text-sm text-slate-900">Hostel Accommodation</h3>
+                  <p className="text-[11px] text-slate-500">Auto-allocated: same college & gender</p>
                 </div>
               </div>
 
@@ -266,67 +259,36 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab }: Student
                 </p>
               </div>
             ) : (
-              /* Digital Key Card Visual */
-              <div className="my-2 rounded-2xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-5 text-white shadow-lg relative overflow-hidden border border-indigo-800/40">
-                {/* Holographic Sheen & Geometric Lines */}
-                <div className="absolute -right-8 -top-8 w-32 h-32 bg-primary/20 rounded-full blur-xl pointer-events-none" />
-                <div className="absolute right-4 top-4 flex items-center gap-1 text-white/30">
-                  <Wifi className="w-4 h-4 rotate-90" />
+              <div className="space-y-3 bg-slate-50/90 rounded-2xl p-4 border border-slate-100 my-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-500 font-medium">Hostel</span>
+                  <span className="font-bold text-slate-800">{roomData?.hostelName || 'Main Hostel'}</span>
                 </div>
-
-                {/* Card Top Row */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-5 rounded bg-amber-400/80 border border-amber-300/40 shadow-inner flex items-center justify-center">
-                      <div className="w-3.5 h-3 border border-amber-600/40 rounded-sm" />
-                    </div>
-                    <span className="text-[11px] font-mono tracking-widest text-slate-300 uppercase">
-                      UNIFEST ACCESS
-                    </span>
-                  </div>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-white/10 text-white/80 border border-white/10 backdrop-blur-sm">
-                    {user.college?.code || 'PASS'}
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-500 font-medium">Room & Floor</span>
+                  <span className="font-bold text-slate-800">
+                    Room {roomData?.roomNumber || '---'} (Floor {roomData?.floor ?? 1})
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-slate-500 font-medium">Bed Allotment</span>
+                  <span className="font-bold text-primary bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
+                    Bed {roomData?.bedLabel || 'A'}
                   </span>
                 </div>
 
-                {/* Big Room Number & Bed */}
-                <div className="flex items-end justify-between py-1 border-b border-white/10">
-                  <div>
-                    <span className="text-[10px] uppercase font-mono tracking-wider text-slate-400">ROOM / BED</span>
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-2xl font-black font-heading tracking-tight text-white">
-                        {roomData?.roomNumber || '---'}
-                      </span>
-                      <span className="text-sm font-bold text-indigo-300">
-                        Bed {roomData?.bedLabel || 'A'}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-[10px] uppercase font-mono tracking-wider text-slate-400">FLOOR</span>
-                    <p className="text-sm font-bold text-white">Floor {roomData?.floor ?? 1}</p>
-                  </div>
-                </div>
-
-                {/* Hostel Name & Holder */}
-                <div className="mt-3 flex items-center justify-between text-xs">
-                  <div>
-                    <span className="text-[10px] text-slate-400 block">HOSTEL</span>
-                    <span className="font-semibold text-slate-200">{roomData?.hostelName || 'Main Hostel'}</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-[10px] text-slate-400 block">KEY HOLDER</span>
-                    <span className="font-semibold text-slate-200">{user.name}</span>
-                  </div>
-                </div>
-
-                {/* Roommates Pill bar */}
                 {roomData?.roommates && roomData.roommates.length > 0 && (
-                  <div className="mt-3 pt-2.5 border-t border-white/10 flex items-center gap-2">
-                    <Users className="w-3.5 h-3.5 text-indigo-300 shrink-0" />
-                    <span className="text-[10px] text-slate-300 truncate">
-                      Roommates: {roomData.roommates.map((r) => `${r.name} (${r.bedLabel})`).join(', ')}
+                  <div className="pt-2.5 border-t border-slate-200/70">
+                    <span className="text-[11px] text-slate-400 flex items-center gap-1 mb-1.5 font-medium">
+                      <Users className="w-3 h-3 text-slate-400" /> Same-College Roommates:
                     </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {roomData.roommates.map((rm, i) => (
+                        <span key={i} className="text-[10px] font-medium bg-white px-2 py-0.5 rounded-lg border border-slate-200 text-slate-700 shadow-2xs">
+                          {rm.name} ({rm.bedLabel})
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>
@@ -335,15 +297,13 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab }: Student
 
           <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
             <span className="text-slate-400 text-[11px] flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Show QR at gate
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Show QR at gate for check-in
             </span>
             <button
               onClick={onOpenQrModal}
-              className="font-bold text-primary hover:text-primary-dark transition-colors flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50/80 hover:bg-indigo-100/80"
+              className="font-bold text-primary hover:text-primary-dark transition-colors flex items-center gap-1"
             >
-              <QrCode className="w-3.5 h-3.5" />
-              <span>Tap to Open QR</span>
-              <ChevronRight className="w-3.5 h-3.5" />
+              Open QR <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
