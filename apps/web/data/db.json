@@ -47,6 +47,12 @@
       "name": "Panjab University",
       "code": "PANJ",
       "color": "#E11D48"
+    },
+    {
+      "id": "col-1793041252375-jcjb",
+      "name": "CGC University Mohali",
+      "code": "CGC",
+      "color": "#D97706"
     }
   ],
   "users": [
@@ -513,6 +519,101 @@
       "role": "STUDENT",
       "collegeId": "col-cgc-univ-mohali",
       "collegeName": "CGC University, Mohali",
+      "emailVerified": true
+    },
+    {
+      "id": "usr-imp-1793041252630-f3k4s",
+      "name": "Aditya Chauhan",
+      "email": "cgc2026sp001_0@unifest.local",
+      "phone": null,
+      "gender": "MALE",
+      "role": "STUDENT",
+      "collegeId": "col-1793041252375-jcjb",
+      "collegeName": "CGC University Mohali",
+      "rollNo": "CGC2026-SP-001",
+      "age": "21",
+      "city": "Mohali",
+      "state": "Punjab",
+      "course": "B.Tech CSE",
+      "passingYear": 4,
+      "activityCategory": "Sports",
+      "specificActivity": "100m Sprint Men",
+      "emailVerified": true
+    },
+    {
+      "id": "usr-imp-1793041252630-syr2t",
+      "name": "Sahil Khanna",
+      "email": "cgc2026sp002_1@unifest.local",
+      "phone": null,
+      "gender": "MALE",
+      "role": "STUDENT",
+      "collegeId": "col-1793041252375-jcjb",
+      "collegeName": "CGC University Mohali",
+      "rollNo": "CGC2026-SP-002",
+      "age": "20",
+      "city": "Mohali",
+      "state": "Punjab",
+      "course": "B.Tech Mechanical",
+      "passingYear": 3,
+      "activityCategory": "Sports",
+      "specificActivity": "Inter-College Football 7s",
+      "emailVerified": true
+    },
+    {
+      "id": "usr-imp-1793041252630-67es9",
+      "name": "Ishaan Aggarwal",
+      "email": "du2026fl001_2@unifest.local",
+      "phone": null,
+      "gender": "MALE",
+      "role": "STUDENT",
+      "collegeId": "col-1793040091340-hi45",
+      "collegeName": "Delhi University",
+      "rollNo": "DU2026-FL-001",
+      "age": "20",
+      "city": "New Delhi",
+      "state": "Delhi",
+      "course": "BA Economics",
+      "passingYear": 2,
+      "activityCategory": "Folk",
+      "specificActivity": "Ghazal & Sufi Fusion Night",
+      "emailVerified": true
+    },
+    {
+      "id": "usr-imp-1793041252630-wodur",
+      "name": "Tanvi Sharma",
+      "email": "cgc2026fl003_3@unifest.local",
+      "phone": null,
+      "gender": "FEMALE",
+      "role": "STUDENT",
+      "collegeId": "col-1793041252375-jcjb",
+      "collegeName": "CGC University Mohali",
+      "rollNo": "CGC2026-FL-003",
+      "age": "19",
+      "city": "Mohali",
+      "state": "Punjab",
+      "course": "B.Sc Biotechnology",
+      "passingYear": 2,
+      "activityCategory": "Folk",
+      "specificActivity": "Punjab Folk Bhangra Championship",
+      "emailVerified": true
+    },
+    {
+      "id": "usr-imp-1793041252630-vgfoj",
+      "name": "Meera Iyer",
+      "email": "du2026sp002_4@unifest.local",
+      "phone": null,
+      "gender": "FEMALE",
+      "role": "STUDENT",
+      "collegeId": "col-1793040091340-hi45",
+      "collegeName": "Delhi University",
+      "rollNo": "DU2026-SP-002",
+      "age": "20",
+      "city": "New Delhi",
+      "state": "Delhi",
+      "course": "B.Com Honours",
+      "passingYear": 3,
+      "activityCategory": "Sports",
+      "specificActivity": "Badminton Singles Men & Women",
       "emailVerified": true
     }
   ],
@@ -1090,6 +1191,51 @@
       "isOverride": false,
       "reason": "Bulk CSV Allotment",
       "createdAt": "2026-10-26T18:43:37.280Z"
+    },
+    {
+      "id": "alloc-1793041252864-hetow",
+      "userId": "usr-imp-1793041252630-f3k4s",
+      "bedId": "bed-room-1793037591417-1",
+      "allocatedBy": "Dr. Sunita Rao (System Admin)",
+      "isOverride": false,
+      "reason": "Bulk CSV Allotment",
+      "createdAt": "2026-10-26T19:00:54.010Z"
+    },
+    {
+      "id": "alloc-1793041252864-krwuw",
+      "userId": "usr-imp-1793041252630-syr2t",
+      "bedId": "bed-room-1793037591417-2",
+      "allocatedBy": "Dr. Sunita Rao (System Admin)",
+      "isOverride": false,
+      "reason": "Bulk CSV Allotment",
+      "createdAt": "2026-10-26T19:00:54.010Z"
+    },
+    {
+      "id": "alloc-1793041252864-vs7nj",
+      "userId": "usr-imp-1793041252630-67es9",
+      "bedId": "bed-room-1793037567826-4",
+      "allocatedBy": "Dr. Sunita Rao (System Admin)",
+      "isOverride": false,
+      "reason": "Bulk CSV Allotment",
+      "createdAt": "2026-10-26T19:00:54.010Z"
+    },
+    {
+      "id": "alloc-1793041252864-6lmbe",
+      "userId": "usr-imp-1793041252630-wodur",
+      "bedId": "bed-room-1793037860472-1",
+      "allocatedBy": "Dr. Sunita Rao (System Admin)",
+      "isOverride": false,
+      "reason": "Bulk CSV Allotment",
+      "createdAt": "2026-10-26T19:00:54.010Z"
+    },
+    {
+      "id": "alloc-1793041252864-9buru",
+      "userId": "usr-imp-1793041252630-vgfoj",
+      "bedId": "bed-room-1793037909674-1",
+      "allocatedBy": "Dr. Sunita Rao (System Admin)",
+      "isOverride": false,
+      "reason": "Bulk CSV Allotment",
+      "createdAt": "2026-10-26T19:00:54.010Z"
     }
   ],
   "qrTickets": [
@@ -1350,6 +1496,22 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "audit-1793041254010",
+      "actorId": "usr-admin",
+      "actorName": "Dr. Sunita Rao (System Admin)",
+      "action": "BULK_ALLOT_STUDENTS",
+      "entity": "RoomAllocation",
+      "entityId": "batch-1793041254010",
+      "reason": "Bulk allotted 5 students across rooms ensuring same-college room constraint.",
+      "before": null,
+      "after": {
+        "allottedCount": 5,
+        "roomsLockedCount": 4,
+        "shortfallsCount": 0
+      },
+      "at": "2026-10-26T19:00:54.010Z"
+    },
     {
       "id": "audit-1793040217280",
       "actorId": "usr-admin",

@@ -42,6 +42,11 @@ export interface User {
   passingYear?: number | string | null;
   avatarUrl?: string | null;
   isProfileComplete?: boolean;
+  age?: number | string | null;
+  city?: string | null;
+  state?: string | null;
+  activityCategory?: string | null;
+  specificActivity?: string | null;
   gender: Gender;
   role: Role;
   emailVerified: boolean;

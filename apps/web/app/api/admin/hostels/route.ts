@@ -9,6 +9,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Forbidden: Admin access required.' }, { status: 403 });
   }
 
+  const db = readDatabase();
   try {
     const { getSupabase } = await import('@/lib/supabase');
     const sb = getSupabase();
@@ -48,15 +49,26 @@ export async function GET() {
               const u = usersList.find((usr: any) => usr.id === a.user_id);
               const b = beds.find((bed: any) => bed.id === a.bed_id);
               const uCol = colsList.find((c: any) => c.id === (u?.college_id || u?.collegeId));
+              const localU = db.users.find((du: any) => du.id === a.user_id || du.id === u?.id);
+              const localA = db.allocations.find((da: any) => da.id === a.id || da.bedId === a.bed_id);
+
               return {
                 allocationId: a.id,
                 userId: u?.id || a.user_id,
-                userName: u?.name || 'Unknown Student',
-                userEmail: u?.email || '',
-                userPhone: u?.phone || '',
-                userGender: u?.gender || room.gender,
-                collegeId: u?.college_id || lockedCol?.id || '',
-                collegeName: u?.college_name || uCol?.name || lockedCol?.name || 'Assigned College',
+                rollNo: u?.roll_no || u?.rollNo || a.roll_no || a.rollNo || (localU as any)?.rollNo || (localA as any)?.rollNo || '',
+                userName: u?.name || localU?.name || 'Unknown Student',
+                userEmail: u?.email || localU?.email || '',
+                userPhone: u?.phone || localU?.phone || '',
+                userGender: u?.gender || localU?.gender || room.gender,
+                age: u?.age || a.age || (localU as any)?.age || '',
+                city: u?.city || a.city || (localU as any)?.city || '',
+                state: u?.state || a.state || (localU as any)?.state || '',
+                course: u?.course || a.course || (localU as any)?.course || '',
+                year: u?.year || u?.passing_year || a.year || (localU as any)?.year || (localU as any)?.passingYear || '',
+                activityCategory: u?.activity_category || u?.activityCategory || a.activityCategory || (localU as any)?.activityCategory || '',
+                specificActivity: u?.specific_activity || u?.specificActivity || a.specificActivity || (localU as any)?.specificActivity || '',
+                collegeId: u?.college_id || localU?.collegeId || lockedCol?.id || '',
+                collegeName: u?.college_name || (localU as any)?.collegeName || uCol?.name || lockedCol?.name || 'Assigned College',
                 collegeCode: uCol?.code || lockedCol?.code || '',
                 collegeColor: uCol?.color || lockedCol?.color || '#2563EB',
                 bedId: b?.id,
@@ -105,7 +117,6 @@ export async function GET() {
     }
   } catch {}
 
-  const db = readDatabase();
   const hostelsWithDetails = db.hostels.map((hostel) => {
     const rooms = db.rooms.filter((r) => r.hostelId === hostel.id);
     const roomsWithBeds = rooms.map((room) => {
@@ -121,10 +132,18 @@ export async function GET() {
         return {
           allocationId: a.id,
           userId: u?.id || a.userId,
+          rollNo: (u as any)?.rollNo || (u as any)?.roll_no || (a as any)?.rollNo || '',
           userName: u?.name || 'Unknown Student',
           userEmail: u?.email || '',
           userPhone: u?.phone || '',
           userGender: u?.gender || room.gender,
+          age: (u as any)?.age || (a as any)?.age || '',
+          city: (u as any)?.city || (a as any)?.city || '',
+          state: (u as any)?.state || (a as any)?.state || '',
+          course: (u as any)?.course || (a as any)?.course || '',
+          year: (u as any)?.year || (u as any)?.passingYear || (a as any)?.year || '',
+          activityCategory: (u as any)?.activityCategory || (u as any)?.activity_category || '',
+          specificActivity: (u as any)?.specificActivity || (u as any)?.specific_activity || '',
           collegeId: u?.collegeId || lockedCol?.id || '',
           collegeName: u?.collegeName || uCol?.name || lockedCol?.name || 'Assigned College',
           collegeCode: uCol?.code || lockedCol?.code || '',

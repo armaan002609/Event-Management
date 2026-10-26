@@ -4,11 +4,19 @@ import { readDatabase, writeDatabase } from '@/lib/db';
 import { NORTH_INDIA_COLLEGES, Gender, RoomAllocation, AuditLog, College, User } from '@unifest/shared';
 
 interface BulkStudentRow {
+  rollNo?: string;
   name: string;
-  email?: string;
   gender: string;
+  age?: string | number;
   collegeName: string;
   collegeCode?: string;
+  city?: string;
+  state?: string;
+  course?: string;
+  year?: string | number;
+  activityCategory?: string;
+  specificActivity?: string;
+  email?: string;
   phone?: string;
 }
 
@@ -120,11 +128,19 @@ export async function POST(req: NextRequest) {
 
     // 2. Validate & normalize rows
     const cleanedRows: Array<{
+      rollNo?: string;
       rawName: string;
-      email: string;
       gender: 'MALE' | 'FEMALE';
+      age?: string;
       collegeName: string;
       collegeCode?: string;
+      city?: string;
+      state?: string;
+      course?: string;
+      year?: string;
+      activityCategory?: string;
+      specificActivity?: string;
+      email: string;
       phone?: string;
     }> = [];
 
@@ -145,18 +161,35 @@ export async function POST(req: NextRequest) {
       const collegeName = (row.collegeName || '').trim();
       if (!collegeName) continue;
 
+      const rollNo = (row.rollNo || '').trim();
+      const age = row.age !== undefined && row.age !== null ? String(row.age).trim() : undefined;
+      const city = (row.city || '').trim();
+      const state = (row.state || '').trim();
+      const course = (row.course || '').trim();
+      const year = row.year !== undefined && row.year !== null ? String(row.year).trim() : undefined;
+      const activityCategory = (row.activityCategory || '').trim();
+      const specificActivity = (row.specificActivity || '').trim();
+
       let email = (row.email || '').trim().toLowerCase();
       if (!email || !email.includes('@')) {
-        const sanitizedName = name.toLowerCase().replace(/[^a-z0-9]/g, '');
-        email = `${sanitizedName}_${Date.now().toString(36)}_${i}@unifest.local`;
+        const seed = rollNo ? rollNo.toLowerCase().replace(/[^a-z0-9]/g, '') : name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        email = `${seed}_${i}@unifest.local`;
       }
 
       cleanedRows.push({
+        rollNo: rollNo || undefined,
         rawName: name,
-        email,
         gender,
+        age: age || undefined,
         collegeName,
         collegeCode: row.collegeCode?.trim() || undefined,
+        city: city || undefined,
+        state: state || undefined,
+        course: course || undefined,
+        year: year || undefined,
+        activityCategory: activityCategory || undefined,
+        specificActivity: specificActivity || undefined,
+        email,
         phone: row.phone?.trim() || undefined,
       });
     }
@@ -242,12 +275,20 @@ export async function POST(req: NextRequest) {
     // 4. Resolve or Create Users
     const processedStudents: Array<{
       id: string;
+      rollNo?: string;
       name: string;
       email: string;
       gender: 'MALE' | 'FEMALE';
+      age?: string;
       collegeId: string;
       collegeName: string;
       collegeCode: string;
+      city?: string;
+      state?: string;
+      course?: string;
+      year?: string;
+      activityCategory?: string;
+      specificActivity?: string;
       phone?: string;
     }> = [];
 
@@ -268,9 +309,23 @@ export async function POST(req: NextRequest) {
           role: 'STUDENT',
           college_id: col.id,
           college_name: col.name,
+          roll_no: row.rollNo || null,
+          course: row.course || null,
+          passing_year: row.year ? parseInt(row.year) || null : null,
+          address: row.city && row.state ? `${row.city}, ${row.state}` : row.city || row.state || null,
           email_verified: true,
         };
-        newUsersToInsert.push(user);
+        newUsersToInsert.push({
+          ...user,
+          rollNo: row.rollNo,
+          age: row.age,
+          city: row.city,
+          state: row.state,
+          course: row.course,
+          year: row.year,
+          activityCategory: row.activityCategory,
+          specificActivity: row.specificActivity,
+        });
         activeUsers.push(user);
       } else {
         // Ensure student has role STUDENT and proper college
@@ -278,16 +333,26 @@ export async function POST(req: NextRequest) {
         user.gender = row.gender;
         user.college_id = col.id;
         user.college_name = col.name;
+        if (row.rollNo) user.roll_no = row.rollNo;
+        if (row.course) user.course = row.course;
       }
 
       processedStudents.push({
         id: user.id,
+        rollNo: row.rollNo,
         name: user.name,
         email: user.email,
         gender: user.gender,
+        age: row.age,
         collegeId: col.id,
         collegeName: col.name,
         collegeCode: col.code,
+        city: row.city,
+        state: row.state,
+        course: row.course,
+        year: row.year,
+        activityCategory: row.activityCategory,
+        specificActivity: row.specificActivity,
         phone: user.phone || undefined,
       });
     }
@@ -345,6 +410,14 @@ export async function POST(req: NextRequest) {
             role: 'STUDENT',
             collegeId: nu.college_id,
             collegeName: nu.college_name,
+            rollNo: nu.rollNo || null,
+            age: nu.age || null,
+            city: nu.city || null,
+            state: nu.state || null,
+            course: nu.course || null,
+            passingYear: nu.year ? parseInt(nu.year) || null : null,
+            activityCategory: nu.activityCategory || null,
+            specificActivity: nu.specificActivity || null,
             emailVerified: true,
           } as User);
         }
@@ -521,11 +594,20 @@ export async function POST(req: NextRequest) {
             userId: student.id,
             bedId: bed.id,
             allocatedBy: activeUser.name,
+            rollNo: student.rollNo,
             userName: student.name,
             userEmail: student.email,
+            userPhone: student.phone,
             collegeName: group.collegeName,
             collegeCode: group.collegeCode,
             gender: group.gender,
+            age: student.age,
+            city: student.city,
+            state: student.state,
+            course: student.course,
+            year: student.year,
+            activityCategory: student.activityCategory,
+            specificActivity: student.specificActivity,
             hostelName: room.hostelName,
             roomNumber: room.number,
             bedLabel: bed.label,

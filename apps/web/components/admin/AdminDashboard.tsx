@@ -498,19 +498,27 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
           return;
         }
 
-        // Header mapping
+        // Header mapping for the 11-column template:
+        // Student Roll No, Name, Gender, Age, College/University, City, State/UT, Course, Year, Activity Category, Specific Activity
         const headers = (data[0] as string[]).map((h) => String(h || '').trim().toLowerCase());
-        const nameIdx = headers.findIndex((h) => h.includes('name'));
-        const emailIdx = headers.findIndex((h) => h.includes('email') || h.includes('mail'));
+        const rollNoIdx = headers.findIndex((h) => h.includes('roll') || h.includes('reg') || h.includes('enroll') || h.includes('student roll'));
+        const nameIdx = headers.findIndex((h) => h === 'name' || h === 'student name' || (h.includes('name') && !h.includes('college') && !h.includes('univ')));
         const genderIdx = headers.findIndex((h) => h.includes('gender') || h.includes('sex'));
+        const ageIdx = headers.findIndex((h) => h === 'age' || h.includes('age'));
         const collegeIdx = headers.findIndex((h) => h.includes('college') || h.includes('univ') || h.includes('inst'));
+        const cityIdx = headers.findIndex((h) => h.includes('city') || h.includes('district'));
+        const stateIdx = headers.findIndex((h) => h.includes('state') || h.includes('ut'));
+        const courseIdx = headers.findIndex((h) => h.includes('course') || h.includes('degree') || h.includes('branch'));
+        const yearIdx = headers.findIndex((h) => h === 'year' || (h.includes('year') && !h.includes('passing')) || h.includes('sem'));
+        const categoryIdx = headers.findIndex((h) => h.includes('activity category') || h.includes('category'));
+        const activityIdx = headers.findIndex((h) => h.includes('specific activity') || (h.includes('activity') && !h.includes('category')) || h.includes('event'));
+        const emailIdx = headers.findIndex((h) => h.includes('email') || h.includes('mail'));
         const phoneIdx = headers.findIndex((h) => h.includes('phone') || h.includes('mobile') || h.includes('contact'));
-        const codeIdx = headers.findIndex((h) => h.includes('code'));
 
         if (nameIdx === -1 || genderIdx === -1 || collegeIdx === -1) {
           toast.error(
             'Missing Required Headers',
-            'File must contain columns: Name, Gender, and College. (Email and Phone are optional).'
+            'File must contain: Student Roll No, Name, Gender, Age, College/University, City, State/UT, Course, Year, Activity Category, Specific Activity.'
           );
           return;
         }
@@ -525,11 +533,18 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
           if (!name || !gender || !collegeName) continue;
 
           parsed.push({
+            rollNo: rollNoIdx !== -1 ? String(row[rollNoIdx] || '').trim() : undefined,
             name,
-            email: emailIdx !== -1 ? String(row[emailIdx] || '').trim() : undefined,
             gender,
+            age: ageIdx !== -1 ? String(row[ageIdx] || '').trim() : undefined,
             collegeName,
-            collegeCode: codeIdx !== -1 ? String(row[codeIdx] || '').trim() : undefined,
+            city: cityIdx !== -1 ? String(row[cityIdx] || '').trim() : undefined,
+            state: stateIdx !== -1 ? String(row[stateIdx] || '').trim() : undefined,
+            course: courseIdx !== -1 ? String(row[courseIdx] || '').trim() : undefined,
+            year: yearIdx !== -1 ? String(row[yearIdx] || '').trim() : undefined,
+            activityCategory: categoryIdx !== -1 ? String(row[categoryIdx] || '').trim() : undefined,
+            specificActivity: activityIdx !== -1 ? String(row[activityIdx] || '').trim() : undefined,
+            email: emailIdx !== -1 ? String(row[emailIdx] || '').trim() : undefined,
             phone: phoneIdx !== -1 ? String(row[phoneIdx] || '').trim() : undefined,
           });
         }
@@ -541,7 +556,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
 
         setUploadedStudentsPreview(parsed);
         setBulkAllotResult(null);
-        toast.success('File Loaded', `Parsed ${parsed.length} student records ready for allotment.`);
+        toast.success('File Loaded', `Parsed ${parsed.length} student records with academic and activity data.`);
       } catch (err: any) {
         toast.error('File Error', err.message || 'Could not parse spreadsheet.');
       }
@@ -553,12 +568,14 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
     const csvContent =
       'data:text/csv;charset=utf-8,' +
       [
-        'Name,Email,Gender,College,Phone',
-        'Aarav Sharma,aarav.sharma@cgc.edu,MALE,CGC University Mohali,9876543210',
-        'Priya Verma,priya.verma@cgc.edu,FEMALE,CGC University Mohali,9876543211',
-        'Rohan Mehta,rohan.mehta@cgc.edu,MALE,CGC University Mohali,9876543212',
-        'Sneha Singh,sneha.singh@du.ac.in,FEMALE,Delhi University,9876543213',
-        'Kabir Kapoor,kabir.kapoor@iitd.ac.in,MALE,IIT Delhi,9876543214',
+        'Student Roll No,Name,Gender,Age,College/University,City,State/UT,Course,Year,Activity Category,Specific Activity',
+        'CGC2026-101,Aarav Sharma,MALE,20,CGC University Mohali,Mohali,Punjab,B.Tech CSE,3rd Year,Sports,100m Sprint Men',
+        'CGC2026-102,Priya Verma,FEMALE,19,CGC University Mohali,Mohali,Punjab,B.Tech AI,2nd Year,Folk,Punjab Folk Bhangra Championship',
+        'CGC2026-103,Rohan Mehta,MALE,21,CGC University Mohali,Mohali,Punjab,BBA,3rd Year,Sports,Inter-College Football 7s',
+        'DU2026-201,Sneha Singh,FEMALE,20,Delhi University,New Delhi,Delhi,B.Sc Physics,3rd Year,Folk,Ghazal & Sufi Fusion Night',
+        'DU2026-202,Diya Patel,FEMALE,19,Delhi University,New Delhi,Delhi,BA English,2nd Year,Sports,Badminton Singles Men & Women',
+        'IITD2026-301,Kabir Kapoor,MALE,21,IIT Delhi,New Delhi,Delhi,B.Tech EE,4th Year,Sports,Badminton Singles Men & Women',
+        'PU2026-401,Ananya Roy,FEMALE,20,Panjab University,Chandigarh,Chandigarh,B.Com,3rd Year,Folk,Punjab Folk Bhangra Championship',
       ].join('\n');
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
@@ -567,7 +584,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    toast.success('Template Downloaded', 'Use this format to prepare your student records.');
+    toast.success('Template Downloaded', 'Use this 11-column template to prepare your student records.');
   };
 
   const handleExecuteBulkAllotment = async () => {
@@ -627,12 +644,34 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       toast.error('No Report', 'No allocations data available to download.');
       return;
     }
-    const headers = ['Student Name', 'Email', 'Gender', 'College', 'Hostel Facility', 'Room Number', 'Bed'];
+    const headers = [
+      'Student Roll No',
+      'Name',
+      'Gender',
+      'Age',
+      'College/University',
+      'City',
+      'State/UT',
+      'Course',
+      'Year',
+      'Activity Category',
+      'Specific Activity',
+      'Hostel Facility',
+      'Room Number',
+      'Bed',
+    ];
     const rows = bulkAllotResult.allocations.map((a: any) => [
+      `"${(a.rollNo || '').replace(/"/g, '""')}"`,
       `"${(a.userName || '').replace(/"/g, '""')}"`,
-      `"${(a.userEmail || '').replace(/"/g, '""')}"`,
       `"${a.gender || ''}"`,
+      `"${a.age || ''}"`,
       `"${(a.collegeName || '').replace(/"/g, '""')}"`,
+      `"${(a.city || '').replace(/"/g, '""')}"`,
+      `"${(a.state || '').replace(/"/g, '""')}"`,
+      `"${(a.course || '').replace(/"/g, '""')}"`,
+      `"${(a.year || '').replace(/"/g, '""')}"`,
+      `"${(a.activityCategory || '').replace(/"/g, '""')}"`,
+      `"${(a.specificActivity || '').replace(/"/g, '""')}"`,
       `"${(a.hostelName || '').replace(/"/g, '""')}"`,
       `"${a.roomNumber || ''}"`,
       `"${a.bedLabel || ''}"`,
@@ -669,17 +708,43 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       return;
     }
 
-    const headers = ['Hostel', 'Room No', 'Floor', 'Bed', 'Student Name', 'Email', 'Phone', 'College', 'Gender'];
+    const headers = [
+      'Hostel',
+      'Room No',
+      'Floor',
+      'Bed',
+      'Student Roll No',
+      'Student Name',
+      'Gender',
+      'Age',
+      'College',
+      'City',
+      'State/UT',
+      'Course',
+      'Year',
+      'Activity Category',
+      'Specific Activity',
+      'Email',
+      'Phone',
+    ];
     const rows = allOccupants.map((o: any) => [
       `"${(o.hostelName || '').replace(/"/g, '""')}"`,
       `"${o.roomNumber || ''}"`,
       `"${o.floor || ''}"`,
       `"${o.bedLabel || ''}"`,
+      `"${(o.rollNo || '').replace(/"/g, '""')}"`,
       `"${(o.userName || '').replace(/"/g, '""')}"`,
+      `"${o.userGender || ''}"`,
+      `"${o.age || ''}"`,
+      `"${(o.collegeName || '').replace(/"/g, '""')}"`,
+      `"${(o.city || '').replace(/"/g, '""')}"`,
+      `"${(o.state || '').replace(/"/g, '""')}"`,
+      `"${(o.course || '').replace(/"/g, '""')}"`,
+      `"${(o.year || '').replace(/"/g, '""')}"`,
+      `"${(o.activityCategory || '').replace(/"/g, '""')}"`,
+      `"${(o.specificActivity || '').replace(/"/g, '""')}"`,
       `"${(o.userEmail || '').replace(/"/g, '""')}"`,
       `"${(o.userPhone || '').replace(/"/g, '""')}"`,
-      `"${(o.collegeName || '').replace(/"/g, '""')}"`,
-      `"${o.userGender || ''}"`,
     ]);
 
     const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows.map((e: any) => e.join(','))].join('\n');
@@ -2415,7 +2480,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       {/* MODAL 5: BULK STUDENT IMPORT & ROOM ALLOTMENT */}
       {showBulkAllotModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-5 border border-slate-100 my-8 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-4xl w-full p-6 sm:p-8 shadow-2xl space-y-5 border border-slate-100 my-8 max-h-[90vh] overflow-y-auto">
             {/* Header */}
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2.5">
@@ -2427,7 +2492,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                     Bulk Student Import & Room Allotment
                   </h3>
                   <p className="text-xs text-slate-400">
-                    Upload spreadsheet (.xlsx, .xls, .csv) with automatic same-college room allocation.
+                    Format: <span className="font-semibold text-slate-600">Student Roll No, Name, Gender, Age, College/University, City, State/UT, Course, Year, Activity Category, Specific Activity</span>
                   </p>
                 </div>
               </div>
@@ -2463,13 +2528,13 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
             {bulkAllotResult ? (
               <div className="space-y-4">
                 <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 space-y-2">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
                     <span className="font-heading font-black text-sm flex items-center gap-1.5 text-emerald-800">
                       <CheckCircle2 className="w-5 h-5 text-emerald-600" /> Room Allotment Finished Successfully!
                     </span>
                     <button
                       onClick={handleDownloadAllotmentReport}
-                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm"
+                      className="inline-flex items-center gap-1 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm"
                     >
                       <Download className="w-3.5 h-3.5" /> Download Report (CSV)
                     </button>
@@ -2509,25 +2574,48 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   <h4 className="font-heading font-black text-xs text-slate-700 uppercase tracking-wider">
                     Allotment Roster Summary ({bulkAllotResult.allocations?.length || 0} students)
                   </h4>
-                  <div className="border border-slate-200 rounded-2xl overflow-hidden max-h-60 overflow-y-auto">
+                  <div className="border border-slate-200 rounded-2xl overflow-hidden max-h-72 overflow-y-auto">
                     <table className="w-full text-left text-xs">
-                      <thead className="bg-slate-50 text-slate-500 font-bold text-[10px] uppercase border-b border-slate-200">
+                      <thead className="bg-slate-50 text-slate-500 font-bold text-[10px] uppercase border-b border-slate-200 sticky top-0">
                         <tr>
-                          <th className="py-2.5 px-3">Student</th>
-                          <th className="py-2.5 px-3">College</th>
+                          <th className="py-2.5 px-3">Roll No</th>
+                          <th className="py-2.5 px-3">Student Name</th>
+                          <th className="py-2.5 px-3">College / Univ</th>
+                          <th className="py-2.5 px-3">Course & Year</th>
+                          <th className="py-2.5 px-3">Activity</th>
                           <th className="py-2.5 px-3">Facility</th>
-                          <th className="py-2.5 px-3">Room</th>
-                          <th className="py-2.5 px-3">Bed</th>
+                          <th className="py-2.5 px-3">Room & Bed</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
                         {bulkAllotResult.allocations?.map((a: any, i: number) => (
                           <tr key={i} className="hover:bg-slate-50">
-                            <td className="py-2 px-3 font-bold text-slate-800">{a.userName}</td>
-                            <td className="py-2 px-3 text-slate-600">{a.collegeName}</td>
-                            <td className="py-2 px-3 text-slate-600">{a.hostelName}</td>
-                            <td className="py-2 px-3 font-mono font-bold text-indigo-600">Room {a.roomNumber}</td>
-                            <td className="py-2 px-3 font-mono text-slate-500">{a.bedLabel}</td>
+                            <td className="py-2 px-3 font-mono font-bold text-slate-600 text-[11px]">{a.rollNo || '—'}</td>
+                            <td className="py-2 px-3">
+                              <p className="font-bold text-slate-800">{a.userName}</p>
+                              <p className="text-[10px] text-slate-400">{a.gender === 'MALE' ? '♂ Male' : '♀ Female'}{a.age ? ` · ${a.age} yrs` : ''}</p>
+                            </td>
+                            <td className="py-2 px-3">
+                              <p className="text-slate-800 font-semibold">{a.collegeName}</p>
+                              {(a.city || a.state) && (
+                                <p className="text-[10px] text-slate-400">{[a.city, a.state].filter(Boolean).join(', ')}</p>
+                              )}
+                            </td>
+                            <td className="py-2 px-3 text-slate-600 text-[11px]">
+                              {a.course ? <span>{a.course} {a.year ? `(${a.year})` : ''}</span> : '—'}
+                            </td>
+                            <td className="py-2 px-3 text-slate-700 text-[11px]">
+                              {a.specificActivity ? (
+                                <span className="font-medium">
+                                  {a.activityCategory ? `${a.activityCategory}: ` : ''}{a.specificActivity}
+                                </span>
+                              ) : (a.activityCategory || '—')}
+                            </td>
+                            <td className="py-2 px-3 text-slate-600 text-[11px]">{a.hostelName}</td>
+                            <td className="py-2 px-3">
+                              <span className="font-mono font-bold text-indigo-600">Room {a.roomNumber}</span>
+                              <span className="text-[10px] text-slate-400 ml-1 font-mono">({a.bedLabel})</span>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -2560,8 +2648,11 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                     <p className="font-heading font-black text-sm text-slate-800">
                       Choose Excel or CSV file
                     </p>
-                    <p className="text-xs text-slate-400 mt-0.5">
-                      Accepts <strong className="text-slate-600">.xlsx, .xls, .csv</strong> files with Name, Gender, and College columns.
+                    <p className="text-xs text-slate-400 mt-1 max-w-xl mx-auto">
+                      Accepts <strong className="text-slate-600">.xlsx, .xls, .csv</strong> files with standard 11 columns:<br />
+                      <span className="font-mono text-[11px] text-indigo-600 bg-indigo-50/70 px-2 py-0.5 rounded-md mt-1 inline-block">
+                        Student Roll No, Name, Gender, Age, College/University, City, State/UT, Course, Year, Activity Category, Specific Activity
+                      </span>
                     </p>
                   </div>
 
@@ -2609,23 +2700,33 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                       </button>
                     </div>
 
-                    <div className="border border-slate-200 rounded-2xl overflow-hidden max-h-52 overflow-y-auto">
+                    <div className="border border-slate-200 rounded-2xl overflow-hidden max-h-60 overflow-y-auto">
                       <table className="w-full text-left text-xs">
-                        <thead className="bg-slate-50 text-slate-500 font-bold text-[10px] uppercase border-b border-slate-200">
+                        <thead className="bg-slate-50 text-slate-500 font-bold text-[10px] uppercase border-b border-slate-200 sticky top-0">
                           <tr>
+                            <th className="py-2 px-3">Student Roll No</th>
                             <th className="py-2 px-3">Name</th>
-                            <th className="py-2 px-3">Gender</th>
+                            <th className="py-2 px-3">Gender / Age</th>
                             <th className="py-2 px-3">College / University</th>
-                            <th className="py-2 px-3">Email</th>
+                            <th className="py-2 px-3">City, State</th>
+                            <th className="py-2 px-3">Course & Year</th>
+                            <th className="py-2 px-3">Activity</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
                           {uploadedStudentsPreview.slice(0, 8).map((s, idx) => (
                             <tr key={idx} className="hover:bg-slate-50">
-                              <td className="py-2 px-3 font-bold text-slate-800">{s.name}</td>
-                              <td className="py-2 px-3 text-slate-600">{s.gender === 'MALE' ? '♂ Male' : '♀ Female'}</td>
-                              <td className="py-2 px-3 text-slate-600">{s.collegeName}</td>
-                              <td className="py-2 px-3 text-slate-400 font-mono text-[11px]">{s.email || 'auto-generated'}</td>
+                              <td className="py-2 px-3 font-mono font-bold text-slate-700 text-[11px]">{s.rollNo || '—'}</td>
+                              <td className="py-2 px-3 font-bold text-slate-900">{s.name}</td>
+                              <td className="py-2 px-3 text-slate-600 text-[11px]">
+                                {s.gender === 'MALE' ? '♂ Male' : '♀ Female'}{s.age ? ` · ${s.age}y` : ''}
+                              </td>
+                              <td className="py-2 px-3 text-slate-700 font-medium">{s.collegeName}</td>
+                              <td className="py-2 px-3 text-slate-500 text-[11px]">{[s.city, s.state].filter(Boolean).join(', ') || '—'}</td>
+                              <td className="py-2 px-3 text-slate-600 text-[11px]">{[s.course, s.year].filter(Boolean).join(' · ') || '—'}</td>
+                              <td className="py-2 px-3 text-slate-700 text-[11px]">
+                                {s.specificActivity ? `${s.activityCategory ? `${s.activityCategory}: ` : ''}${s.specificActivity}` : (s.activityCategory || '—')}
+                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -2734,15 +2835,35 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   {selectedRoomDetails.occupants.map((occ: any, i: number) => (
                     <div key={i} className="p-3 bg-white hover:bg-slate-50 transition-colors flex items-center justify-between gap-3 text-xs">
                       <div className="flex items-center gap-2.5">
-                        <span className="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 font-bold font-mono text-[11px] flex items-center justify-center shrink-0">
+                        <span className="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 font-bold font-mono text-[11px] flex items-center justify-center shrink-0 shadow-sm">
                           {occ.bedLabel || `B${i + 1}`}
                         </span>
                         <div>
-                          <p className="font-bold text-slate-900 leading-snug">{occ.userName}</p>
-                          <p className="text-[11px] text-slate-400">
-                            <span>{occ.collegeName || selectedRoomDetails.lockedCollege?.name}</span>
-                            {occ.userEmail && <span> · {occ.userEmail}</span>}
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <p className="font-bold text-slate-900 leading-snug">{occ.userName}</p>
+                            {occ.rollNo && (
+                              <span className="font-mono text-[10px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 border border-slate-200">
+                                {occ.rollNo}
+                              </span>
+                            )}
+                            {occ.age && (
+                              <span className="text-[10px] text-slate-400">· {occ.age} yrs</span>
+                            )}
+                          </div>
+                          <p className="text-[11px] text-slate-500 mt-0.5">
+                            <span className="font-semibold text-slate-700">{occ.collegeName || selectedRoomDetails.lockedCollege?.name}</span>
+                            {(occ.city || occ.state) && (
+                              <span className="text-slate-400"> ({[occ.city, occ.state].filter(Boolean).join(', ')})</span>
+                            )}
+                            {occ.course && (
+                              <span className="text-slate-500 font-medium"> · {occ.course} {occ.year ? `(${occ.year})` : ''}</span>
+                            )}
                           </p>
+                          {occ.specificActivity && (
+                            <p className="text-[10px] text-indigo-600 font-semibold mt-0.5 flex items-center gap-1">
+                              <span>🎯 {occ.activityCategory ? `${occ.activityCategory}: ` : ''}{occ.specificActivity}</span>
+                            </p>
+                          )}
                         </div>
                       </div>
 
@@ -2865,6 +2986,10 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   occ.userName.toLowerCase().includes(q) ||
                   occ.roomNumber.toLowerCase().includes(q) ||
                   occ.collegeName.toLowerCase().includes(q) ||
+                  (occ.rollNo && occ.rollNo.toLowerCase().includes(q)) ||
+                  (occ.course && occ.course.toLowerCase().includes(q)) ||
+                  (occ.specificActivity && occ.specificActivity.toLowerCase().includes(q)) ||
+                  (occ.activityCategory && occ.activityCategory.toLowerCase().includes(q)) ||
                   (occ.userEmail && occ.userEmail.toLowerCase().includes(q))
                 );
               });
@@ -2884,27 +3009,49 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   <table className="w-full text-left text-xs">
                     <thead className="bg-slate-50 text-slate-500 font-bold text-[10px] uppercase border-b border-slate-200 sticky top-0">
                       <tr>
+                        <th className="py-2.5 px-3">Roll No</th>
                         <th className="py-2.5 px-3">Student</th>
-                        <th className="py-2.5 px-3">College</th>
-                        <th className="py-2.5 px-3">Hostel</th>
-                        <th className="py-2.5 px-3">Room & Bed</th>
+                        <th className="py-2.5 px-3">College / Univ</th>
+                        <th className="py-2.5 px-3">Course & Activity</th>
+                        <th className="py-2.5 px-3">Hostel & Room</th>
                         <th className="py-2.5 px-3 text-right">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
                       {filteredRoster.map((occ, idx) => (
                         <tr key={idx} className="hover:bg-slate-50/80 transition-colors">
+                          <td className="py-2.5 px-3 font-mono font-bold text-slate-700 text-[11px]">
+                            {occ.rollNo || '—'}
+                          </td>
                           <td className="py-2.5 px-3">
                             <p className="font-bold text-slate-900">{occ.userName}</p>
-                            <p className="text-[10px] text-slate-400">{occ.userEmail}</p>
+                            <p className="text-[10px] text-slate-400">
+                              {occ.userGender === 'MALE' ? '♂ Male' : '♀ Female'}{occ.age ? ` · ${occ.age} yrs` : ''}
+                            </p>
                           </td>
                           <td className="py-2.5 px-3">
-                            <span className="font-semibold text-slate-700">{occ.collegeName}</span>
+                            <p className="font-semibold text-slate-800">{occ.collegeName}</p>
+                            {(occ.city || occ.state) && (
+                              <p className="text-[10px] text-slate-400">{[occ.city, occ.state].filter(Boolean).join(', ')}</p>
+                            )}
                           </td>
-                          <td className="py-2.5 px-3 text-slate-600">{occ.hostelName}</td>
                           <td className="py-2.5 px-3">
-                            <span className="font-mono font-bold text-indigo-600">Room {occ.roomNumber}</span>
-                            <span className="text-[10px] text-slate-400 ml-1.5 font-mono">({occ.bedLabel || 'Bed'})</span>
+                            {occ.course && (
+                              <p className="text-slate-700 font-medium">{occ.course} {occ.year ? `(${occ.year})` : ''}</p>
+                            )}
+                            {occ.specificActivity && (
+                              <p className="text-[10px] text-indigo-600 font-semibold flex items-center gap-1 mt-0.5">
+                                <span>🎯 {occ.activityCategory ? `${occ.activityCategory}: ` : ''}{occ.specificActivity}</span>
+                              </p>
+                            )}
+                            {!occ.course && !occ.specificActivity && <span className="text-slate-400">—</span>}
+                          </td>
+                          <td className="py-2.5 px-3">
+                            <p className="text-slate-700 font-medium">{occ.hostelName}</p>
+                            <p className="text-[10px]">
+                              <span className="font-mono font-bold text-indigo-600">Room {occ.roomNumber}</span>
+                              <span className="text-slate-400 ml-1 font-mono">({occ.bedLabel || 'Bed'})</span>
+                            </p>
                           </td>
                           <td className="py-2.5 px-3 text-right">
                             <button
