@@ -96,11 +96,11 @@ export default function HomePage() {
 
   if (loading || !activeUser) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
         <div className="text-center space-y-4">
           {/* Skeleton loading state instead of plain spinner */}
           <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="font-heading font-bold text-slate-800 text-sm">Launching UniFest Manager...</p>
+          <p className="font-heading font-bold text-slate-800 dark:text-slate-200 text-sm">Launching UniFest Manager...</p>
           <div className="space-y-2 w-64 mx-auto">
             <div className="skeleton h-3 w-full" />
             <div className="skeleton h-3 w-3/4" />
@@ -132,7 +132,7 @@ export default function HomePage() {
 
   return (
     <ToastProvider>
-      <div className="min-h-screen flex flex-col bg-slate-50">
+      <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-150">
         {/* Global Navbar */}
         <Navbar
           activeUser={activeUser}
@@ -145,14 +145,14 @@ export default function HomePage() {
         {/* Main Page Body */}
         <main className={`flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 ${isStudent ? 'has-bottom-nav md:pb-8' : ''}`}>
           {/* Context Breadcrumbs on Desktop */}
-          <nav aria-label="Breadcrumb" className="hidden sm:flex items-center gap-2 text-xs text-slate-400 mb-5 font-medium">
-            <span className="text-slate-500 font-bold">UniFest</span>
-            <span className="text-slate-300">/</span>
-            <span className="text-slate-600 font-semibold uppercase text-[10px] tracking-wider px-2 py-0.5 rounded-full bg-slate-200/60">
+          <nav aria-label="Breadcrumb" className="hidden sm:flex items-center gap-2 text-xs text-slate-400 dark:text-slate-500 mb-5 font-medium">
+            <span className="text-slate-500 dark:text-slate-400 font-bold">UniFest</span>
+            <span className="text-slate-300 dark:text-slate-600">/</span>
+            <span className="text-slate-600 dark:text-slate-300 font-semibold uppercase text-[10px] tracking-wider px-2 py-0.5 rounded-full bg-slate-200/60 dark:bg-slate-800">
               {activeUser.role}
             </span>
-            <span className="text-slate-300">/</span>
-            <span className="text-primary font-bold">{getTabLabel(activeTab)}</span>
+            <span className="text-slate-300 dark:text-slate-600">/</span>
+            <span className="text-primary dark:text-primary-light font-bold">{getTabLabel(activeTab)}</span>
           </nav>
 
           <AnimatedTabPanel tabKey={activeTab}>

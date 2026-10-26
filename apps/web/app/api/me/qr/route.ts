@@ -3,6 +3,8 @@ import { getOptionalActiveUserAsync, getActiveUser } from '@/lib/auth';
 import { generateQrToken } from '@/lib/qr-service';
 import { readDatabase, writeDatabase } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   const db = readDatabase();
   let activeUser = await getOptionalActiveUserAsync();
@@ -50,6 +52,71 @@ export async function GET(req: NextRequest) {
     .sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
   const lastScan = userScans[0] || null;
 
+  // Fetch live room & floor allocation info so student pass displays it immediately
+  let allocation = db.allocations.find((a) => a.userId === activeUser.id);
+  if (!allocation) {
+    try {
+      const { getSupabase } = await import('@/lib/supabase');
+      const sbClient = getSupabase();
+      if (sbClient) {
+        const { data: sbAlloc } = await sbClient
+          .from('allocations')
+          .select('*')
+          .eq('user_id', activeUser.id)
+          .maybeSingle();
+        if (sbAlloc) {
+          allocation = {
+            id: sbAlloc.id,
+            userId: sbAlloc.user_id,
+            bedId: sbAlloc.bed_id,
+            allocatedBy: sbAlloc.allocated_by,
+            isOverride: Boolean(sbAlloc.is_override),
+            createdAt: sbAlloc.created_at,
+          };
+          db.allocations.push(allocation);
+        }
+      }
+    } catch {}
+  }
+
+  let bed: any = allocation ? db.beds.find((b) => b.id === allocation.bedId) : null;
+  let room: any = bed ? db.rooms.find((r) => r.id === bed.roomId) : null;
+  let hostel: any = room ? db.hostels.find((h) => h.id === room.hostelId) : null;
+
+  if (allocation && (!bed || !room || !hostel)) {
+    try {
+      const { getSupabase } = await import('@/lib/supabase');
+      const sbClient = getSupabase();
+      if (sbClient) {
+        if (!bed) {
+          const { data: bData } = await sbClient.from('beds').select('*').eq('id', allocation.bedId).maybeSingle();
+          if (bData) bed = { id: bData.id, roomId: bData.room_id, label: bData.label };
+        }
+        if (bed && !room) {
+          const { data: rData } = await sbClient.from('rooms').select('*').eq('id', bed.roomId).maybeSingle();
+          if (rData) room = { id: rData.id, hostelId: rData.hostel_id, number: rData.number, floor: rData.floor, capacity: rData.capacity, gender: rData.gender };
+        }
+        if (room && !hostel) {
+          const { data: hData } = await sbClient.from('hostels').select('*').eq('id', room.hostelId).maybeSingle();
+          if (hData) hostel = { id: hData.id, name: hData.name, gender: hData.gender, collegeName: hData.college_name };
+        }
+      }
+    } catch {}
+  }
+
+  const checkins = db.checkinLogs
+    .filter((c) => c.userId === activeUser.id)
+    .sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime());
+  const isCheckedIn = checkins.length > 0 && checkins[0].type === 'CHECK_IN';
+
+  const roomInfo = hostel ? {
+    hostelName: hostel.name,
+    roomNumber: room?.number,
+    floor: typeof room?.floor === 'number' ? room.floor : 1,
+    bedLabel: bed?.label,
+    isCheckedIn,
+  } : null;
+
   return NextResponse.json({
     token,
     qrDataUrl,
@@ -62,6 +129,7 @@ export async function GET(req: NextRequest) {
       collegeName: activeUser.collegeName || college?.name || 'Unknown',
       collegeColor: college?.color || '#3B3FD9',
     },
+    roomInfo,
     lastScan,
   });
 }

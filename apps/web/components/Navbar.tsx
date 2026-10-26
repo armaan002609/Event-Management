@@ -26,6 +26,7 @@ import {
   LogIn,
 } from 'lucide-react';
 import { User, NotificationLog, isUserProfileComplete } from '@unifest/shared';
+import { ThemeToggle } from '@/components/theme/ThemeToggle';
 
 interface NavbarProps {
   activeUser: User | null;
@@ -84,7 +85,7 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+      <header className="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors duration-150">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Brand Logo */}
@@ -95,14 +96,14 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <span className="font-heading font-extrabold text-lg text-slate-900 tracking-tight">
+                    <span className="font-heading font-extrabold text-lg text-slate-900 dark:text-white tracking-tight">
                       Uni<span className="text-primary">Fest</span>
                     </span>
                     <span className="text-[10px] font-semibold tracking-wider uppercase px-1.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
                       2026
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-500 font-medium hidden sm:block">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block">
                     Sports & Folk Events Portal
                   </p>
                 </div>
@@ -250,11 +251,14 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
               {/* Quick Scanner PWA button */}
               <Link
                 href="/scanner"
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold hover:bg-emerald-100 transition-colors shadow-sm"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 text-xs font-bold hover:bg-emerald-100 dark:hover:bg-emerald-900/60 transition-colors shadow-sm"
               >
-                <QrCode className="w-3.5 h-3.5 text-emerald-600" />
+                <QrCode className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                 <span>Scanner Mode</span>
               </Link>
+
+              {/* Theme Toggle (Device / Dark / Light) */}
+              <ThemeToggle />
 
               {/* Notification Bell */}
               <div className="relative" data-dropdown>
@@ -264,12 +268,12 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                     setShowNotifications(!showNotifications);
                     setShowUserDropdown(false);
                   }}
-                  className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors relative"
+                  className="p-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors relative"
                   aria-label="Notifications"
                 >
                   <Bell className="w-5 h-5" />
                   {notifications.length > 0 && (
-                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-500 rounded-full ring-2 ring-white animate-pulse" />
+                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-500 rounded-full ring-2 ring-white dark:ring-slate-900 animate-pulse" />
                   )}
                 </button>
 

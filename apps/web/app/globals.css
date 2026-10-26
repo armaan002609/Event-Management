@@ -7,12 +7,27 @@
 :root {
   --primary: #3B3FD9;
   --primary-dark: #1E1F5C;
+  --primary-light: #6366F1;
   --folk: #F5A524;
   --sports: #0FA3A3;
   --bg: #F8FAFC;
   --surface: #FFFFFF;
   --text: #0F172A;
+  --border: #E2E8F0;
   --bottom-nav-height: 64px;
+}
+
+:root.dark {
+  --primary: #6366F1;
+  --primary-dark: #4338CA;
+  --primary-light: #818CF8;
+  --folk: #F59E0B;
+  --sports: #14B8A6;
+  --bg: #090D16;
+  --surface: #0F172A;
+  --text: #F8FAFC;
+  --border: #1E293B;
+  color-scheme: dark;
 }
 
 body {
@@ -35,6 +50,11 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid rgba(226, 232, 240, 0.8);
 }
 
+:root.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(51, 65, 85, 0.7);
+}
+
 .dark-glass-panel {
   background: rgba(30, 31, 92, 0.95);
   backdrop-filter: blur(16px);
@@ -50,12 +70,21 @@ h1, h2, h3, h4, h5, h6 {
 ::-webkit-scrollbar-track {
   background: #F1F5F9;
 }
+:root.dark ::-webkit-scrollbar-track {
+  background: #0B0F19;
+}
 ::-webkit-scrollbar-thumb {
   background: #CBD5E1;
   border-radius: 9999px;
 }
+:root.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
 ::-webkit-scrollbar-thumb:hover {
   background: #94A3B8;
+}
+:root.dark ::-webkit-scrollbar-thumb:hover {
+  background: #475569;
 }
 
 /* ─── Scanner target box ──────────────────────────────────────── */

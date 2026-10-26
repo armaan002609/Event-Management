@@ -8,6 +8,7 @@ export const metadata: Metadata = {
 };
 
 import { InactivityGuard } from '@/components/auth/InactivityGuard';
+import { ThemeProvider } from '@/components/theme/ThemeProvider';
 
 export default function RootLayout({
   children,
@@ -15,10 +16,33 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="bg-slate-50 text-slate-900 min-h-screen selection:bg-primary/20 selection:text-primary">
-        <InactivityGuard />
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var stored = localStorage.getItem('unifest_theme');
+                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  if (stored === 'dark' || (!stored && prefersDark)) {
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.style.colorScheme = 'dark';
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                    document.documentElement.style.colorScheme = 'light';
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen selection:bg-primary/20 selection:text-primary transition-colors duration-150">
+        <ThemeProvider>
+          <InactivityGuard />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

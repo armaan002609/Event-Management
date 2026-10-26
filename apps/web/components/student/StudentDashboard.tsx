@@ -14,6 +14,7 @@ import {
   ChevronRight,
   Sparkles,
   Users,
+  Building2,
 } from 'lucide-react';
 import { User, Event, isUserProfileComplete } from '@unifest/shared';
 
@@ -52,20 +53,24 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab, onOpenPro
 
   useEffect(() => {
     loadData();
+    // Live polling every 5s so newly assigned room & check-in status appear automatically without reload
+    const poll = setInterval(loadData, 5000);
+    return () => clearInterval(poll);
   }, [user.id]);
 
   const loadData = () => {
-    fetch('/api/me/schedule')
+    const endpointParam = user?.id ? `?userId=${encodeURIComponent(user.id)}` : '';
+    fetch('/api/me/schedule' + endpointParam)
       .then((r) => r.json())
       .then((d) => setScheduleData(d))
       .catch(() => {});
 
-    fetch('/api/me/room')
+    fetch('/api/me/room' + endpointParam)
       .then((r) => r.json())
       .then((d) => setRoomData(d))
       .catch(() => {});
 
-    fetch('/api/me/meals')
+    fetch('/api/me/meals' + endpointParam)
       .then((r) => r.json())
       .then((d) => {
         if (Array.isArray(d)) setMealsData(d);
@@ -181,14 +186,14 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab, onOpenPro
 
       {/* Next Up Card */}
       {scheduleData?.nextUp ? (
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm relative overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden transition-colors">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">NEXT UP FOR YOU</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">NEXT UP FOR YOU</span>
             </div>
             {timeLeft && (
-              <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">
+              <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
                 {timeLeft}
               </span>
             )}
@@ -200,17 +205,17 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab, onOpenPro
                 <span
                   className={`text-[11px] font-bold px-2 py-0.5 rounded-md ${
                     scheduleData.nextUp.type === 'SPORTS'
-                      ? 'bg-sports/10 text-sports dark:text-teal-700'
-                      : 'bg-folk/10 text-folk-dark'
+                      ? 'bg-sports/10 text-sports dark:text-teal-400'
+                      : 'bg-folk/10 text-folk-dark dark:text-amber-400'
                   }`}
                 >
                   {scheduleData.nextUp.type}
                 </span>
-                <h3 className="font-heading font-bold text-lg text-slate-900">
+                <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white">
                   {scheduleData.nextUp.title}
                 </h3>
               </div>
-              <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 mt-2">
+              <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400 mt-2">
                 <span className="flex items-center gap-1">
                   <Clock className="w-3.5 h-3.5 text-slate-400" />
                   {new Date(scheduleData.nextUp.startsAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -224,17 +229,17 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab, onOpenPro
 
             <button
               onClick={() => onNavigateTab('events')}
-              className="text-xs font-bold text-primary hover:text-indigo-800 flex items-center gap-1 self-start sm:self-auto"
+              className="text-xs font-bold text-primary dark:text-primary-light hover:underline flex items-center gap-1 self-start sm:self-auto"
             >
               View Full Schedule <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm text-center">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm text-center transition-colors">
           <Sparkles className="w-8 h-8 text-primary mx-auto mb-2 opacity-80" />
-          <h4 className="font-heading font-bold text-slate-800 text-sm">No Upcoming Events Registered</h4>
-          <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1 mb-3">
+          <h4 className="font-heading font-bold text-slate-800 dark:text-slate-200 text-sm">No Upcoming Events Registered</h4>
+          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mt-1 mb-3">
             Explore sports championships and cultural folk performances to participate.
           </p>
           <button
@@ -249,70 +254,84 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab, onOpenPro
       {/* Two Grid Cards: STAY and MEALS */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* STAY Card */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow-md">
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between transition-all duration-300 hover:shadow-md">
           <div>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold shadow-sm">
+                <div className="w-9 h-9 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold shadow-sm">
                   <Home className="w-4.5 h-4.5" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-bold text-sm text-slate-900">Hostel Accommodation</h3>
-                  <p className="text-[11px] text-slate-500">Auto-allocated: same college & gender</p>
+                  <h3 className="font-heading font-bold text-sm text-slate-900 dark:text-white">Hostel Accommodation</h3>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">Auto-allocated: same college & gender</p>
                 </div>
               </div>
 
               {/* Status Badge */}
               {roomData?.status === 'CHECKED_IN' ? (
-                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 flex items-center gap-1 shadow-sm">
+                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 flex items-center gap-1 shadow-sm">
                   <CheckCircle2 className="w-3.5 h-3.5" /> Checked In
                 </span>
               ) : roomData?.status === 'ALLOCATED' ? (
-                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-blue-100 text-blue-800 flex items-center gap-1 shadow-sm">
-                  <Sparkles className="w-3 h-3 text-blue-600" /> Allocated
+                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800 flex items-center gap-1 shadow-sm">
+                  <Sparkles className="w-3 h-3 text-blue-600 dark:text-blue-400" /> Allocated
                 </span>
               ) : (
-                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber-100 text-amber-800">
-                  Pending
+                <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                  Pending Scan
                 </span>
               )}
             </div>
 
             {roomData?.status === 'PENDING' ? (
-              <div className="bg-slate-50 rounded-2xl p-5 text-center my-3 border border-dashed border-slate-200">
-                <Home className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-                <p className="text-xs text-slate-700 font-semibold">Room allocation in progress</p>
-                <p className="text-[11px] text-slate-400 mt-1 max-w-xs mx-auto">
-                  Our system pairs you with peers from {user.college?.code || 'your college'}. You will receive a pass once confirmed.
+              <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-5 text-center my-3 border border-dashed border-slate-200 dark:border-slate-700">
+                <Home className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+                <p className="text-xs text-slate-700 dark:text-slate-300 font-semibold">Room allocation in progress</p>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 max-w-xs mx-auto">
+                  Rooms are allocated automatically at gate check-in adhering to college segregation.
                 </p>
               </div>
             ) : (
-              <div className="space-y-3 bg-slate-50/90 rounded-2xl p-4 border border-slate-100 my-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-500 font-medium">Hostel</span>
-                  <span className="font-bold text-slate-800">{roomData?.hostelName || 'Main Hostel'}</span>
-                </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-500 font-medium">Room & Floor</span>
-                  <span className="font-bold text-slate-800">
-                    Room {roomData?.roomNumber || '---'} (Floor {roomData?.floor ?? 1})
+              <div className="space-y-3 bg-slate-50/90 dark:bg-slate-800/60 rounded-2xl p-4 border border-slate-100 dark:border-slate-700/80 my-2">
+                <div className="flex items-center justify-between text-xs pb-2 border-b border-slate-200/60 dark:border-slate-700/60">
+                  <span className="text-slate-500 dark:text-slate-400 font-medium">Hostel</span>
+                  <span className="font-extrabold text-slate-900 dark:text-white flex items-center gap-1.5">
+                    <Building2 className="w-4 h-4 text-primary" /> {roomData?.hostelName || 'Main Hostel'}
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-slate-500 font-medium">Bed Allotment</span>
-                  <span className="font-bold text-primary bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
+
+                <div className="grid grid-cols-2 gap-2.5 py-1">
+                  <div className="bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 block">Room Number</span>
+                    <span className="font-heading font-black text-2xl text-slate-900 dark:text-white">
+                      {roomData?.roomNumber || '---'}
+                    </span>
+                  </div>
+                  <div className="bg-white dark:bg-slate-800 p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-slate-500 block">Assigned Floor</span>
+                    <span className="font-heading font-black text-xl text-indigo-600 dark:text-indigo-400">
+                      {typeof roomData?.floor === 'number'
+                        ? roomData.floor === 0 ? 'Ground' : `Floor ${roomData.floor}`
+                        : 'Floor 1'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between text-xs pt-1">
+                  <span className="text-slate-500 dark:text-slate-400 font-medium">Bed Allotment</span>
+                  <span className="font-bold text-primary dark:text-primary-light bg-indigo-50 dark:bg-indigo-950/60 px-2.5 py-1 rounded-lg border border-indigo-100 dark:border-indigo-800">
                     Bed {roomData?.bedLabel || 'A'}
                   </span>
                 </div>
 
                 {roomData?.roommates && roomData.roommates.length > 0 && (
-                  <div className="pt-2.5 border-t border-slate-200/70">
-                    <span className="text-[11px] text-slate-400 flex items-center gap-1 mb-1.5 font-medium">
+                  <div className="pt-2.5 border-t border-slate-200/70 dark:border-slate-700/60">
+                    <span className="text-[11px] text-slate-400 dark:text-slate-400 flex items-center gap-1 mb-1.5 font-medium">
                       <Users className="w-3 h-3 text-slate-400" /> Same-College Roommates:
                     </span>
                     <div className="flex flex-wrap gap-1.5">
                       {roomData.roommates.map((rm, i) => (
-                        <span key={i} className="text-[10px] font-medium bg-white px-2 py-0.5 rounded-lg border border-slate-200 text-slate-700 shadow-2xs">
+                        <span key={i} className="text-[10px] font-medium bg-white dark:bg-slate-800 px-2 py-0.5 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 shadow-2xs">
                           {rm.name} ({rm.bedLabel})
                         </span>
                       ))}
@@ -323,13 +342,13 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab, onOpenPro
             )}
           </div>
 
-          <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
-            <span className="text-slate-400 text-[11px] flex items-center gap-1">
+          <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+            <span className="text-slate-400 dark:text-slate-500 text-[11px] flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Show QR at gate for check-in
             </span>
             <button
               onClick={onOpenQrModal}
-              className="font-bold text-primary hover:text-primary-dark transition-colors flex items-center gap-1"
+              className="font-bold text-primary dark:text-primary-light hover:underline transition-colors flex items-center gap-1"
             >
               Open QR <ChevronRight className="w-3.5 h-3.5" />
             </button>
@@ -337,16 +356,16 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab, onOpenPro
         </div>
 
         {/* MEALS: Interactive Timeline Card */}
-        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm flex flex-col justify-between relative transition-all duration-300 hover:shadow-md">
+        <div className="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm flex flex-col justify-between relative transition-all duration-300 hover:shadow-md">
           <div>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold shadow-sm">
+                <div className="w-9 h-9 rounded-2xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold shadow-sm">
                   <Utensils className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-bold text-sm text-slate-900">Mess & Dining</h3>
-                  <p className="text-[11px] text-slate-500">Staggered batch time windows</p>
+                  <h3 className="font-heading font-bold text-sm text-slate-900 dark:text-white">Mess & Dining</h3>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">Staggered batch time windows</p>
                 </div>
               </div>
 
@@ -366,7 +385,7 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab, onOpenPro
             </div>
 
             {/* Vertical Timeline */}
-            <div className="relative pl-6 space-y-4 my-2 before:absolute before:left-2.5 before:top-3 before:bottom-3 before:w-0.5 before:bg-slate-200">
+            <div className="relative pl-6 space-y-4 my-2 before:absolute before:left-2.5 before:top-3 before:bottom-3 before:w-0.5 before:bg-slate-200 dark:before:bg-slate-800">
               {mealsData.map((meal) => {
                 const startTime = meal.batch
                   ? new Date(meal.batch.startsAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -382,11 +401,11 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab, onOpenPro
                   <div key={meal.slotId} className="relative group">
                     {/* Node Dot */}
                     <div
-                      className={`absolute -left-6 top-1.5 w-3 h-3 rounded-full border-2 border-white shadow-sm transition-all ${
+                      className={`absolute -left-6 top-1.5 w-3 h-3 rounded-full border-2 border-white dark:border-slate-900 shadow-sm transition-all ${
                         isOpen
-                          ? 'bg-emerald-500 ring-4 ring-emerald-100 scale-125'
+                          ? 'bg-emerald-500 ring-4 ring-emerald-100 dark:ring-emerald-950 scale-125'
                           : isRedeemed
-                          ? 'bg-slate-400'
+                          ? 'bg-slate-400 dark:bg-slate-600'
                           : 'bg-amber-400'
                       }`}
                     />
@@ -395,21 +414,21 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab, onOpenPro
                     <div
                       className={`p-3 rounded-2xl border transition-all ${
                         isOpen
-                          ? 'bg-emerald-50/60 border-emerald-200 shadow-sm'
-                          : 'bg-slate-50/80 border-slate-100 hover:bg-slate-100/70'
+                          ? 'bg-emerald-50/60 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800 shadow-sm'
+                          : 'bg-slate-50/80 dark:bg-slate-800/60 border-slate-100 dark:border-slate-700/80 hover:bg-slate-100/70 dark:hover:bg-slate-800'
                       }`}
                     >
                       <div className="flex items-center justify-between gap-2">
                         <div>
                           <div className="flex items-center gap-1.5">
-                            <span className="font-bold text-xs text-slate-900">{meal.type}</span>
+                            <span className="font-bold text-xs text-slate-900 dark:text-white">{meal.type}</span>
                             {isOpen && (
                               <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded bg-emerald-600 text-white">
                                 Ready
                               </span>
                             )}
                           </div>
-                          <p className="text-[11px] text-slate-500 mt-0.5">
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                             {meal.batch ? `Batch Window: ${startTime} - ${endTime}` : 'No batch assigned'}
                           </p>
                         </div>
@@ -426,10 +445,10 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab, onOpenPro
                             <span
                               className={`text-[10px] font-bold px-2 py-0.5 rounded-lg ${
                                 isRedeemed
-                                  ? 'bg-slate-200/80 text-slate-600'
+                                  ? 'bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
                                   : meal.status === 'MISSED'
-                                  ? 'bg-rose-100 text-rose-700'
-                                  : 'bg-amber-100 text-amber-800'
+                                  ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300'
+                                  : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300'
                               }`}
                             >
                               {isRedeemed ? 'Redeemed' : meal.status === 'MISSED' ? 'Missed' : 'Upcoming'}
@@ -444,11 +463,11 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab, onOpenPro
             </div>
           </div>
 
-          <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
-            <span className="text-slate-400 text-[11px]">Valid 1 token per student slot</span>
+          <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+            <span className="text-slate-400 dark:text-slate-500 text-[11px]">Valid 1 token per student slot</span>
             <button
               onClick={() => onNavigateTab('meals')}
-              className="font-bold text-primary hover:underline flex items-center gap-1"
+              className="font-bold text-primary dark:text-primary-light hover:underline flex items-center gap-1"
             >
               Full Menu & Details <ChevronRight className="w-3.5 h-3.5" />
             </button>
