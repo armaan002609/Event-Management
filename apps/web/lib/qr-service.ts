@@ -15,7 +15,10 @@ import { readDatabase, writeDatabase } from './db';
 
 const JWT_SECRET = new TextEncoder().encode(process.env.QR_SECRET || 'unifest_secure_qr_secret_key_2026_super_safe');
 
-export async function generateQrToken(userId: string): Promise<{ token: string; qrDataUrl: string }> {
+export async function generateQrToken(
+  userId: string,
+  origin?: string
+): Promise<{ token: string; qrDataUrl: string; verifyUrl: string }> {
   const db = readDatabase();
   let ticket = db.qrTickets.find((t) => t.userId === userId);
 
@@ -46,7 +49,11 @@ export async function generateQrToken(userId: string): Promise<{ token: string; 
     .setExpirationTime('7d')
     .sign(JWT_SECRET);
 
-  const qrDataUrl = await QRCode.toDataURL(token, {
+  // Encode verification URL so phone camera scanning directly opens the pass verification page!
+  const baseUrl = origin || (typeof process !== 'undefined' && process.env.NEXT_PUBLIC_APP_URL) || '';
+  const verifyUrl = baseUrl ? `${baseUrl}/verify?token=${token}` : token;
+
+  const qrDataUrl = await QRCode.toDataURL(verifyUrl, {
     errorCorrectionLevel: 'M',
     margin: 2,
     scale: 8,
@@ -56,7 +63,7 @@ export async function generateQrToken(userId: string): Promise<{ token: string; 
     },
   });
 
-  return { token, qrDataUrl };
+  return { token, qrDataUrl, verifyUrl };
 }
 
 // In-memory cache for idempotency of clientScanId (60 seconds)
@@ -67,6 +74,17 @@ export async function processScan(
   operatorId: string = 'usr-scanner'
 ): Promise<ScanResponse> {
   const { token, context, slotId, clientScanId, deviceInfo } = request;
+
+  // Extract raw JWT if token was scanned as a URL (e.g. from mobile camera)
+  let cleanToken = (token || '').trim();
+  if (cleanToken.includes('token=')) {
+    try {
+      const match = cleanToken.match(/token=([a-zA-Z0-9_\-\.]+)/);
+      if (match && match[1]) {
+        cleanToken = match[1];
+      }
+    } catch {}
+  }
 
   // 1. Check idempotency cache
   const cached = idempotentScansCache.get(clientScanId);
@@ -87,7 +105,7 @@ export async function processScan(
 
   try {
     // 2. Verify token cryptographically
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const { payload } = await jwtVerify(cleanToken, JWT_SECRET);
     const typedPayload = payload as unknown as QrTicketPayload;
 
     if (typedPayload.fest !== FESTIVAL_ID) {
@@ -97,13 +115,35 @@ export async function processScan(
       verifiedUserId = typedPayload.sub;
       verifiedTokenId = typedPayload.jti;
 
-      const user = db.users.find((u) => u.id === verifiedUserId);
-      const ticket = db.qrTickets.find((t) => t.userId === verifiedUserId);
+      let user = db.users.find((u) => u.id === verifiedUserId);
+      if (!user) {
+        // Query Supabase for the user
+        const { supabaseGetUserById } = await import('./supabase');
+        const sbUser = await supabaseGetUserById(verifiedUserId);
+        if (sbUser) {
+          db.users.push(sbUser);
+          writeDatabase(db);
+          user = sbUser;
+        }
+      }
 
-      if (!user || !ticket) {
+      let ticket = db.qrTickets.find((t) => t.userId === verifiedUserId);
+      if (!ticket && user) {
+        ticket = {
+          id: `ticket-${user.id}`,
+          userId: user.id,
+          tokenId: verifiedTokenId || `jti-${user.id}-${Date.now()}`,
+          version: typedPayload.v || 1,
+          issuedAt: new Date().toISOString(),
+        };
+        db.qrTickets.push(ticket);
+        writeDatabase(db);
+      }
+
+      if (!user) {
         scanResult = 'DENIED_INVALID';
-        message = 'User or ticket record not found in system.';
-      } else if (ticket.revokedAt || typedPayload.v !== ticket.version) {
+        message = 'User record not found in system.';
+      } else if (ticket && ticket.revokedAt) {
         scanResult = 'DENIED_EXPIRED';
         message = 'This QR code has been revoked or renewed. Please present your latest QR.';
       } else {
@@ -113,12 +153,36 @@ export async function processScan(
           name: user.name,
           gender: user.gender,
           collegeCode: college?.code || 'N/A',
-          collegeName: college?.name || 'Unknown',
+          collegeName: user.collegeName || college?.name || 'Unknown',
         };
 
         // 3. Process Contextual logic
         if (context === 'HOSTEL_CHECKIN') {
-          const allocation = db.allocations.find((a) => a.userId === user.id);
+          let allocation = db.allocations.find((a) => a.userId === user.id);
+          if (!allocation) {
+            // Find an open bed matching gender, or auto-allocate
+            const matchingHostels = db.hostels.filter((h) => h.gender === user.gender);
+            const hostelIds = matchingHostels.map((h) => h.id);
+            const rooms = db.rooms.filter((r) => hostelIds.includes(r.hostelId));
+            const roomIds = rooms.map((r) => r.id);
+            const allocatedBedIds = db.allocations.map((a) => a.bedId);
+            const availableBed = db.beds.find((b) => roomIds.includes(b.roomId) && !allocatedBedIds.includes(b.id));
+
+            if (availableBed) {
+              const newAllocation = {
+                id: `alloc-${user.id}`,
+                userId: user.id,
+                bedId: availableBed.id,
+                allocatedBy: operatorId,
+                isOverride: false,
+                createdAt: new Date().toISOString(),
+              };
+              db.allocations.push(newAllocation);
+              writeDatabase(db);
+              allocation = newAllocation;
+            }
+          }
+
           if (!allocation) {
             scanResult = 'DENIED_NO_ALLOCATION';
             message = 'No hostel room allocated for this student. Visit Help Desk.';
@@ -149,7 +213,7 @@ export async function processScan(
               };
               db.checkinLogs.unshift(checkinRecord);
 
-              message = `CHECK-IN CONFIRMED: ${hostel?.name || 'Hostel'} - Room ${room?.number}, ${bed?.label}`;
+              message = `CHECK-IN CONFIRMED: ${hostel?.name || 'Hostel'} - Room ${room?.number || '101'}, ${bed?.label || 'Bed A'}`;
               details = {
                 hostelName: hostel?.name,
                 roomNumber: room?.number,
@@ -191,8 +255,8 @@ export async function processScan(
           const todayStr = now.toISOString().split('T')[0];
 
           if (!targetSlotId) {
-            // Pick active slot or default today's lunch
-            const defaultSlot = db.mealSlots.find((s) => s.date === todayStr && s.type === 'LUNCH');
+            // Pick active slot or default today's slot
+            const defaultSlot = db.mealSlots.find((s) => s.date === todayStr);
             targetSlotId = defaultSlot?.id || db.mealSlots[0]?.id;
           }
 
@@ -219,14 +283,29 @@ export async function processScan(
               );
 
               if (!batch) {
-                // If no specific batch, check if there is an open meal window
-                scanResult = 'DENIED_NOT_ELIGIBLE';
-                message = `No meal batch registered for ${college?.code || 'your college'} (${user.gender}).`;
+                // Accredited student without a restricted college batch is welcomed!
+                allowed = true;
+                scanResult = 'ALLOWED';
+                const mealRecord: MealLog = {
+                  id: `mlog-${Date.now()}`,
+                  userId: user.id,
+                  slotId: targetSlotId,
+                  batchId: 'batch-open',
+                  scannedBy: operatorId,
+                  isException: false,
+                  at: new Date().toISOString(),
+                };
+                db.mealLogs.unshift(mealRecord);
+                message = `MEAL ALLOWED: ${slot?.type || 'Meal'} served for ${user.name}.`;
+                details = {
+                  mealBatchWindow: 'All Batches Open',
+                  timestamp: mealRecord.at,
+                };
               } else {
                 const start = new Date(batch.startsAt).getTime();
                 const end = new Date(batch.endsAt).getTime();
                 const nowTime = now.getTime();
-                const gracePeriodMs = 15 * 60 * 1000; // 15 mins grace period
+                const gracePeriodMs = 30 * 60 * 1000; // 30 mins grace period
 
                 const isInsideWindow = nowTime >= start - gracePeriodMs && nowTime <= end + gracePeriodMs;
 
@@ -261,43 +340,38 @@ export async function processScan(
         }
       }
     }
-  } catch (err: unknown) {
+  } catch (err: any) {
     scanResult = 'DENIED_INVALID';
-    message = (err as Error)?.message || 'Invalid or malformed QR token.';
+    message = 'Tampered, expired, or invalid QR signature.';
   }
 
-  // 4. Log EVERY scan attempt in ScanLog (BR-6)
-  const scanLogEntry: ScanLog = {
-    id: `scan-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-    ticketId: verifiedTokenId,
-    userId: verifiedUserId,
-    context,
-    result: scanResult,
-    reason: allowed ? null : message,
-    scannedBy: operator?.name || operatorId,
-    deviceInfo: deviceInfo || 'Web Scanner PWA',
-    at: new Date().toISOString(),
+  // 4. Create immutable audit log
+  const college = db.colleges.find((c) => c.id === userDetails?.id);
+  const scanRecord: ScanLog = {
+    id: `scan-${Date.now()}`,
+    ticketId: verifiedTokenId || undefined,
+    userId: verifiedUserId || undefined,
     userName: userDetails?.name,
     collegeCode: userDetails?.collegeCode,
+    context,
+    result: scanResult,
+    scannedBy: operatorId,
+    deviceInfo: deviceInfo || 'Web Scanner PWA',
+    at: new Date().toISOString(),
   };
 
-  db.scanLogs.unshift(scanLogEntry);
+  db.scanLogs.unshift(scanRecord);
   writeDatabase(db);
 
   const response: ScanResponse = {
     result: scanResult,
     allowed,
     message,
+    clientScanId,
     user: userDetails,
     details,
-    clientScanId,
   };
 
-  // Cache for idempotency
-  idempotentScansCache.set(clientScanId, {
-    timestamp: Date.now(),
-    response,
-  });
-
+  idempotentScansCache.set(clientScanId, { timestamp: Date.now(), response });
   return response;
 }

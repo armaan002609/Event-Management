@@ -90,6 +90,14 @@ class SoundService {
       // Audio not permitted
     }
   }
+
+  allowed() {
+    this.playSuccess();
+  }
+
+  denied() {
+    this.playError();
+  }
 }
 
 export const sounds = new SoundService();

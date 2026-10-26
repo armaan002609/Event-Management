@@ -148,6 +148,44 @@ export async function supabaseGetUserByEmail(email: string): Promise<User | null
   }
 }
 
+export async function supabaseGetUserById(id: string): Promise<User | null> {
+  const sb = getSupabase();
+  if (!sb) return null;
+  try {
+    const { data, error } = await sb
+      .from('users')
+      .select('*, college:colleges(*)')
+      .eq('id', id.trim())
+      .single();
+    if (error || !data) return null;
+
+    return {
+      id: data.id,
+      email: data.email,
+      name: data.name,
+      phone: data.phone,
+      fatherName: data.father_name || null,
+      fatherPhone: data.father_phone || null,
+      address: data.address || null,
+      collegeId: data.college_id,
+      collegeName: data.college_name || data.college?.name || null,
+      college: data.college,
+      rollNo: data.roll_no || null,
+      course: data.course || null,
+      passingYear: data.passing_year || null,
+      avatarUrl: data.avatar_url || null,
+      isProfileComplete: data.is_profile_complete || false,
+      gender: data.gender,
+      role: data.role,
+      emailVerified: data.email_verified,
+      password: data.password,
+      verificationCode: data.verification_code,
+    };
+  } catch {
+    return null;
+  }
+}
+
 // ─── REGISTRATION OPERATIONS ──────────────────────────────────────
 
 export async function supabaseUpsertRegistration(reg: EventRegistration): Promise<boolean> {

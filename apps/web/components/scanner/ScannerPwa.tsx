@@ -1,25 +1,25 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import {
   QrCode,
   CheckCircle2,
   XCircle,
   Camera,
-  Flashlight,
   RefreshCw,
   Search,
   ArrowLeft,
   Volume2,
   VolumeX,
-  PhoneCall,
   Wifi,
   WifiOff,
-  History,
   Lock,
   Unlock,
-  ChevronDown,
+  Upload,
+  SwitchCamera,
+  AlertCircle,
+  ShieldCheck,
 } from 'lucide-react';
 import { ScanContext, ScanResult, ScanResponse, User, MealSlot } from '@unifest/shared';
 import { sounds } from '@/lib/feedback';
@@ -28,19 +28,25 @@ export function ScannerPwa() {
   const [context, setContext] = useState<ScanContext>('HOSTEL_CHECKIN');
   const [slotId, setSlotId] = useState<string>('');
   const [mealSlots, setMealSlots] = useState<MealSlot[]>([]);
-  const [isModeLocked, setIsModeLocked] = useState(true);
+  const [isModeLocked, setIsModeLocked] = useState(false);
 
   // Scanning state
-  const [isScanning, setIsScanning] = useState(true);
   const [scanResultOverlay, setScanResultOverlay] = useState<ScanResponse | null>(null);
   const [manualTokenInput, setManualTokenInput] = useState('');
   const [scansCountToday, setScansCountToday] = useState(14);
   const [recentScans, setRecentScans] = useState<Array<{ name: string; result: string; time: string; college: string }>>([]);
 
+  // Camera state
+  const [cameraActive, setCameraActive] = useState(false);
+  const [cameraError, setCameraError] = useState<string | null>(null);
+  const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment');
+  const html5QrCodeRef = useRef<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const isScanningRef = useRef(false);
+
   // Offline queue state
   const [isOnline, setIsOnline] = useState(true);
   const [offlineQueue, setOfflineQueue] = useState<any[]>([]);
-
   const [soundEnabled, setSoundEnabled] = useState(true);
 
   useEffect(() => {
@@ -73,7 +79,6 @@ export function ScannerPwa() {
   }, []);
 
   const flushOfflineQueue = async () => {
-    // Sync any queued scans
     if (offlineQueue.length === 0) return;
     const queue = [...offlineQueue];
     setOfflineQueue([]);
@@ -90,20 +95,31 @@ export function ScannerPwa() {
     }
   };
 
-  const executeScan = async (tokenString: string) => {
-    if (!tokenString) return;
+  const executeScan = useCallback(async (tokenString: string) => {
+    if (!tokenString || isScanningRef.current) return;
+    isScanningRef.current = true;
+
+    // Clean token if a full URL was scanned
+    let cleanToken = tokenString.trim();
+    if (cleanToken.includes('token=')) {
+      try {
+        const match = cleanToken.match(/token=([a-zA-Z0-9_\-\.]+)/);
+        if (match && match[1]) {
+          cleanToken = match[1];
+        }
+      } catch {}
+    }
 
     const clientScanId = `scan-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
     const payload = {
-      token: tokenString,
+      token: cleanToken,
       context,
       slotId: context === 'MEAL' ? slotId : undefined,
       clientScanId,
-      deviceInfo: 'Scanner PWA Mobile #1',
+      deviceInfo: 'Scanner PWA Camera #1',
     };
 
     if (!isOnline) {
-      // Offline mode: queue locally
       setOfflineQueue((prev) => [...prev, payload]);
       const mockOfflineResponse: ScanResponse = {
         result: 'ALLOWED',
@@ -134,19 +150,20 @@ export function ScannerPwa() {
       };
       displayScanResult(errResponse);
     }
-  };
+  }, [context, slotId, isOnline]);
 
   const displayScanResult = (res: ScanResponse) => {
     setScanResultOverlay(res);
-    setScansCountToday((prev) => prev + 1);
+    setScansCountToday((c) => c + 1);
 
+    // Audio & Haptic Feedback
     if (res.allowed) {
-      if (soundEnabled) sounds.playSuccess();
+      if (soundEnabled) sounds.allowed();
       if (typeof window !== 'undefined' && 'vibrate' in navigator) {
         try { navigator.vibrate(80); } catch {}
       }
     } else {
-      if (soundEnabled) sounds.playError();
+      if (soundEnabled) sounds.denied();
       if (typeof window !== 'undefined' && 'vibrate' in navigator) {
         try { navigator.vibrate([120, 60, 120]); } catch {}
       }
@@ -163,11 +180,92 @@ export function ScannerPwa() {
       ...prev.slice(0, 7),
     ]);
 
-    // Auto dismiss after 2.5 seconds per UX spec
+    // Resume scanning after 2.5 seconds
     setTimeout(() => {
       setScanResultOverlay(null);
+      isScanningRef.current = false;
     }, 2500);
   };
+
+  // Start Camera Scanning
+  const startCamera = useCallback(async (facing: 'environment' | 'user' = facingMode) => {
+    try {
+      setCameraError(null);
+      const { Html5Qrcode } = await import('html5-qrcode');
+
+      if (html5QrCodeRef.current) {
+        try {
+          await html5QrCodeRef.current.stop();
+        } catch {}
+        html5QrCodeRef.current = null;
+      }
+
+      const html5QrCode = new Html5Qrcode('scanner-viewport-box');
+      html5QrCodeRef.current = html5QrCode;
+
+      await html5QrCode.start(
+        { facingMode: facing },
+        {
+          fps: 15,
+          qrbox: { width: 220, height: 220 },
+          aspectRatio: 1.0,
+        },
+        (decodedText: string) => {
+          executeScan(decodedText);
+        },
+        () => {}
+      );
+
+      setCameraActive(true);
+    } catch (err: any) {
+      console.warn('Camera start error:', err);
+      setCameraError(err?.message || 'Unable to access camera. Please allow camera permissions.');
+      setCameraActive(false);
+    }
+  }, [facingMode, executeScan]);
+
+  const stopCamera = useCallback(async () => {
+    if (html5QrCodeRef.current) {
+      try {
+        await html5QrCodeRef.current.stop();
+      } catch {}
+      try {
+        await html5QrCodeRef.current.clear();
+      } catch {}
+      html5QrCodeRef.current = null;
+    }
+    setCameraActive(false);
+  }, []);
+
+  const toggleCameraFacing = async () => {
+    const nextFacing = facingMode === 'environment' ? 'user' : 'environment';
+    setFacingMode(nextFacing);
+    await stopCamera();
+    startCamera(nextFacing);
+  };
+
+  // Handle uploading/picking an image file with a QR code
+  const handleImageFileScan = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const { Html5Qrcode } = await import('html5-qrcode');
+      const tempScanner = new Html5Qrcode('scanner-viewport-box');
+      const result = await tempScanner.scanFile(file, true);
+      executeScan(result);
+    } catch {
+      alert('Could not detect a QR code in the selected image. Please try a clearer picture.');
+    }
+  };
+
+  // Automatically start camera on mount, clean up on unmount
+  useEffect(() => {
+    startCamera('environment');
+    return () => {
+      stopCamera();
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-950 text-white flex flex-col justify-between select-none relative overflow-hidden font-sans">
@@ -175,26 +273,27 @@ export function ScannerPwa() {
       <div className="p-4 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between z-30">
         <Link
           href="/"
-          className="p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white flex items-center gap-1.5 text-xs font-bold"
+          className="p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white flex items-center gap-1.5 text-xs font-bold transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Portal
         </Link>
 
-        {/* Network status */}
+        {/* Network & Sound Status */}
         <div className="flex items-center gap-2">
           {isOnline ? (
-            <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-800">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> Online
+            <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-full border border-emerald-800">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" /> Live Online
             </span>
           ) : (
-            <span className="flex items-center gap-1 text-[11px] font-bold text-amber-400 bg-amber-950/60 px-2 py-0.5 rounded-full border border-amber-800">
+            <span className="flex items-center gap-1 text-[11px] font-bold text-amber-400 bg-amber-950/60 px-2.5 py-1 rounded-full border border-amber-800">
               <WifiOff className="w-3 h-3" /> Offline ({offlineQueue.length} queued)
             </span>
           )}
 
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
-            className="p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-white"
+            className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white transition-colors"
+            title={soundEnabled ? 'Mute Sounds' : 'Enable Sounds'}
           >
             {soundEnabled ? <Volume2 className="w-4 h-4 text-emerald-400" /> : <VolumeX className="w-4 h-4" />}
           </button>
@@ -206,14 +305,14 @@ export function ScannerPwa() {
         <div className="flex-1">
           <div className="flex items-center gap-2">
             <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-              Scanner Context Mode:
+              Verification Context:
             </label>
             <button
               onClick={() => setIsModeLocked(!isModeLocked)}
               className="text-[10px] font-bold flex items-center gap-1 text-primary-light"
             >
               {isModeLocked ? <Lock className="w-3 h-3 text-amber-400" /> : <Unlock className="w-3 h-3 text-emerald-400" />}
-              {isModeLocked ? 'Locked' : 'Unlocked'}
+              {isModeLocked ? 'Mode Locked' : 'Unlocked'}
             </button>
           </div>
 
@@ -223,7 +322,7 @@ export function ScannerPwa() {
               onClick={() => setContext('HOSTEL_CHECKIN')}
               className={`py-1.5 rounded-lg text-xs font-bold transition-all ${
                 context === 'HOSTEL_CHECKIN'
-                  ? 'bg-primary text-white shadow-md'
+                  ? 'bg-primary text-white shadow-md shadow-primary/25'
                   : 'bg-slate-800 text-slate-400 disabled:opacity-60'
               }`}
             >
@@ -234,7 +333,7 @@ export function ScannerPwa() {
               onClick={() => setContext('HOSTEL_CHECKOUT')}
               className={`py-1.5 rounded-lg text-xs font-bold transition-all ${
                 context === 'HOSTEL_CHECKOUT'
-                  ? 'bg-primary text-white shadow-md'
+                  ? 'bg-primary text-white shadow-md shadow-primary/25'
                   : 'bg-slate-800 text-slate-400 disabled:opacity-60'
               }`}
             >
@@ -245,7 +344,7 @@ export function ScannerPwa() {
               onClick={() => setContext('MEAL')}
               className={`py-1.5 rounded-lg text-xs font-bold transition-all ${
                 context === 'MEAL'
-                  ? 'bg-amber-600 text-white shadow-md'
+                  ? 'bg-amber-600 text-white shadow-md shadow-amber-600/25'
                   : 'bg-slate-800 text-slate-400 disabled:opacity-60'
               }`}
             >
@@ -260,7 +359,7 @@ export function ScannerPwa() {
                 disabled={isModeLocked}
                 value={slotId}
                 onChange={(e) => setSlotId(e.target.value)}
-                className="bg-slate-800 text-white text-xs p-1 rounded-lg border border-slate-700 disabled:opacity-60 focus:outline-none"
+                className="bg-slate-800 text-white text-xs p-1.5 rounded-lg border border-slate-700 disabled:opacity-60 focus:outline-none"
               >
                 {mealSlots.map((s) => (
                   <option key={s.id} value={s.id}>
@@ -274,39 +373,108 @@ export function ScannerPwa() {
       </div>
 
       {/* Center Camera Viewfinder Reticle */}
-      <div className="flex-1 flex flex-col items-center justify-center p-6 relative">
-        <div className="w-64 h-64 sm:w-72 sm:h-72 rounded-3xl border-2 border-indigo-500/40 bg-slate-900/60 shadow-2xl relative flex items-center justify-center overflow-hidden scanner-reticle">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 relative">
+        <div className="w-64 h-64 sm:w-72 sm:h-72 rounded-3xl border-2 border-indigo-500/40 bg-slate-900/90 shadow-2xl relative flex items-center justify-center overflow-hidden scanner-reticle">
           {/* Corner Guides */}
-          <div className="absolute top-3 left-3 w-6 h-6 border-t-4 border-l-4 border-primary rounded-tl-lg" />
-          <div className="absolute top-3 right-3 w-6 h-6 border-t-4 border-r-4 border-primary rounded-tr-lg" />
-          <div className="absolute bottom-3 left-3 w-6 h-6 border-b-4 border-l-4 border-primary rounded-bl-lg" />
-          <div className="absolute bottom-3 right-3 w-6 h-6 border-b-4 border-r-4 border-primary rounded-br-lg" />
+          <div className="absolute top-3 left-3 w-6 h-6 border-t-4 border-l-4 border-primary rounded-tl-lg z-20 pointer-events-none" />
+          <div className="absolute top-3 right-3 w-6 h-6 border-t-4 border-r-4 border-primary rounded-tr-lg z-20 pointer-events-none" />
+          <div className="absolute bottom-3 left-3 w-6 h-6 border-b-4 border-l-4 border-primary rounded-bl-lg z-20 pointer-events-none" />
+          <div className="absolute bottom-3 right-3 w-6 h-6 border-b-4 border-r-4 border-primary rounded-br-lg z-20 pointer-events-none" />
 
-          {/* Camera Viewfinder Graphic with Laser Beam */}
-          <div className="scanner-laser" />
-          <div className="flex flex-col items-center text-center p-4 relative z-10">
-            <Camera className="w-10 h-10 text-indigo-400/80 mb-2 animate-pulse" />
-            <span className="text-xs font-bold text-slate-300">Point at Student QR</span>
-            <span className="text-[10px] text-slate-500 mt-0.5">High-speed verification active</span>
-          </div>
+          {/* Laser beam animation */}
+          {cameraActive && <div className="scanner-laser z-20 pointer-events-none" />}
+
+          {/* HTML5 QR Code Video Container */}
+          <div id="scanner-viewport-box" className="w-full h-full object-cover z-10" />
+
+          {/* Fallback placeholder if camera not active */}
+          {!cameraActive && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 bg-slate-900/95 z-10">
+              <Camera className="w-10 h-10 text-indigo-400 mb-2 animate-pulse" />
+              <span className="text-xs font-bold text-slate-200">Camera Inactive</span>
+              <p className="text-[10px] text-slate-400 mt-1 max-w-[200px]">
+                {cameraError || 'Click below to start camera or upload an image.'}
+              </p>
+              <button
+                type="button"
+                onClick={() => startCamera(facingMode)}
+                className="mt-3 px-3 py-1.5 rounded-xl bg-primary text-white text-xs font-bold shadow hover:bg-primary-dark transition-all flex items-center gap-1.5"
+              >
+                <Camera className="w-3.5 h-3.5" />
+                <span>Start Camera</span>
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Camera Controls Bar */}
+        <div className="flex items-center gap-3 mt-4">
+          {cameraActive ? (
+            <>
+              <button
+                type="button"
+                onClick={stopCamera}
+                className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center gap-1.5"
+              >
+                Pause Camera
+              </button>
+              <button
+                type="button"
+                onClick={toggleCameraFacing}
+                className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center gap-1.5"
+                title="Switch Front/Back Camera"
+              >
+                <SwitchCamera className="w-3.5 h-3.5 text-primary-light" />
+                <span>Flip</span>
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => startCamera(facingMode)}
+              className="px-3 py-1.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-xs font-semibold flex items-center gap-1.5"
+            >
+              <Camera className="w-3.5 h-3.5" />
+              <span>Enable Camera</span>
+            </button>
+          )}
+
+          {/* Upload QR Image file */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageFileScan}
+          />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center gap-1.5"
+            title="Scan QR from photo / screenshot"
+          >
+            <Upload className="w-3.5 h-3.5" />
+            <span>Upload Image</span>
+          </button>
         </div>
 
         {/* Manual Token Paste Fallback */}
-        <div className="w-full max-w-sm mt-4">
+        <div className="w-full max-w-sm mt-3">
           <div className="flex items-center gap-2">
             <input
               type="text"
               value={manualTokenInput}
               onChange={(e) => setManualTokenInput(e.target.value)}
-              placeholder="Or paste QR token manually..."
+              placeholder="Or paste QR token / link manually..."
               className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-primary"
             />
             <button
+              type="button"
               onClick={() => {
                 executeScan(manualTokenInput);
                 setManualTokenInput('');
               }}
-              className="px-3 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-dark"
+              className="px-3.5 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-dark transition-all"
             >
               Verify
             </button>
@@ -314,11 +482,11 @@ export function ScannerPwa() {
         </div>
       </div>
 
-      {/* Bottom Counter & History Drawer */}
+      {/* Bottom Counter & History Stream */}
       <div className="p-4 bg-slate-900/90 border-t border-slate-800 z-20">
         <div className="max-w-sm mx-auto flex items-center justify-between text-xs">
           <div>
-            <span className="text-slate-400 text-[11px]">Today's Total Scans:</span>
+            <span className="text-slate-400 text-[11px]">Today&apos;s Total Scans:</span>
             <p className="font-heading font-extrabold text-base text-white">{scansCountToday}</p>
           </div>
 
@@ -344,86 +512,52 @@ export function ScannerPwa() {
         )}
       </div>
 
-      {/* FULL-SCREEN RESULT OVERLAY (UX SPEC 4.3: High-contrast Green / Red readable from arm's length) */}
+      {/* FULL-SCREEN RESULT OVERLAY (High-contrast Green / Red readable from arm's length) */}
       {scanResultOverlay && (
         <div
-          onClick={() => setScanResultOverlay(null)}
-          className={`fixed inset-0 z-50 flex flex-col items-center justify-center p-6 text-white text-center animate-in zoom-in-95 duration-150 cursor-pointer ${
-            scanResultOverlay.allowed ? 'scan-allowed-overlay' : 'scan-denied-overlay'
+          onClick={() => {
+            setScanResultOverlay(null);
+            isScanningRef.current = false;
+          }}
+          className={`fixed inset-0 z-50 flex flex-col items-center justify-center p-6 text-white text-center cursor-pointer animate-in fade-in zoom-in-95 duration-150 ${
+            scanResultOverlay.allowed ? 'bg-emerald-600' : 'bg-rose-600'
           }`}
         >
-          {scanResultOverlay.allowed ? (
-            <div className="flex flex-col items-center space-y-4 max-w-sm">
-              <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-2xl">
-                <CheckCircle2 className="w-16 h-16 text-white" />
+          <div className="max-w-md w-full flex flex-col items-center">
+            {scanResultOverlay.allowed ? (
+              <CheckCircle2 className="w-24 h-24 mb-4 drop-shadow-lg animate-bounce" />
+            ) : (
+              <XCircle className="w-24 h-24 mb-4 drop-shadow-lg animate-pulse" />
+            )}
+
+            <h1 className="font-heading font-black text-3xl sm:text-4xl tracking-tight mb-2 drop-shadow">
+              {scanResultOverlay.allowed ? 'VERIFIED · ALLOWED' : 'DENIED · RESTRICTED'}
+            </h1>
+
+            <p className="text-base sm:text-lg font-medium opacity-95 max-w-sm mb-6 drop-shadow">
+              {scanResultOverlay.message}
+            </p>
+
+            {scanResultOverlay.user && (
+              <div className="bg-white/20 backdrop-blur-md rounded-2xl p-4 w-full text-left space-y-1.5 border border-white/20">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-lg">{scanResultOverlay.user.name}</span>
+                  <span className="px-2 py-0.5 rounded-full bg-white/25 text-xs font-bold">
+                    {scanResultOverlay.user.collegeCode}
+                  </span>
+                </div>
+                <p className="text-xs opacity-90">{scanResultOverlay.user.collegeName}</p>
+                <div className="text-[11px] opacity-80 flex items-center justify-between pt-1 border-t border-white/20">
+                  <span>Gender: {scanResultOverlay.user.gender}</span>
+                  <span>ID: {scanResultOverlay.user.id}</span>
+                </div>
               </div>
+            )}
 
-              <h1 className="font-heading font-black text-4xl sm:text-5xl tracking-tight">
-                ALLOWED
-              </h1>
-
-              <div className="bg-black/20 backdrop-blur-md rounded-2xl p-4 w-full text-left space-y-1">
-                <p className="font-heading font-extrabold text-lg text-white">
-                  {scanResultOverlay.user?.name}
-                </p>
-                <p className="text-xs text-white/90 font-semibold">
-                  {scanResultOverlay.user?.collegeCode} ({scanResultOverlay.user?.collegeName}) · {scanResultOverlay.user?.gender === 'MALE' ? '♂ M' : '♀ F'}
-                </p>
-
-                {scanResultOverlay.details?.roomNumber && (
-                  <p className="text-sm font-bold text-white pt-1">
-                    {scanResultOverlay.details.hostelName} · Room {scanResultOverlay.details.roomNumber} ({scanResultOverlay.details.bedLabel})
-                  </p>
-                )}
-
-                {scanResultOverlay.details?.mealBatchWindow && (
-                  <p className="text-xs font-semibold text-white/90 pt-1">
-                    Meal Batch: {scanResultOverlay.details.mealBatchWindow}
-                  </p>
-                )}
-              </div>
-
-              <span className="text-[11px] text-white/80 animate-pulse bg-black/20 px-3 py-1 rounded-full">
-                Tap anywhere to scan next
-              </span>
-            </div>
-          ) : (
-            <div className="flex flex-col items-center space-y-4 max-w-sm">
-              <div className="w-24 h-24 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-2xl">
-                <XCircle className="w-16 h-16 text-white" />
-              </div>
-
-              <h1 className="font-heading font-black text-4xl sm:text-5xl tracking-tight">
-                DENIED
-              </h1>
-
-              <div className="bg-black/25 backdrop-blur-md rounded-2xl p-4 w-full text-center space-y-2">
-                <p className="text-sm font-bold text-white leading-snug">
-                  {scanResultOverlay.message}
-                </p>
-                {scanResultOverlay.user && (
-                  <p className="text-xs text-white/80">
-                    {scanResultOverlay.user.name} ({scanResultOverlay.user.collegeCode})
-                  </p>
-                )}
-              </div>
-
-              <div className="flex items-center gap-3">
-                <a
-                  href="tel:100"
-                  className="px-4 py-2 rounded-xl bg-white text-rose-700 text-xs font-bold shadow-lg flex items-center gap-1.5"
-                >
-                  <PhoneCall className="w-3.5 h-3.5" /> Call Manager
-                </a>
-                <button
-                  onClick={() => setScanResultOverlay(null)}
-                  className="px-4 py-2 rounded-xl bg-black/30 text-white text-xs font-bold hover:bg-black/40"
-                >
-                  Dismiss
-                </button>
-              </div>
-            </div>
-          )}
+            <span className="text-xs opacity-75 mt-6 font-semibold">
+              Tap anywhere to dismiss and continue scanning
+            </span>
+          </div>
         </div>
       )}
     </div>
