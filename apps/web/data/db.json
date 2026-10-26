@@ -1,193 +1,58 @@
 {
   "colleges": [
     {
-      "id": "col-pce",
-      "name": "Punjab College of Engineering",
-      "code": "PCE",
-      "color": "#2563EB"
-    },
-    {
-      "id": "col-lpu",
-      "name": "Lovely Professional University",
-      "code": "LPU",
-      "color": "#7C3AED"
-    },
-    {
-      "id": "col-iitd",
-      "name": "IIT Delhi",
-      "code": "IITD",
-      "color": "#059669"
-    },
-    {
-      "id": "col-du",
-      "name": "Delhi University",
-      "code": "DU",
-      "color": "#D97706"
-    },
-    {
-      "id": "col-bits",
-      "name": "BITS Pilani",
-      "code": "BITS",
-      "color": "#DC2626"
-    },
-    {
-      "id": "col-1793040091340-hi45",
-      "name": "Delhi University",
-      "code": "DELH",
+      "id": "col-cgc-univ-mohali",
+      "name": "CGC University, Mohali",
+      "code": "CGC-M",
       "color": "#4F46E5"
     },
     {
-      "id": "col-1793040091341-5m54",
-      "name": "IIT Delhi",
-      "code": "IIT",
+      "id": "col-1793043228502-fv6t",
+      "name": "Panjab University",
+      "code": "PANJ",
+      "color": "#4F46E5"
+    },
+    {
+      "id": "col-1793043228502-z1yi",
+      "name": "Thapar Institute of Engineering and Technology",
+      "code": "THAP",
       "color": "#059669"
     },
     {
-      "id": "col-1793040091341-4fcq",
-      "name": "Panjab University",
-      "code": "PANJ",
+      "id": "col-1793043228502-m6vd",
+      "name": "Lovely Professional University",
+      "code": "LOVE",
       "color": "#E11D48"
     },
     {
-      "id": "col-1793041252375-jcjb",
-      "name": "CGC University Mohali",
-      "code": "CGC",
-      "color": "#D97706"
+      "id": "col-1793043228502-3m9h",
+      "name": "Delhi University (Hansraj College)",
+      "code": "DELH",
+      "color": "#0D9488"
     }
   ],
   "users": [
     {
-      "id": "usr-aarav",
-      "email": "aarav.sharma@pce.edu",
-      "name": "Aarav Sharma",
-      "phone": "+91 98765 43210",
+      "id": "usr-mvpbtfrm-8777",
+      "email": "armaankapoor2609@gmail.com",
+      "name": "Armaan",
+      "phone": null,
+      "fatherName": null,
+      "fatherPhone": null,
+      "address": null,
+      "collegeId": "col-cgc-univ-mohali",
+      "collegeName": null,
+      "college": null,
+      "rollNo": null,
+      "course": null,
+      "passingYear": null,
+      "avatarUrl": null,
+      "isProfileComplete": false,
       "gender": "MALE",
       "role": "STUDENT",
-      "collegeId": "col-pce",
       "emailVerified": true,
-      "password": "unifest123"
-    },
-    {
-      "id": "usr-amit",
-      "email": "amit.verma@pce.edu",
-      "name": "Amit Verma",
-      "phone": "+91 98765 43211",
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-pce",
-      "emailVerified": true,
-      "password": "unifest123"
-    },
-    {
-      "id": "usr-priya",
-      "email": "priya.singh@du.ac.in",
-      "name": "Priya Singh",
-      "phone": "+91 98765 43212",
-      "gender": "FEMALE",
-      "role": "STUDENT",
-      "collegeId": "col-du",
-      "emailVerified": true,
-      "password": "unifest123"
-    },
-    {
-      "id": "usr-rohit",
-      "email": "rohit.kumar@lpu.co.in",
-      "name": "Rohit Kumar",
-      "phone": "+91 98765 43213",
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-lpu",
-      "emailVerified": true,
-      "password": "unifest123"
-    },
-    {
-      "id": "usr-sneha",
-      "email": "sneha.patel@pce.edu",
-      "name": "Sneha Patel",
-      "phone": "+91 98765 43214",
-      "gender": "FEMALE",
-      "role": "STUDENT",
-      "collegeId": "col-pce",
-      "emailVerified": false,
-      "password": "unifest123",
-      "verificationCode": "749215"
-    },
-    {
-      "id": "usr-simran",
-      "email": "simran.kaur@lpu.co.in",
-      "name": "Simran Kaur",
-      "phone": "+91 98765 43215",
-      "gender": "FEMALE",
-      "role": "STUDENT",
-      "collegeId": "col-lpu",
-      "emailVerified": true,
-      "password": "unifest123"
-    },
-    {
-      "id": "usr-kabir",
-      "email": "kabir.mehta@iitd.ac.in",
-      "name": "Kabir Mehta",
-      "phone": "+91 98765 43216",
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-iitd",
-      "emailVerified": true,
-      "password": "unifest123"
-    },
-    {
-      "id": "usr-ananya",
-      "email": "ananya.iyer@du.ac.in",
-      "name": "Ananya Iyer",
-      "phone": "+91 98765 43217",
-      "gender": "FEMALE",
-      "role": "STUDENT",
-      "collegeId": "col-du",
-      "emailVerified": true,
-      "password": "unifest123"
-    },
-    {
-      "id": "usr-divya",
-      "email": "divya.joshi@bits.ac.in",
-      "name": "Divya Joshi",
-      "phone": "+91 98765 43218",
-      "gender": "FEMALE",
-      "role": "STUDENT",
-      "collegeId": "col-bits",
-      "emailVerified": true,
-      "password": "unifest123"
-    },
-    {
-      "id": "usr-manager",
-      "email": "manager@unifest.org",
-      "name": "Vikram Malhotra (Manager)",
-      "phone": "+91 99999 11111",
-      "gender": "MALE",
-      "role": "MANAGER",
-      "collegeId": null,
-      "emailVerified": true,
-      "password": "unifest123"
-    },
-    {
-      "id": "usr-scanner",
-      "email": "scanner@unifest.org",
-      "name": "Dev Raj (Hostel/Mess Scanner)",
-      "phone": "+91 99999 22222",
-      "gender": "MALE",
-      "role": "SCANNER",
-      "collegeId": null,
-      "emailVerified": true,
-      "password": "unifest123"
-    },
-    {
-      "id": "usr-admin",
-      "email": "admin@unifest.org",
-      "name": "Dr. Sunita Rao (System Admin)",
-      "phone": "+91 99999 33333",
-      "gender": "FEMALE",
-      "role": "ADMIN",
-      "collegeId": null,
-      "emailVerified": true,
-      "password": "unifest123"
+      "password": "unifest_google_oauth",
+      "verificationCode": null
     },
     {
       "id": "usr-g-1793019998926",
@@ -210,1110 +75,853 @@
       "emailVerified": true,
       "password": "unifest123",
       "verificationCode": null
-    },
-    {
-      "id": "usr-mvpbtfrm-8777",
-      "email": "armaankapoor2609@gmail.com",
-      "name": "Armaan",
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-cgc-univ-mohali",
-      "collegeName": "CGC University, Mohali",
-      "emailVerified": true,
-      "password": "unifest_google_oauth",
-      "isProfileComplete": false
-    },
-    {
-      "id": "usr-mvpbtfur-nwhn",
-      "email": "armaankapoor2609@gmail.com",
-      "name": "Armaan",
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-cgc-univ-mohali",
-      "collegeName": "CGC University, Mohali",
-      "emailVerified": true,
-      "password": "unifest_google_oauth",
-      "isProfileComplete": false
-    },
-    {
-      "id": "usr-imp-1793039235507-ws9nf",
-      "name": "Rohan Sharma",
-      "email": "rohansharma_mvpl9kmr_0@unifest.local",
-      "phone": "9876543210",
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-cgc-univ-mohali",
-      "collegeName": "CGC University, Mohali",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793039235507-s2mgm",
-      "name": "Aditya Verma",
-      "email": "adityaverma_mvpl9kmr_1@unifest.local",
-      "phone": "9876543211",
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-cgc-univ-mohali",
-      "collegeName": "CGC University, Mohali",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040091609-kzlnf",
-      "name": "Devendra Sharma",
-      "email": "devendra.du@example.com",
-      "phone": null,
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091340-hi45",
-      "collegeName": "Delhi University",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040091609-jn5hn",
-      "name": "Aakash Verma",
-      "email": "aakash.du@example.com",
-      "phone": null,
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091340-hi45",
-      "collegeName": "Delhi University",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040091609-6mbs0",
-      "name": "Sameer Sen",
-      "email": "sameer.du@example.com",
-      "phone": null,
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091340-hi45",
-      "collegeName": "Delhi University",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040091609-2wgsu",
-      "name": "Rohan Gupta",
-      "email": "rohan.du@example.com",
-      "phone": null,
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091340-hi45",
-      "collegeName": "Delhi University",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040091609-klrpe",
-      "name": "Karan Mehra",
-      "email": "karan.iitd@example.com",
-      "phone": null,
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091341-5m54",
-      "collegeName": "IIT Delhi",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040091609-j8lta",
-      "name": "Varun Joshi",
-      "email": "varun.iitd@example.com",
-      "phone": null,
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091341-5m54",
-      "collegeName": "IIT Delhi",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040091609-q27py",
-      "name": "Aditya Rao",
-      "email": "aditya.iitd@example.com",
-      "phone": null,
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091341-5m54",
-      "collegeName": "IIT Delhi",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040091609-syvw0",
-      "name": "Ananya Roy",
-      "email": "ananya.pu@example.com",
-      "phone": null,
-      "gender": "FEMALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091341-4fcq",
-      "collegeName": "Panjab University",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040091609-ll9bx",
-      "name": "Diya Patel",
-      "email": "diya.pu@example.com",
-      "phone": null,
-      "gender": "FEMALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091341-4fcq",
-      "collegeName": "Panjab University",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040091609-clrtp",
-      "name": "Rhea Kapoor",
-      "email": "rhea.cgc@example.com",
-      "phone": null,
-      "gender": "FEMALE",
-      "role": "STUDENT",
-      "collegeId": "col-cgc-univ-mohali",
-      "collegeName": "CGC University, Mohali",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040091609-ho8ur",
-      "name": "Pooja Bhatia",
-      "email": "pooja.cgc@example.com",
-      "phone": null,
-      "gender": "FEMALE",
-      "role": "STUDENT",
-      "collegeId": "col-cgc-univ-mohali",
-      "collegeName": "CGC University, Mohali",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040091609-59yxh",
-      "name": "Simran Gill",
-      "email": "simran.cgc@example.com",
-      "phone": null,
-      "gender": "FEMALE",
-      "role": "STUDENT",
-      "collegeId": "col-cgc-univ-mohali",
-      "collegeName": "CGC University, Mohali",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040214985-skpzv",
-      "name": "Devendra Sharma",
-      "email": "devendra.du@example.com",
-      "phone": null,
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091340-hi45",
-      "collegeName": "Delhi University",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040214985-zbkgn",
-      "name": "Aakash Verma",
-      "email": "aakash.du@example.com",
-      "phone": null,
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091340-hi45",
-      "collegeName": "Delhi University",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040214985-gqney",
-      "name": "Sameer Sen",
-      "email": "sameer.du@example.com",
-      "phone": null,
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091340-hi45",
-      "collegeName": "Delhi University",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040214985-ft4qi",
-      "name": "Rohan Gupta",
-      "email": "rohan.du@example.com",
-      "phone": null,
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091340-hi45",
-      "collegeName": "Delhi University",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040214985-xceg8",
-      "name": "Karan Mehra",
-      "email": "karan.iitd@example.com",
-      "phone": null,
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091341-5m54",
-      "collegeName": "IIT Delhi",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040214985-rmrhj",
-      "name": "Varun Joshi",
-      "email": "varun.iitd@example.com",
-      "phone": null,
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091341-5m54",
-      "collegeName": "IIT Delhi",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040214985-63w4m",
-      "name": "Aditya Rao",
-      "email": "aditya.iitd@example.com",
-      "phone": null,
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091341-5m54",
-      "collegeName": "IIT Delhi",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040214985-4hi19",
-      "name": "Ananya Roy",
-      "email": "ananya.pu@example.com",
-      "phone": null,
-      "gender": "FEMALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091341-4fcq",
-      "collegeName": "Panjab University",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040214985-l4zx3",
-      "name": "Diya Patel",
-      "email": "diya.pu@example.com",
-      "phone": null,
-      "gender": "FEMALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091341-4fcq",
-      "collegeName": "Panjab University",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040214985-876um",
-      "name": "Rhea Kapoor",
-      "email": "rhea.cgc@example.com",
-      "phone": null,
-      "gender": "FEMALE",
-      "role": "STUDENT",
-      "collegeId": "col-cgc-univ-mohali",
-      "collegeName": "CGC University, Mohali",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040214985-esy0z",
-      "name": "Pooja Bhatia",
-      "email": "pooja.cgc@example.com",
-      "phone": null,
-      "gender": "FEMALE",
-      "role": "STUDENT",
-      "collegeId": "col-cgc-univ-mohali",
-      "collegeName": "CGC University, Mohali",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793040214985-bvkn7",
-      "name": "Simran Gill",
-      "email": "simran.cgc@example.com",
-      "phone": null,
-      "gender": "FEMALE",
-      "role": "STUDENT",
-      "collegeId": "col-cgc-univ-mohali",
-      "collegeName": "CGC University, Mohali",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793041252630-f3k4s",
-      "name": "Aditya Chauhan",
-      "email": "cgc2026sp001_0@unifest.local",
-      "phone": null,
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793041252375-jcjb",
-      "collegeName": "CGC University Mohali",
-      "rollNo": "CGC2026-SP-001",
-      "age": "21",
-      "city": "Mohali",
-      "state": "Punjab",
-      "course": "B.Tech CSE",
-      "passingYear": 4,
-      "activityCategory": "Sports",
-      "specificActivity": "100m Sprint Men",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793041252630-syr2t",
-      "name": "Sahil Khanna",
-      "email": "cgc2026sp002_1@unifest.local",
-      "phone": null,
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793041252375-jcjb",
-      "collegeName": "CGC University Mohali",
-      "rollNo": "CGC2026-SP-002",
-      "age": "20",
-      "city": "Mohali",
-      "state": "Punjab",
-      "course": "B.Tech Mechanical",
-      "passingYear": 3,
-      "activityCategory": "Sports",
-      "specificActivity": "Inter-College Football 7s",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793041252630-67es9",
-      "name": "Ishaan Aggarwal",
-      "email": "du2026fl001_2@unifest.local",
-      "phone": null,
-      "gender": "MALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091340-hi45",
-      "collegeName": "Delhi University",
-      "rollNo": "DU2026-FL-001",
-      "age": "20",
-      "city": "New Delhi",
-      "state": "Delhi",
-      "course": "BA Economics",
-      "passingYear": 2,
-      "activityCategory": "Folk",
-      "specificActivity": "Ghazal & Sufi Fusion Night",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793041252630-wodur",
-      "name": "Tanvi Sharma",
-      "email": "cgc2026fl003_3@unifest.local",
-      "phone": null,
-      "gender": "FEMALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793041252375-jcjb",
-      "collegeName": "CGC University Mohali",
-      "rollNo": "CGC2026-FL-003",
-      "age": "19",
-      "city": "Mohali",
-      "state": "Punjab",
-      "course": "B.Sc Biotechnology",
-      "passingYear": 2,
-      "activityCategory": "Folk",
-      "specificActivity": "Punjab Folk Bhangra Championship",
-      "emailVerified": true
-    },
-    {
-      "id": "usr-imp-1793041252630-vgfoj",
-      "name": "Meera Iyer",
-      "email": "du2026sp002_4@unifest.local",
-      "phone": null,
-      "gender": "FEMALE",
-      "role": "STUDENT",
-      "collegeId": "col-1793040091340-hi45",
-      "collegeName": "Delhi University",
-      "rollNo": "DU2026-SP-002",
-      "age": "20",
-      "city": "New Delhi",
-      "state": "Delhi",
-      "course": "B.Com Honours",
-      "passingYear": 3,
-      "activityCategory": "Sports",
-      "specificActivity": "Badminton Singles Men & Women",
-      "emailVerified": true
     }
   ],
-  "events": [
-    {
-      "id": "evt-1",
-      "title": "Inter-College 100m Sprint Men",
-      "type": "SPORTS",
-      "description": "Men sprint finals. Top 8 qualifiers from preliminary college heats.",
-      "venue": "Main Athletics Track, Sector 4",
-      "startsAt": "2026-10-25T22:15:52.578Z",
-      "endsAt": "2026-10-25T23:45:52.578Z",
-      "capacity": 16,
-      "status": "SCHEDULED"
-    },
-    {
-      "id": "evt-2",
-      "title": "Punjab Folk Bhangra Championship",
-      "type": "FOLK",
-      "description": "Traditional Folk Dance group competition. Live Dhol accompaniment.",
-      "venue": "Open Air Amphitheatre",
-      "startsAt": "2026-10-26T00:15:52.578Z",
-      "endsAt": "2026-10-26T03:15:52.578Z",
-      "capacity": 30,
-      "status": "SCHEDULED"
-    },
-    {
-      "id": "evt-3",
-      "title": "Badminton Singles Men & Women",
-      "type": "SPORTS",
-      "description": "Knockout tournament under BWF standard tournament rules.",
-      "venue": "Indoor Badminton Arena, Court 1 & 2",
-      "startsAt": "2026-10-26T20:15:52.578Z",
-      "endsAt": "2026-10-27T00:15:52.578Z",
-      "capacity": 24,
-      "status": "SCHEDULED"
-    },
-    {
-      "id": "evt-4",
-      "title": "Ghazal & Sufi Fusion Night",
-      "type": "FOLK",
-      "description": "Classical and contemporary Sufi vocal performances by college troupes.",
-      "venue": "Central Auditorium Hall",
-      "startsAt": "2026-10-27T01:15:52.578Z",
-      "endsAt": "2026-10-27T05:15:52.578Z",
-      "capacity": 200,
-      "status": "SCHEDULED"
-    },
-    {
-      "id": "evt-5",
-      "title": "Inter-College Football 7s",
-      "type": "SPORTS",
-      "description": "High-intensity 7-a-side football tournament.",
-      "venue": "West Campus Sports Ground",
-      "startsAt": "2026-10-27T20:15:52.578Z",
-      "endsAt": "2026-10-28T02:15:52.578Z",
-      "capacity": 40,
-      "status": "SCHEDULED"
-    }
-  ],
-  "registrations": [
-    {
-      "id": "reg-1",
-      "userId": "usr-aarav",
-      "eventId": "evt-1",
-      "status": "CONFIRMED"
-    },
-    {
-      "id": "reg-2",
-      "userId": "usr-aarav",
-      "eventId": "evt-2",
-      "status": "CONFIRMED"
-    },
-    {
-      "id": "reg-3",
-      "userId": "usr-amit",
-      "eventId": "evt-1",
-      "status": "CONFIRMED"
-    },
-    {
-      "id": "reg-4",
-      "userId": "usr-priya",
-      "eventId": "evt-2",
-      "status": "CONFIRMED"
-    },
-    {
-      "id": "reg-5",
-      "userId": "usr-priya",
-      "eventId": "evt-4",
-      "status": "CONFIRMED"
-    },
-    {
-      "id": "reg-6",
-      "userId": "usr-sneha",
-      "eventId": "evt-2",
-      "status": "CONFIRMED"
-    },
-    {
-      "id": "reg-7",
-      "userId": "usr-rohit",
-      "eventId": "evt-1",
-      "status": "CONFIRMED"
-    }
-  ],
+  "events": [],
+  "registrations": [],
   "hostels": [
     {
-      "id": "hostel-boys-1",
-      "name": "Aryabhatta Boys Hostel",
-      "gender": "MALE"
+      "id": "hostel-1793036398955",
+      "name": "Chanakya Hall",
+      "gender": "MALE",
+      "collegeId": "col-cgc-univ-mohali",
+      "collegeName": "CGC University, Mohali"
     },
     {
-      "id": "hostel-girls-1",
-      "name": "Gargi Girls Hostel",
-      "gender": "FEMALE"
+      "id": "hostel-1793037722443",
+      "name": "Rosewood Hall",
+      "gender": "FEMALE",
+      "collegeId": "col-cgc-univ-mohali",
+      "collegeName": "CGC University, Mohali"
     }
   ],
   "rooms": [
     {
-      "id": "room-b101",
-      "hostelId": "hostel-boys-1",
-      "number": "101",
-      "floor": 1,
-      "capacity": 3,
-      "gender": "MALE",
-      "lockedCollegeId": null
-    },
-    {
-      "id": "room-b102",
-      "hostelId": "hostel-boys-1",
-      "number": "102",
-      "floor": 1,
-      "capacity": 3,
-      "gender": "MALE",
-      "lockedCollegeId": null
-    },
-    {
-      "id": "room-b201",
-      "hostelId": "hostel-boys-1",
+      "id": "room-1793037633050",
+      "hostelId": "hostel-1793036398955",
       "number": "201",
       "floor": 2,
-      "capacity": 2,
+      "capacity": 5,
       "gender": "MALE",
       "lockedCollegeId": null
     },
     {
-      "id": "room-b202",
-      "hostelId": "hostel-boys-1",
+      "id": "room-1793037645188",
+      "hostelId": "hostel-1793036398955",
       "number": "202",
       "floor": 2,
-      "capacity": 4,
+      "capacity": 5,
       "gender": "MALE",
       "lockedCollegeId": null
     },
     {
-      "id": "room-g101",
-      "hostelId": "hostel-girls-1",
-      "number": "101",
-      "floor": 1,
-      "capacity": 3,
-      "gender": "FEMALE",
+      "id": "room-1793037682597",
+      "hostelId": "hostel-1793036398955",
+      "number": "204",
+      "floor": 2,
+      "capacity": 5,
+      "gender": "MALE",
       "lockedCollegeId": null
     },
     {
-      "id": "room-g102",
-      "hostelId": "hostel-girls-1",
+      "id": "room-1793037653997",
+      "hostelId": "hostel-1793036398955",
+      "number": "203",
+      "floor": 2,
+      "capacity": 5,
+      "gender": "MALE",
+      "lockedCollegeId": null
+    },
+    {
+      "id": "room-1793037695135",
+      "hostelId": "hostel-1793036398955",
+      "number": "205",
+      "floor": 2,
+      "capacity": 5,
+      "gender": "MALE",
+      "lockedCollegeId": null
+    },
+    {
+      "id": "room-1793037485071",
+      "hostelId": "hostel-1793036398955",
       "number": "102",
       "floor": 1,
-      "capacity": 2,
-      "gender": "FEMALE",
+      "capacity": 5,
+      "gender": "MALE",
       "lockedCollegeId": null
     },
     {
-      "id": "room-g201",
-      "hostelId": "hostel-girls-1",
-      "number": "201",
-      "floor": 2,
-      "capacity": 3,
-      "gender": "FEMALE",
+      "id": "room-1793037496911",
+      "hostelId": "hostel-1793036398955",
+      "number": "103",
+      "floor": 1,
+      "capacity": 5,
+      "gender": "MALE",
       "lockedCollegeId": null
     },
     {
-      "id": "room-g202",
-      "hostelId": "hostel-girls-1",
+      "id": "room-1793037949899",
+      "hostelId": "hostel-1793037722443",
       "number": "202",
       "floor": 2,
-      "capacity": 4,
+      "capacity": 5,
       "gender": "FEMALE",
+      "lockedCollegeId": null
+    },
+    {
+      "id": "room-1793037982383",
+      "hostelId": "hostel-1793037722443",
+      "number": "203",
+      "floor": 2,
+      "capacity": 5,
+      "gender": "FEMALE",
+      "lockedCollegeId": null
+    },
+    {
+      "id": "room-1793038027978",
+      "hostelId": "hostel-1793037722443",
+      "number": "206",
+      "floor": 2,
+      "capacity": 5,
+      "gender": "FEMALE",
+      "lockedCollegeId": null
+    },
+    {
+      "id": "room-1793038014706",
+      "hostelId": "hostel-1793037722443",
+      "number": "205",
+      "floor": 2,
+      "capacity": 5,
+      "gender": "FEMALE",
+      "lockedCollegeId": null
+    },
+    {
+      "id": "room-1793038003394",
+      "hostelId": "hostel-1793037722443",
+      "number": "204",
+      "floor": 2,
+      "capacity": 5,
+      "gender": "FEMALE",
+      "lockedCollegeId": null
+    },
+    {
+      "id": "room-1793037920521",
+      "hostelId": "hostel-1793037722443",
+      "number": "106",
+      "floor": 1,
+      "capacity": 5,
+      "gender": "FEMALE",
+      "lockedCollegeId": null
+    },
+    {
+      "id": "room-1793037940301",
+      "hostelId": "hostel-1793037722443",
+      "number": "201",
+      "floor": 2,
+      "capacity": 5,
+      "gender": "FEMALE",
+      "lockedCollegeId": null
+    },
+    {
+      "id": "room-1793037739673",
+      "hostelId": "hostel-1793037722443",
+      "number": "101",
+      "floor": 1,
+      "capacity": 5,
+      "gender": "FEMALE",
+      "lockedCollegeId": null
+    },
+    {
+      "id": "room-1793037820844",
+      "hostelId": "hostel-1793037722443",
+      "number": "103",
+      "floor": 1,
+      "capacity": 5,
+      "gender": "FEMALE",
+      "lockedCollegeId": null
+    },
+    {
+      "id": "room-1793037754594",
+      "hostelId": "hostel-1793037722443",
+      "number": "102",
+      "floor": 1,
+      "capacity": 5,
+      "gender": "FEMALE",
+      "lockedCollegeId": null
+    },
+    {
+      "id": "room-1793037909674",
+      "hostelId": "hostel-1793037722443",
+      "number": "105",
+      "floor": 1,
+      "capacity": 5,
+      "gender": "FEMALE",
+      "lockedCollegeId": null
+    },
+    {
+      "id": "room-1793037860472",
+      "hostelId": "hostel-1793037722443",
+      "number": "104",
+      "floor": 1,
+      "capacity": 5,
+      "gender": "FEMALE",
+      "lockedCollegeId": null
+    },
+    {
+      "id": "room-1793037581662",
+      "hostelId": "hostel-1793036398955",
+      "number": "105",
+      "floor": 1,
+      "capacity": 5,
+      "gender": "MALE",
+      "lockedCollegeId": null
+    },
+    {
+      "id": "room-1793037591417",
+      "hostelId": "hostel-1793036398955",
+      "number": "106",
+      "floor": 1,
+      "capacity": 5,
+      "gender": "MALE",
+      "lockedCollegeId": null
+    },
+    {
+      "id": "room-1793037567826",
+      "hostelId": "hostel-1793036398955",
+      "number": "104",
+      "floor": 1,
+      "capacity": 5,
+      "gender": "MALE",
+      "lockedCollegeId": null
+    },
+    {
+      "id": "room-1793041964281",
+      "hostelId": "hostel-1793036398955",
+      "number": "101",
+      "floor": 1,
+      "capacity": 5,
+      "gender": "MALE",
+      "lockedCollegeId": null
+    },
+    {
+      "id": "room-1793037601793",
+      "hostelId": "hostel-1793036398955",
+      "number": "107",
+      "floor": 1,
+      "capacity": 5,
+      "gender": "MALE",
       "lockedCollegeId": null
     }
   ],
   "beds": [
     {
-      "id": "bed-b101-1",
-      "roomId": "room-b101",
+      "id": "bed-room-1793037485071-1",
+      "roomId": "room-1793037485071",
       "label": "Bed A"
     },
     {
-      "id": "bed-b101-2",
-      "roomId": "room-b101",
+      "id": "bed-room-1793037485071-2",
+      "roomId": "room-1793037485071",
       "label": "Bed B"
     },
     {
-      "id": "bed-b101-3",
-      "roomId": "room-b101",
+      "id": "bed-room-1793037485071-3",
+      "roomId": "room-1793037485071",
       "label": "Bed C"
     },
     {
-      "id": "bed-b102-1",
-      "roomId": "room-b102",
-      "label": "Bed A"
-    },
-    {
-      "id": "bed-b102-2",
-      "roomId": "room-b102",
-      "label": "Bed B"
-    },
-    {
-      "id": "bed-b102-3",
-      "roomId": "room-b102",
-      "label": "Bed C"
-    },
-    {
-      "id": "bed-b201-1",
-      "roomId": "room-b201",
-      "label": "Bed A"
-    },
-    {
-      "id": "bed-b201-2",
-      "roomId": "room-b201",
-      "label": "Bed B"
-    },
-    {
-      "id": "bed-b202-1",
-      "roomId": "room-b202",
-      "label": "Bed A"
-    },
-    {
-      "id": "bed-b202-2",
-      "roomId": "room-b202",
-      "label": "Bed B"
-    },
-    {
-      "id": "bed-b202-3",
-      "roomId": "room-b202",
-      "label": "Bed C"
-    },
-    {
-      "id": "bed-b202-4",
-      "roomId": "room-b202",
+      "id": "bed-room-1793037485071-4",
+      "roomId": "room-1793037485071",
       "label": "Bed D"
     },
     {
-      "id": "bed-g101-1",
-      "roomId": "room-g101",
+      "id": "bed-room-1793037485071-5",
+      "roomId": "room-1793037485071",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793037496911-1",
+      "roomId": "room-1793037496911",
       "label": "Bed A"
     },
     {
-      "id": "bed-g101-2",
-      "roomId": "room-g101",
+      "id": "bed-room-1793037496911-2",
+      "roomId": "room-1793037496911",
       "label": "Bed B"
     },
     {
-      "id": "bed-g101-3",
-      "roomId": "room-g101",
+      "id": "bed-room-1793037496911-3",
+      "roomId": "room-1793037496911",
       "label": "Bed C"
     },
     {
-      "id": "bed-g102-1",
-      "roomId": "room-g102",
-      "label": "Bed A"
-    },
-    {
-      "id": "bed-g102-2",
-      "roomId": "room-g102",
-      "label": "Bed B"
-    },
-    {
-      "id": "bed-g201-1",
-      "roomId": "room-g201",
-      "label": "Bed A"
-    },
-    {
-      "id": "bed-g201-2",
-      "roomId": "room-g201",
-      "label": "Bed B"
-    },
-    {
-      "id": "bed-g201-3",
-      "roomId": "room-g201",
-      "label": "Bed C"
-    },
-    {
-      "id": "bed-g202-1",
-      "roomId": "room-g202",
-      "label": "Bed A"
-    },
-    {
-      "id": "bed-g202-2",
-      "roomId": "room-g202",
-      "label": "Bed B"
-    },
-    {
-      "id": "bed-g202-3",
-      "roomId": "room-g202",
-      "label": "Bed C"
-    },
-    {
-      "id": "bed-g202-4",
-      "roomId": "room-g202",
+      "id": "bed-room-1793037496911-4",
+      "roomId": "room-1793037496911",
       "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793037496911-5",
+      "roomId": "room-1793037496911",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793037567826-1",
+      "roomId": "room-1793037567826",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793037567826-2",
+      "roomId": "room-1793037567826",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793037567826-3",
+      "roomId": "room-1793037567826",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793037567826-4",
+      "roomId": "room-1793037567826",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793037567826-5",
+      "roomId": "room-1793037567826",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793037581662-1",
+      "roomId": "room-1793037581662",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793037581662-2",
+      "roomId": "room-1793037581662",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793037581662-3",
+      "roomId": "room-1793037581662",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793037581662-4",
+      "roomId": "room-1793037581662",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793037581662-5",
+      "roomId": "room-1793037581662",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793037591417-1",
+      "roomId": "room-1793037591417",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793037591417-2",
+      "roomId": "room-1793037591417",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793037591417-3",
+      "roomId": "room-1793037591417",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793037591417-4",
+      "roomId": "room-1793037591417",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793037591417-5",
+      "roomId": "room-1793037591417",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793037601793-1",
+      "roomId": "room-1793037601793",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793037601793-2",
+      "roomId": "room-1793037601793",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793037601793-3",
+      "roomId": "room-1793037601793",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793037601793-4",
+      "roomId": "room-1793037601793",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793037601793-5",
+      "roomId": "room-1793037601793",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793037633050-1",
+      "roomId": "room-1793037633050",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793037633050-2",
+      "roomId": "room-1793037633050",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793037633050-3",
+      "roomId": "room-1793037633050",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793037633050-4",
+      "roomId": "room-1793037633050",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793037633050-5",
+      "roomId": "room-1793037633050",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793037645188-1",
+      "roomId": "room-1793037645188",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793037645188-2",
+      "roomId": "room-1793037645188",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793037645188-3",
+      "roomId": "room-1793037645188",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793037645188-4",
+      "roomId": "room-1793037645188",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793037645188-5",
+      "roomId": "room-1793037645188",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793037653997-1",
+      "roomId": "room-1793037653997",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793037653997-2",
+      "roomId": "room-1793037653997",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793037653997-3",
+      "roomId": "room-1793037653997",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793037653997-4",
+      "roomId": "room-1793037653997",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793037653997-5",
+      "roomId": "room-1793037653997",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793037682597-1",
+      "roomId": "room-1793037682597",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793037682597-2",
+      "roomId": "room-1793037682597",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793037682597-3",
+      "roomId": "room-1793037682597",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793037682597-4",
+      "roomId": "room-1793037682597",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793037682597-5",
+      "roomId": "room-1793037682597",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793037695135-1",
+      "roomId": "room-1793037695135",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793037695135-2",
+      "roomId": "room-1793037695135",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793037695135-3",
+      "roomId": "room-1793037695135",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793037695135-4",
+      "roomId": "room-1793037695135",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793037695135-5",
+      "roomId": "room-1793037695135",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793037739673-1",
+      "roomId": "room-1793037739673",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793037739673-2",
+      "roomId": "room-1793037739673",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793037739673-3",
+      "roomId": "room-1793037739673",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793037739673-4",
+      "roomId": "room-1793037739673",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793037739673-5",
+      "roomId": "room-1793037739673",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793037754594-1",
+      "roomId": "room-1793037754594",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793037754594-2",
+      "roomId": "room-1793037754594",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793037754594-3",
+      "roomId": "room-1793037754594",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793037754594-4",
+      "roomId": "room-1793037754594",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793037754594-5",
+      "roomId": "room-1793037754594",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793037820844-1",
+      "roomId": "room-1793037820844",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793037820844-2",
+      "roomId": "room-1793037820844",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793037820844-3",
+      "roomId": "room-1793037820844",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793037820844-4",
+      "roomId": "room-1793037820844",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793037820844-5",
+      "roomId": "room-1793037820844",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793037860472-1",
+      "roomId": "room-1793037860472",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793037860472-2",
+      "roomId": "room-1793037860472",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793037860472-3",
+      "roomId": "room-1793037860472",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793037860472-4",
+      "roomId": "room-1793037860472",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793037860472-5",
+      "roomId": "room-1793037860472",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793037909674-1",
+      "roomId": "room-1793037909674",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793037909674-2",
+      "roomId": "room-1793037909674",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793037909674-3",
+      "roomId": "room-1793037909674",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793037909674-4",
+      "roomId": "room-1793037909674",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793037909674-5",
+      "roomId": "room-1793037909674",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793037920521-1",
+      "roomId": "room-1793037920521",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793037920521-2",
+      "roomId": "room-1793037920521",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793037920521-3",
+      "roomId": "room-1793037920521",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793037920521-4",
+      "roomId": "room-1793037920521",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793037920521-5",
+      "roomId": "room-1793037920521",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793037940301-1",
+      "roomId": "room-1793037940301",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793037940301-2",
+      "roomId": "room-1793037940301",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793037940301-3",
+      "roomId": "room-1793037940301",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793037940301-4",
+      "roomId": "room-1793037940301",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793037940301-5",
+      "roomId": "room-1793037940301",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793037949899-1",
+      "roomId": "room-1793037949899",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793037949899-2",
+      "roomId": "room-1793037949899",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793037949899-3",
+      "roomId": "room-1793037949899",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793037949899-4",
+      "roomId": "room-1793037949899",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793037949899-5",
+      "roomId": "room-1793037949899",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793037982383-1",
+      "roomId": "room-1793037982383",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793037982383-2",
+      "roomId": "room-1793037982383",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793037982383-3",
+      "roomId": "room-1793037982383",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793037982383-4",
+      "roomId": "room-1793037982383",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793037982383-5",
+      "roomId": "room-1793037982383",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793038003394-1",
+      "roomId": "room-1793038003394",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793038003394-2",
+      "roomId": "room-1793038003394",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793038003394-3",
+      "roomId": "room-1793038003394",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793038003394-4",
+      "roomId": "room-1793038003394",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793038003394-5",
+      "roomId": "room-1793038003394",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793038014706-1",
+      "roomId": "room-1793038014706",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793038014706-2",
+      "roomId": "room-1793038014706",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793038014706-3",
+      "roomId": "room-1793038014706",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793038014706-4",
+      "roomId": "room-1793038014706",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793038014706-5",
+      "roomId": "room-1793038014706",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793038027978-1",
+      "roomId": "room-1793038027978",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793038027978-2",
+      "roomId": "room-1793038027978",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793038027978-3",
+      "roomId": "room-1793038027978",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793038027978-4",
+      "roomId": "room-1793038027978",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793038027978-5",
+      "roomId": "room-1793038027978",
+      "label": "Bed E"
+    },
+    {
+      "id": "bed-room-1793041964281-1",
+      "roomId": "room-1793041964281",
+      "label": "Bed A"
+    },
+    {
+      "id": "bed-room-1793041964281-2",
+      "roomId": "room-1793041964281",
+      "label": "Bed B"
+    },
+    {
+      "id": "bed-room-1793041964281-3",
+      "roomId": "room-1793041964281",
+      "label": "Bed C"
+    },
+    {
+      "id": "bed-room-1793041964281-4",
+      "roomId": "room-1793041964281",
+      "label": "Bed D"
+    },
+    {
+      "id": "bed-room-1793041964281-5",
+      "roomId": "room-1793041964281",
+      "label": "Bed E"
     }
   ],
   "allocations": [],
-  "qrTickets": [
-    {
-      "id": "ticket-usr-aarav",
-      "userId": "usr-aarav",
-      "tokenId": "jti-usr-aarav-100",
-      "version": 1,
-      "issuedAt": "2026-10-25T20:15:52.578Z"
-    },
-    {
-      "id": "ticket-usr-amit",
-      "userId": "usr-amit",
-      "tokenId": "jti-usr-amit-101",
-      "version": 1,
-      "issuedAt": "2026-10-25T20:15:52.578Z"
-    },
-    {
-      "id": "ticket-usr-priya",
-      "userId": "usr-priya",
-      "tokenId": "jti-usr-priya-102",
-      "version": 1,
-      "issuedAt": "2026-10-25T20:15:52.578Z"
-    },
-    {
-      "id": "ticket-usr-rohit",
-      "userId": "usr-rohit",
-      "tokenId": "jti-usr-rohit-103",
-      "version": 1,
-      "issuedAt": "2026-10-25T20:15:52.578Z"
-    },
-    {
-      "id": "ticket-usr-sneha",
-      "userId": "usr-sneha",
-      "tokenId": "jti-usr-sneha-104",
-      "version": 1,
-      "issuedAt": "2026-10-25T20:15:52.578Z"
-    },
-    {
-      "id": "ticket-usr-simran",
-      "userId": "usr-simran",
-      "tokenId": "jti-usr-simran-105",
-      "version": 1,
-      "issuedAt": "2026-10-25T20:15:52.578Z"
-    },
-    {
-      "id": "ticket-usr-kabir",
-      "userId": "usr-kabir",
-      "tokenId": "jti-usr-kabir-106",
-      "version": 1,
-      "issuedAt": "2026-10-25T20:15:52.578Z"
-    },
-    {
-      "id": "ticket-usr-ananya",
-      "userId": "usr-ananya",
-      "tokenId": "jti-usr-ananya-107",
-      "version": 1,
-      "issuedAt": "2026-10-25T20:15:52.578Z"
-    },
-    {
-      "id": "ticket-usr-divya",
-      "userId": "usr-divya",
-      "tokenId": "jti-usr-divya-108",
-      "version": 1,
-      "issuedAt": "2026-10-25T20:15:52.578Z"
-    }
-  ],
-  "checkinLogs": [
-    {
-      "id": "chk-1",
-      "userId": "usr-aarav",
-      "type": "CHECK_IN",
-      "scannedBy": "usr-scanner",
-      "at": "2026-10-25T16:15:52.578Z"
-    },
-    {
-      "id": "chk-2",
-      "userId": "usr-amit",
-      "type": "CHECK_IN",
-      "scannedBy": "usr-scanner",
-      "at": "2026-10-25T17:15:52.578Z"
-    },
-    {
-      "id": "chk-3",
-      "userId": "usr-priya",
-      "type": "CHECK_IN",
-      "scannedBy": "usr-scanner",
-      "at": "2026-10-25T18:15:52.578Z"
-    }
-  ],
-  "mealSlots": [
-    {
-      "id": "slot-breakfast-1",
-      "date": "2026-10-25",
-      "type": "BREAKFAST"
-    },
-    {
-      "id": "slot-lunch-1",
-      "date": "2026-10-25",
-      "type": "LUNCH"
-    },
-    {
-      "id": "slot-dinner-1",
-      "date": "2026-10-25",
-      "type": "DINNER"
-    }
-  ],
-  "mealBatches": [
-    {
-      "id": "batch-lunch-pce-m",
-      "slotId": "slot-lunch-1",
-      "collegeId": "col-pce",
-      "gender": "MALE",
-      "startsAt": "2026-10-25T19:45:52.578Z",
-      "endsAt": "2026-10-25T20:45:52.578Z"
-    },
-    {
-      "id": "batch-lunch-pce-f",
-      "slotId": "slot-lunch-1",
-      "collegeId": "col-pce",
-      "gender": "FEMALE",
-      "startsAt": "2026-10-25T19:45:52.578Z",
-      "endsAt": "2026-10-25T20:45:52.578Z"
-    },
-    {
-      "id": "batch-lunch-lpu-m",
-      "slotId": "slot-lunch-1",
-      "collegeId": "col-lpu",
-      "gender": "MALE",
-      "startsAt": "2026-10-25T20:45:52.578Z",
-      "endsAt": "2026-10-25T21:45:52.578Z"
-    },
-    {
-      "id": "batch-lunch-du-f",
-      "slotId": "slot-lunch-1",
-      "collegeId": "col-du",
-      "gender": "FEMALE",
-      "startsAt": "2026-10-25T20:00:52.578Z",
-      "endsAt": "2026-10-25T21:00:52.578Z"
-    }
-  ],
-  "mealLogs": [
-    {
-      "id": "mlog-1793025235774",
-      "userId": "usr-aarav",
-      "slotId": "slot-1",
-      "batchId": "batch-open",
-      "scannedBy": "usr-scanner",
-      "isException": false,
-      "at": "2026-10-26T14:33:55.774Z"
-    },
-    {
-      "id": "mlog-1793024851948",
-      "userId": "usr-aarav",
-      "slotId": "slot-breakfast-1",
-      "batchId": "batch-open",
-      "scannedBy": "usr-scanner",
-      "isException": false,
-      "at": "2026-10-26T14:27:31.948Z"
-    },
-    {
-      "id": "mlog-1",
-      "userId": "usr-amit",
-      "slotId": "slot-lunch-1",
-      "batchId": "batch-lunch-pce-m",
-      "scannedBy": "usr-scanner",
-      "isException": false,
-      "at": "2026-10-25T20:05:52.578Z"
-    }
-  ],
-  "scanLogs": [
-    {
-      "id": "scan-1793025235774",
-      "ticketId": "jti-usr-aarav-100",
-      "userId": "usr-aarav",
-      "userName": "Aarav Sharma",
-      "collegeCode": "PCE",
-      "context": "MEAL",
-      "result": "ALLOWED",
-      "scannedBy": "usr-scanner",
-      "deviceInfo": "Test Camera",
-      "at": "2026-10-26T14:33:55.774Z"
-    },
-    {
-      "id": "scan-1793024866144",
-      "ticketId": "jti-usr-aarav-100",
-      "userId": "usr-aarav",
-      "userName": "Aarav Sharma",
-      "collegeCode": "PCE",
-      "context": "HOSTEL_CHECKIN",
-      "result": "DENIED_ALREADY_CHECKED_IN",
-      "scannedBy": "usr-scanner",
-      "deviceInfo": "Web Scanner PWA",
-      "at": "2026-10-26T14:27:46.144Z"
-    },
-    {
-      "id": "scan-1793024851948",
-      "ticketId": "jti-usr-aarav-100",
-      "userId": "usr-aarav",
-      "userName": "Aarav Sharma",
-      "collegeCode": "PCE",
-      "context": "MEAL",
-      "result": "ALLOWED",
-      "scannedBy": "usr-scanner",
-      "deviceInfo": "Web Scanner PWA",
-      "at": "2026-10-26T14:27:31.948Z"
-    },
-    {
-      "id": "scan-1",
-      "ticketId": "ticket-usr-aarav",
-      "userId": "usr-aarav",
-      "context": "HOSTEL_CHECKIN",
-      "result": "ALLOWED",
-      "scannedBy": "usr-scanner",
-      "deviceInfo": "Hostel Main Gate Scanner #1",
-      "at": "2026-10-25T16:15:52.578Z",
-      "userName": "Aarav Sharma",
-      "collegeCode": "PCE"
-    },
-    {
-      "id": "scan-2",
-      "ticketId": "ticket-usr-amit",
-      "userId": "usr-amit",
-      "context": "MEAL",
-      "result": "ALLOWED",
-      "scannedBy": "usr-scanner",
-      "deviceInfo": "Mess Counter #2",
-      "at": "2026-10-25T20:05:52.578Z",
-      "userName": "Amit Verma",
-      "collegeCode": "PCE"
-    }
-  ],
-  "notificationLogs": [
-    {
-      "id": "notif-1",
-      "userId": "usr-aarav",
-      "userEmail": "aarav.sharma@pce.edu",
-      "userName": "Aarav Sharma",
-      "type": "ROOM_ALLOCATED",
-      "subject": "Hostel Room Confirmed: Aryabhatta Boys Hostel - Room 101, Bed A",
-      "body": "Your accommodation has been confirmed. Please present your personal UniFest QR at the hostel reception upon arrival.",
-      "status": "SENT",
-      "attempts": 1,
-      "createdAt": "2026-10-25T14:15:52.578Z"
-    },
-    {
-      "id": "notif-2",
-      "userId": "usr-aarav",
-      "userEmail": "aarav.sharma@pce.edu",
-      "userName": "Aarav Sharma",
-      "type": "EVENT_REGISTRATION",
-      "subject": "Registration Confirmed: Inter-College 100m Sprint Men",
-      "body": "You are registered for 100m Sprint Men. Starts at 4:30 PM at Main Athletics Track.",
-      "status": "SENT",
-      "eventId": "evt-1",
-      "attempts": 1,
-      "createdAt": "2026-10-25T15:15:52.578Z"
-    }
-  ],
-  "auditLogs": [
-    {
-      "id": "audit-1793041254010",
-      "actorId": "usr-admin",
-      "actorName": "Dr. Sunita Rao (System Admin)",
-      "action": "BULK_ALLOT_STUDENTS",
-      "entity": "RoomAllocation",
-      "entityId": "batch-1793041254010",
-      "reason": "Bulk allotted 5 students across rooms ensuring same-college room constraint.",
-      "before": null,
-      "after": {
-        "allottedCount": 5,
-        "roomsLockedCount": 4,
-        "shortfallsCount": 0
-      },
-      "at": "2026-10-26T19:00:54.010Z"
-    },
-    {
-      "id": "audit-1793040217280",
-      "actorId": "usr-admin",
-      "actorName": "Dr. Sunita Rao (System Admin)",
-      "action": "BULK_ALLOT_STUDENTS",
-      "entity": "RoomAllocation",
-      "entityId": "batch-1793040217280",
-      "reason": "Bulk allotted 12 students across rooms ensuring same-college room constraint.",
-      "before": null,
-      "after": {
-        "allottedCount": 12,
-        "roomsLockedCount": 7,
-        "shortfallsCount": 0
-      },
-      "at": "2026-10-26T18:43:37.280Z"
-    },
-    {
-      "id": "audit-1793040093920",
-      "actorId": "usr-admin",
-      "actorName": "Dr. Sunita Rao (System Admin)",
-      "action": "BULK_ALLOT_STUDENTS",
-      "entity": "RoomAllocation",
-      "entityId": "batch-1793040093920",
-      "reason": "Bulk allotted 12 students across rooms ensuring same-college room constraint.",
-      "before": null,
-      "after": {
-        "allottedCount": 12,
-        "roomsLockedCount": 4,
-        "shortfallsCount": 0
-      },
-      "at": "2026-10-26T18:41:33.920Z"
-    },
-    {
-      "id": "audit-1793039236938",
-      "actorId": "usr-admin",
-      "actorName": "Dr. Sunita Rao (System Admin)",
-      "action": "BULK_ALLOT_STUDENTS",
-      "entity": "RoomAllocation",
-      "entityId": "batch-1793039236938",
-      "reason": "Bulk allotted 2 students across rooms ensuring same-college room constraint.",
-      "before": null,
-      "after": {
-        "allottedCount": 2,
-        "roomsLockedCount": 1,
-        "shortfallsCount": 0
-      },
-      "at": "2026-10-26T18:27:16.938Z"
-    },
-    {
-      "id": "audit-1793036231820",
-      "actorId": "usr-g-1793019998926",
-      "actorName": "Armaan",
-      "action": "HOSTEL_CREATE",
-      "entity": "Hostel",
-      "entityId": "hostel-1793036231524",
-      "reason": "Admin created new hostel facility: CGC Boys Block A (MALE) for CGC University, Mohali",
-      "before": null,
-      "after": {
-        "id": "hostel-1793036231524",
-        "name": "CGC Boys Block A",
-        "gender": "MALE",
-        "collegeId": "col-cgc-univ-mohali",
-        "collegeName": "CGC University, Mohali"
-      },
-      "at": "2026-10-26T17:37:11.820Z"
-    },
-    {
-      "id": "audit-1793035391500",
-      "actorId": "usr-g-1793019998926",
-      "actorName": "Armaan",
-      "action": "COLLEGE_CREATE",
-      "entity": "College",
-      "entityId": "col-chitkara",
-      "reason": "Admin registered new participating institution: Chitkara University, Rajpura / Punjab (CHITKARA)",
-      "before": null,
-      "after": {
-        "id": "col-chitkara",
-        "name": "Chitkara University, Rajpura / Punjab",
-        "code": "CHITKARA",
-        "color": "#E11D48"
-      },
-      "at": "2026-10-26T17:23:11.500Z"
-    },
-    {
-      "id": "audit-1",
-      "actorId": "usr-admin",
-      "actorName": "Dr. Sunita Rao (System Admin)",
-      "action": "SYSTEM_INITIALIZE",
-      "entity": "FESTIVAL_SYSTEM",
-      "entityId": "UNIFEST_2026",
-      "reason": "Initialized UniFest 2026 platform with core colleges and hostels inventory.",
-      "before": null,
-      "after": {
-        "festival": "UniFest 2026",
-        "collegesCount": 5,
-        "hostelsCount": 2
-      },
-      "at": "2026-10-24T20:15:52.578Z"
-    },
-    {
-      "id": "audit-2",
-      "actorId": "usr-manager",
-      "actorName": "Vikram Malhotra (Manager)",
-      "action": "AUTO_ALLOCATION_RUN",
-      "entity": "HOSTEL_ALLOCATION",
-      "entityId": "run-batch-1",
-      "reason": "Executed auto-allocation batch for verified participants.",
-      "before": null,
-      "after": {
-        "allocated": 5,
-        "unallocated": 4
-      },
-      "at": "2026-10-25T14:15:52.578Z"
-    }
-  ]
+  "qrTickets": [],
+  "checkinLogs": [],
+  "mealSlots": [],
+  "mealBatches": [],
+  "mealLogs": [],
+  "scanLogs": [],
+  "notificationLogs": [],
+  "auditLogs": []
 }

@@ -33,7 +33,7 @@ export function ScannerPwa() {
   // Scanning state
   const [scanResultOverlay, setScanResultOverlay] = useState<ScanResponse | null>(null);
   const [manualTokenInput, setManualTokenInput] = useState('');
-  const [scansCountToday, setScansCountToday] = useState(14);
+  const [scansCountToday, setScansCountToday] = useState(0);
   const [recentScans, setRecentScans] = useState<Array<{ name: string; result: string; time: string; college: string }>>([]);
 
   // Camera state

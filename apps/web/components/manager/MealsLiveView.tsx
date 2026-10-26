@@ -201,6 +201,15 @@ export function MealsLiveView({ currentUser }: MealsLiveViewProps) {
           <p className="text-xs text-slate-500">Checking dining mess queues...</p>
         </div>
       ) : liveData ? (
+        liveData.slots.length === 0 ? (
+          <div className="bg-white rounded-2xl p-12 border border-slate-200 shadow-sm text-center">
+            <Utensils className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+            <h3 className="font-heading font-extrabold text-base text-slate-800">No Active Meal Slots Today</h3>
+            <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto">
+              Dining schedules and staggered batches will appear here once scheduled. Real-time redemptions can be monitored live as scanners verify student QR codes at the dining hall entrance.
+            </p>
+          </div>
+        ) : (
         <div className="space-y-6">
           {liveData.slots.map((slot) => (
             <div key={slot.slotId} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
@@ -296,6 +305,7 @@ export function MealsLiveView({ currentUser }: MealsLiveViewProps) {
             </div>
           ))}
         </div>
+        )
       ) : null}
 
       {/* Auto Generate Batches Modal */}

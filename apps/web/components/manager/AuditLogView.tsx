@@ -79,38 +79,50 @@ export function AuditLogView() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {filteredLogs.map((log) => (
-                <tr key={log.id} className="hover:bg-slate-50/80 transition-colors">
-                  <td className="py-3 px-4 text-slate-500 whitespace-nowrap">
-                    {new Date(log.at).toLocaleDateString([], { month: 'short', day: 'numeric' })}{' '}
-                    {new Date(log.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </td>
-                  <td className="py-3 px-4 font-bold text-slate-800">{log.actorName || log.actorId}</td>
-                  <td className="py-3 px-4">
-                    <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                        log.action.includes('OVERRIDE') || log.action.includes('EXCEPTION')
-                          ? 'bg-amber-100 text-amber-900'
-                          : 'bg-indigo-50 text-primary'
-                      }`}
-                    >
-                      {log.action}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 text-slate-600 font-mono text-[11px]">{log.entity}</td>
-                  <td className="py-3 px-4 text-slate-700 italic max-w-xs truncate">
-                    "{log.reason || 'No reason provided'}"
-                  </td>
-                  <td className="py-3 px-4 text-right">
-                    <button
-                      onClick={() => setSelectedLog(log)}
-                      className="text-primary hover:underline font-bold text-xs"
-                    >
-                      Inspect
-                    </button>
+              {filteredLogs.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-14 text-center">
+                    <Shield className="w-9 h-9 text-slate-300 mx-auto mb-2" />
+                    <p className="font-bold text-slate-700 text-sm">No Audit Records Yet</p>
+                    <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+                      All administrative overrides, allocations, meal exceptions, and event updates will be logged here.
+                    </p>
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filteredLogs.map((log) => (
+                  <tr key={log.id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="py-3 px-4 text-slate-500 whitespace-nowrap">
+                      {new Date(log.at).toLocaleDateString([], { month: 'short', day: 'numeric' })}{' '}
+                      {new Date(log.at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </td>
+                    <td className="py-3 px-4 font-bold text-slate-800">{log.actorName || log.actorId}</td>
+                    <td className="py-3 px-4">
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                          log.action.includes('OVERRIDE') || log.action.includes('EXCEPTION')
+                            ? 'bg-amber-100 text-amber-900'
+                            : 'bg-indigo-50 text-primary'
+                        }`}
+                      >
+                        {log.action}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-slate-600 font-mono text-[11px]">{log.entity}</td>
+                    <td className="py-3 px-4 text-slate-700 italic max-w-xs truncate">
+                      "{log.reason || 'No reason provided'}"
+                    </td>
+                    <td className="py-3 px-4 text-right">
+                      <button
+                        onClick={() => setSelectedLog(log)}
+                        className="text-primary hover:underline font-bold text-xs"
+                      >
+                        Inspect
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

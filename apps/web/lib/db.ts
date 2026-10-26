@@ -97,71 +97,49 @@ function safeWriteToDisk(filePath: string, content: string): boolean {
 
 export function getInitialSeedData(): DatabaseSchema {
   const colleges: College[] = [
-    { id: 'col-cgc-univ-mohali', name: 'CGC University, Mohali', code: 'CGC', color: '#D97706' },
+    { id: 'col-cgc-univ-mohali', name: 'CGC University, Mohali', code: 'CGC-M', color: '#4F46E5' },
+    { id: 'col-1793043228502-fv6t', name: 'Panjab University', code: 'PANJ', color: '#4F46E5' },
+    { id: 'col-1793043228502-z1yi', name: 'Thapar Institute of Engineering and Technology', code: 'THAP', color: '#059669' },
+    { id: 'col-1793043228502-m6vd', name: 'Lovely Professional University', code: 'LOVE', color: '#E11D48' },
+    { id: 'col-1793043228502-3m9h', name: 'Delhi University (Hansraj College)', code: 'DELH', color: '#0D9488' },
   ];
 
   const hostels: Hostel[] = [
-    { id: 'hostel-boys-1', name: 'Aryabhatta Boys Hostel', gender: 'MALE' },
-    { id: 'hostel-girls-1', name: 'Gargi Girls Hostel', gender: 'FEMALE' },
+    { id: 'hostel-1793036398955', name: 'Chanakya Hall', gender: 'MALE', collegeId: 'col-cgc-univ-mohali', collegeName: 'CGC University, Mohali' },
+    { id: 'hostel-1793037722443', name: 'Rosewood Hall', gender: 'FEMALE', collegeId: 'col-cgc-univ-mohali', collegeName: 'CGC University, Mohali' },
   ];
 
-  const rooms: Room[] = [
-    // Boys Hostel - Floor 1
-    { id: 'room-b101', hostelId: 'hostel-boys-1', number: '101', floor: 1, capacity: 3, gender: 'MALE', lockedCollegeId: null },
-    { id: 'room-b102', hostelId: 'hostel-boys-1', number: '102', floor: 1, capacity: 3, gender: 'MALE', lockedCollegeId: null },
-    // Boys Hostel - Floor 2
-    { id: 'room-b201', hostelId: 'hostel-boys-1', number: '201', floor: 2, capacity: 2, gender: 'MALE', lockedCollegeId: null },
-    { id: 'room-b202', hostelId: 'hostel-boys-1', number: '202', floor: 2, capacity: 4, gender: 'MALE', lockedCollegeId: null },
+  const rooms: Room[] = [];
+  const beds: Bed[] = [];
 
-    // Girls Hostel - Floor 1
-    { id: 'room-g101', hostelId: 'hostel-girls-1', number: '101', floor: 1, capacity: 3, gender: 'FEMALE', lockedCollegeId: null },
-    { id: 'room-g102', hostelId: 'hostel-girls-1', number: '102', floor: 1, capacity: 2, gender: 'FEMALE', lockedCollegeId: null },
-    // Girls Hostel - Floor 2
-    { id: 'room-g201', hostelId: 'hostel-girls-1', number: '201', floor: 2, capacity: 3, gender: 'FEMALE', lockedCollegeId: null },
-    { id: 'room-g202', hostelId: 'hostel-girls-1', number: '202', floor: 2, capacity: 4, gender: 'FEMALE', lockedCollegeId: null },
+  const roomNumbers = [
+    { floor: 1, numbers: ['101', '102', '103', '104', '105', '106'] },
+    { floor: 2, numbers: ['201', '202', '203', '204', '205', '206'] },
   ];
 
-  const beds: Bed[] = [
-    // Room B101
-    { id: 'bed-b101-1', roomId: 'room-b101', label: 'Bed A' },
-    { id: 'bed-b101-2', roomId: 'room-b101', label: 'Bed B' },
-    { id: 'bed-b101-3', roomId: 'room-b101', label: 'Bed C' },
-
-    // Room B102
-    { id: 'bed-b102-1', roomId: 'room-b102', label: 'Bed A' },
-    { id: 'bed-b102-2', roomId: 'room-b102', label: 'Bed B' },
-    { id: 'bed-b102-3', roomId: 'room-b102', label: 'Bed C' },
-
-    // Room B201
-    { id: 'bed-b201-1', roomId: 'room-b201', label: 'Bed A' },
-    { id: 'bed-b201-2', roomId: 'room-b201', label: 'Bed B' },
-
-    // Room B202
-    { id: 'bed-b202-1', roomId: 'room-b202', label: 'Bed A' },
-    { id: 'bed-b202-2', roomId: 'room-b202', label: 'Bed B' },
-    { id: 'bed-b202-3', roomId: 'room-b202', label: 'Bed C' },
-    { id: 'bed-b202-4', roomId: 'room-b202', label: 'Bed D' },
-
-    // Room G101
-    { id: 'bed-g101-1', roomId: 'room-g101', label: 'Bed A' },
-    { id: 'bed-g101-2', roomId: 'room-g101', label: 'Bed B' },
-    { id: 'bed-g101-3', roomId: 'room-g101', label: 'Bed C' },
-
-    // Room G102
-    { id: 'bed-g102-1', roomId: 'room-g102', label: 'Bed A' },
-    { id: 'bed-g102-2', roomId: 'room-g102', label: 'Bed B' },
-
-    // Room G201
-    { id: 'bed-g201-1', roomId: 'room-g201', label: 'Bed A' },
-    { id: 'bed-g201-2', roomId: 'room-g201', label: 'Bed B' },
-    { id: 'bed-g201-3', roomId: 'room-g201', label: 'Bed C' },
-
-    // Room G202
-    { id: 'bed-g202-1', roomId: 'room-g202', label: 'Bed A' },
-    { id: 'bed-g202-2', roomId: 'room-g202', label: 'Bed B' },
-    { id: 'bed-g202-3', roomId: 'room-g202', label: 'Bed C' },
-    { id: 'bed-g202-4', roomId: 'room-g202', label: 'Bed D' },
-  ];
+  hostels.forEach((h) => {
+    roomNumbers.forEach(({ floor, numbers }) => {
+      numbers.forEach((num) => {
+        const roomId = `room-${h.id}-${num}`;
+        rooms.push({
+          id: roomId,
+          hostelId: h.id,
+          number: num,
+          floor,
+          capacity: 5,
+          gender: h.gender,
+          lockedCollegeId: null,
+        });
+        ['A', 'B', 'C', 'D', 'E'].forEach((letter) => {
+          beds.push({
+            id: `bed-${roomId}-${letter}`,
+            roomId,
+            label: `Bed ${letter}`,
+          });
+        });
+      });
+    });
+  });
 
   const users: User[] = [
     {
@@ -181,213 +159,14 @@ export function getInitialSeedData(): DatabaseSchema {
   const allocations: RoomAllocation[] = [];
   const checkinLogs: CheckinLog[] = [];
   const qrTickets: QrTicket[] = [];
-
-  const now = new Date();
-  const todayStr = now.toISOString().split('T')[0];
-
-  const events: Event[] = [
-    {
-      id: 'evt-1',
-      title: 'Inter-College 100m Sprint Men',
-      type: 'SPORTS',
-      description: 'Men sprint finals. Top 8 qualifiers from preliminary college heats.',
-      venue: 'Main Athletics Track, Sector 4',
-      startsAt: new Date(now.getTime() + 3600000 * 2).toISOString(),
-      endsAt: new Date(now.getTime() + 3600000 * 3.5).toISOString(),
-      capacity: 16,
-      status: 'SCHEDULED',
-    },
-    {
-      id: 'evt-2',
-      title: 'Punjab Folk Bhangra Championship',
-      type: 'FOLK',
-      description: 'Traditional Folk Dance group competition. Live Dhol accompaniment.',
-      venue: 'Open Air Amphitheatre',
-      startsAt: new Date(now.getTime() + 3600000 * 4).toISOString(),
-      endsAt: new Date(now.getTime() + 3600000 * 7).toISOString(),
-      capacity: 30,
-      status: 'SCHEDULED',
-    },
-    {
-      id: 'evt-3',
-      title: 'Badminton Singles Men & Women',
-      type: 'SPORTS',
-      description: 'Knockout tournament under BWF standard tournament rules.',
-      venue: 'Indoor Badminton Arena, Court 1 & 2',
-      startsAt: new Date(now.getTime() + 3600000 * 24).toISOString(),
-      endsAt: new Date(now.getTime() + 3600000 * 28).toISOString(),
-      capacity: 24,
-      status: 'SCHEDULED',
-    },
-    {
-      id: 'evt-4',
-      title: 'Ghazal & Sufi Fusion Night',
-      type: 'FOLK',
-      description: 'Classical and contemporary Sufi vocal performances by college troupes.',
-      venue: 'Central Auditorium Hall',
-      startsAt: new Date(now.getTime() + 3600000 * 29).toISOString(),
-      endsAt: new Date(now.getTime() + 3600000 * 33).toISOString(),
-      capacity: 200,
-      status: 'SCHEDULED',
-    },
-    {
-      id: 'evt-5',
-      title: 'Inter-College Football 7s',
-      type: 'SPORTS',
-      description: 'High-intensity 7-a-side football tournament.',
-      venue: 'West Campus Sports Ground',
-      startsAt: new Date(now.getTime() + 3600000 * 48).toISOString(),
-      endsAt: new Date(now.getTime() + 3600000 * 54).toISOString(),
-      capacity: 40,
-      status: 'SCHEDULED',
-    },
-  ];
-
-  const registrations: EventRegistration[] = [
-    { id: 'reg-1', userId: 'usr-aarav', eventId: 'evt-1', status: 'CONFIRMED' },
-    { id: 'reg-2', userId: 'usr-aarav', eventId: 'evt-2', status: 'CONFIRMED' },
-    { id: 'reg-3', userId: 'usr-amit', eventId: 'evt-1', status: 'CONFIRMED' },
-    { id: 'reg-4', userId: 'usr-priya', eventId: 'evt-2', status: 'CONFIRMED' },
-    { id: 'reg-5', userId: 'usr-priya', eventId: 'evt-4', status: 'CONFIRMED' },
-    { id: 'reg-6', userId: 'usr-sneha', eventId: 'evt-2', status: 'CONFIRMED' },
-    { id: 'reg-7', userId: 'usr-rohit', eventId: 'evt-1', status: 'CONFIRMED' },
-  ];
-
-  const mealSlots: MealSlot[] = [
-    { id: 'slot-breakfast-1', date: todayStr, type: 'BREAKFAST' },
-    { id: 'slot-lunch-1', date: todayStr, type: 'LUNCH' },
-    { id: 'slot-dinner-1', date: todayStr, type: 'DINNER' },
-  ];
-
-  const mealBatches: MealBatch[] = [
-    // Lunch batches for today
-    {
-      id: 'batch-lunch-pce-m',
-      slotId: 'slot-lunch-1',
-      collegeId: 'col-pce',
-      gender: 'MALE',
-      startsAt: new Date(now.getTime() - 1800000).toISOString(),
-      endsAt: new Date(now.getTime() + 1800000).toISOString(), // currently active!
-    },
-    {
-      id: 'batch-lunch-pce-f',
-      slotId: 'slot-lunch-1',
-      collegeId: 'col-pce',
-      gender: 'FEMALE',
-      startsAt: new Date(now.getTime() - 1800000).toISOString(),
-      endsAt: new Date(now.getTime() + 1800000).toISOString(),
-    },
-    {
-      id: 'batch-lunch-lpu-m',
-      slotId: 'slot-lunch-1',
-      collegeId: 'col-lpu',
-      gender: 'MALE',
-      startsAt: new Date(now.getTime() + 1800000).toISOString(),
-      endsAt: new Date(now.getTime() + 5400000).toISOString(),
-    },
-    {
-      id: 'batch-lunch-du-f',
-      slotId: 'slot-lunch-1',
-      collegeId: 'col-du',
-      gender: 'FEMALE',
-      startsAt: new Date(now.getTime() - 900000).toISOString(),
-      endsAt: new Date(now.getTime() + 2700000).toISOString(),
-    },
-  ];
-
-  const mealLogs: MealLog[] = [
-    {
-      id: 'mlog-1',
-      userId: 'usr-amit',
-      slotId: 'slot-lunch-1',
-      batchId: 'batch-lunch-pce-m',
-      scannedBy: 'usr-scanner',
-      isException: false,
-      at: new Date(now.getTime() - 600000).toISOString(),
-    },
-  ];
-
-  const scanLogs: ScanLog[] = [
-    {
-      id: 'scan-1',
-      ticketId: 'ticket-usr-aarav',
-      userId: 'usr-aarav',
-      context: 'HOSTEL_CHECKIN',
-      result: 'ALLOWED',
-      scannedBy: 'usr-scanner',
-      deviceInfo: 'Hostel Main Gate Scanner #1',
-      at: new Date(now.getTime() - 3600000 * 4).toISOString(),
-      userName: 'Aarav Sharma',
-      collegeCode: 'PCE',
-    },
-    {
-      id: 'scan-2',
-      ticketId: 'ticket-usr-amit',
-      userId: 'usr-amit',
-      context: 'MEAL',
-      result: 'ALLOWED',
-      scannedBy: 'usr-scanner',
-      deviceInfo: 'Mess Counter #2',
-      at: new Date(now.getTime() - 600000).toISOString(),
-      userName: 'Amit Verma',
-      collegeCode: 'PCE',
-    },
-  ];
-
-  const notificationLogs: NotificationLog[] = [
-    {
-      id: 'notif-1',
-      userId: 'usr-aarav',
-      userEmail: 'aarav.sharma@pce.edu',
-      userName: 'Aarav Sharma',
-      type: 'ROOM_ALLOCATED',
-      subject: 'Hostel Room Confirmed: Aryabhatta Boys Hostel - Room 101, Bed A',
-      body: 'Your accommodation has been confirmed. Please present your personal UniFest QR at the hostel reception upon arrival.',
-      status: 'SENT',
-      attempts: 1,
-      createdAt: new Date(now.getTime() - 3600000 * 6).toISOString(),
-    },
-    {
-      id: 'notif-2',
-      userId: 'usr-aarav',
-      userEmail: 'aarav.sharma@pce.edu',
-      userName: 'Aarav Sharma',
-      type: 'EVENT_REGISTRATION',
-      subject: 'Registration Confirmed: Inter-College 100m Sprint Men',
-      body: 'You are registered for 100m Sprint Men. Starts at 4:30 PM at Main Athletics Track.',
-      status: 'SENT',
-      eventId: 'evt-1',
-      attempts: 1,
-      createdAt: new Date(now.getTime() - 3600000 * 5).toISOString(),
-    },
-  ];
-
-  const auditLogs: AuditLog[] = [
-    {
-      id: 'audit-1',
-      actorId: 'usr-admin',
-      actorName: 'Dr. Sunita Rao (System Admin)',
-      action: 'SYSTEM_INITIALIZE',
-      entity: 'FESTIVAL_SYSTEM',
-      entityId: 'UNIFEST_2026',
-      reason: 'Initialized UniFest 2026 platform with core colleges and hostels inventory.',
-      before: null,
-      after: { festival: 'UniFest 2026', collegesCount: 5, hostelsCount: 2 },
-      at: new Date(now.getTime() - 3600000 * 24).toISOString(),
-    },
-    {
-      id: 'audit-2',
-      actorId: 'usr-manager',
-      actorName: 'Vikram Malhotra (Manager)',
-      action: 'AUTO_ALLOCATION_RUN',
-      entity: 'HOSTEL_ALLOCATION',
-      entityId: 'run-batch-1',
-      reason: 'Executed auto-allocation batch for verified participants.',
-      before: null,
-      after: { allocated: 5, unallocated: 4 },
-      at: new Date(now.getTime() - 3600000 * 6).toISOString(),
-    },
-  ];
+  const events: Event[] = [];
+  const registrations: EventRegistration[] = [];
+  const mealSlots: MealSlot[] = [];
+  const mealBatches: MealBatch[] = [];
+  const mealLogs: MealLog[] = [];
+  const scanLogs: ScanLog[] = [];
+  const notificationLogs: NotificationLog[] = [];
+  const auditLogs: AuditLog[] = [];
 
   return {
     colleges,
@@ -410,14 +189,9 @@ export function getInitialSeedData(): DatabaseSchema {
 }
 
 export function readDatabase(): DatabaseSchema {
-  // 1. Return in-memory cached copy if already initialized
-  if (globalThis.__UNIFEST_IN_MEMORY_DB__) {
-    return globalThis.__UNIFEST_IN_MEMORY_DB__;
-  }
-
   const writablePath = getWritableDbFilePath();
 
-  // 2. Try loading from writable path (e.g. /tmp/unifest_db.json on Vercel or data/db.json locally)
+  // 1. Try loading from writable path (e.g. data/db.json locally or /tmp on Vercel)
   if (fs.existsSync(writablePath)) {
     try {
       const raw = fs.readFileSync(writablePath, 'utf-8');
@@ -427,6 +201,11 @@ export function readDatabase(): DatabaseSchema {
     } catch (err) {
       console.warn('Could not read writable db file, checking fallback...', err);
     }
+  }
+
+  // 2. Return in-memory cached copy if already initialized
+  if (globalThis.__UNIFEST_IN_MEMORY_DB__) {
+    return globalThis.__UNIFEST_IN_MEMORY_DB__;
   }
 
   // 3. Try reading bundled read-only seed from LOCAL_DB_FILE

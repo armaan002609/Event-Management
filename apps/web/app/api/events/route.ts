@@ -7,12 +7,50 @@ export async function GET() {
   const activeUser = getActiveUser();
   const db = readDatabase();
 
+  let eventsList = db.events;
+  let regsList = db.registrations;
+
+  try {
+    const { getSupabase } = await import('@/lib/supabase');
+    const sb = getSupabase();
+    if (sb) {
+      const [{ data: sbEvents }, { data: sbRegs }] = await Promise.all([
+        sb.from('events').select('*'),
+        sb.from('event_registrations').select('*'),
+      ]);
+
+      if (sbEvents) {
+        eventsList = sbEvents.map((e: any) => ({
+          id: e.id,
+          title: e.title,
+          type: e.type,
+          description: e.description,
+          venue: e.venue,
+          startsAt: e.starts_at || e.startsAt,
+          endsAt: e.ends_at || e.endsAt,
+          capacity: e.capacity,
+          status: e.status || 'SCHEDULED',
+        }));
+      }
+      if (sbRegs) {
+        regsList = sbRegs.map((r: any) => ({
+          id: r.id,
+          userId: r.user_id || r.userId,
+          eventId: r.event_id || r.eventId,
+          status: r.status,
+        }));
+      }
+    }
+  } catch (err) {
+    console.warn('Events route Supabase query error, fallback to local db:', err);
+  }
+
   const userRegs = new Set(
-    db.registrations.filter((r) => r.userId === activeUser.id && r.status === 'CONFIRMED').map((r) => r.eventId)
+    regsList.filter((r) => r.userId === activeUser.id && r.status === 'CONFIRMED').map((r) => r.eventId)
   );
 
-  const eventsWithStatus = db.events.map((evt) => {
-    const regCount = db.registrations.filter((r) => r.eventId === evt.id && r.status === 'CONFIRMED').length;
+  const eventsWithStatus = eventsList.map((evt) => {
+    const regCount = regsList.filter((r) => r.eventId === evt.id && r.status === 'CONFIRMED').length;
     return {
       ...evt,
       registrationsCount: regCount,
@@ -67,6 +105,26 @@ export async function POST(req: NextRequest) {
     });
 
     writeDatabase(db);
+
+    try {
+      const { getSupabase } = await import('@/lib/supabase');
+      const sb = getSupabase();
+      if (sb) {
+        await sb.from('events').insert({
+          id: newEvent.id,
+          title: newEvent.title,
+          type: newEvent.type,
+          description: newEvent.description,
+          venue: newEvent.venue,
+          starts_at: newEvent.startsAt,
+          ends_at: newEvent.endsAt,
+          capacity: newEvent.capacity,
+          status: newEvent.status,
+        });
+      }
+    } catch (e) {
+      console.warn('Failed to insert event into Supabase:', e);
+    }
 
     return NextResponse.json(newEvent);
   } catch (err: unknown) {

@@ -179,41 +179,53 @@ export function EventManagerView() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {events.map((evt) => (
-                <tr key={evt.id} className="hover:bg-slate-50/80 transition-colors">
-                  <td className="py-3.5 px-4 font-bold text-slate-900">{evt.title}</td>
-                  <td className="py-3.5 px-4">
-                    <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                        evt.type === 'SPORTS'
-                          ? 'bg-sports/10 text-sports dark:text-teal-700'
-                          : 'bg-folk/10 text-folk-dark'
-                      }`}
-                    >
-                      {evt.type}
-                    </span>
-                  </td>
-                  <td className="py-3.5 px-4 text-slate-600 truncate max-w-xs">{evt.venue}</td>
-                  <td className="py-3.5 px-4 text-slate-600 whitespace-nowrap">
-                    {new Date(evt.startsAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{' '}
-                    {new Date(evt.endsAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </td>
-                  <td className="py-3.5 px-4">
-                    <span className="font-semibold text-slate-800">
-                      {evt.registrationsCount || 0}
-                      {evt.capacity ? ` / ${evt.capacity}` : ''}
-                    </span>
-                  </td>
-                  <td className="py-3.5 px-4 text-right">
-                    <button
-                      onClick={() => handleOpenEdit(evt)}
-                      className="px-3 py-1.5 rounded-lg border border-slate-200 text-primary hover:bg-primary/10 text-xs font-bold transition-colors inline-flex items-center gap-1"
-                    >
-                      <Edit2 className="w-3 h-3" /> Edit / Move
-                    </button>
+              {events.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-14 text-center">
+                    <Calendar className="w-9 h-9 text-slate-300 mx-auto mb-2" />
+                    <p className="font-bold text-slate-700 text-sm">No Events Scheduled Yet</p>
+                    <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+                      Use the "Create New Event" button above to schedule festival sports tournaments or cultural competitions.
+                    </p>
                   </td>
                 </tr>
-              ))}
+              ) : (
+                events.map((evt) => (
+                  <tr key={evt.id} className="hover:bg-slate-50/80 transition-colors">
+                    <td className="py-3.5 px-4 font-bold text-slate-900">{evt.title}</td>
+                    <td className="py-3.5 px-4">
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                          evt.type === 'SPORTS'
+                            ? 'bg-sports/10 text-sports dark:text-teal-700'
+                            : 'bg-folk/10 text-folk-dark'
+                        }`}
+                      >
+                        {evt.type}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-4 text-slate-600 truncate max-w-xs">{evt.venue}</td>
+                    <td className="py-3.5 px-4 text-slate-600 whitespace-nowrap">
+                      {new Date(evt.startsAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{' '}
+                      {new Date(evt.endsAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </td>
+                    <td className="py-3.5 px-4">
+                      <span className="font-semibold text-slate-800">
+                        {evt.registrationsCount || 0}
+                        {evt.capacity ? ` / ${evt.capacity}` : ''}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-4 text-right">
+                      <button
+                        onClick={() => handleOpenEdit(evt)}
+                        className="px-3 py-1.5 rounded-lg border border-slate-200 text-primary hover:bg-primary/10 text-xs font-bold transition-colors inline-flex items-center gap-1"
+                      >
+                        <Edit2 className="w-3 h-3" /> Edit / Move
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
