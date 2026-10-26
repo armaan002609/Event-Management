@@ -70,8 +70,15 @@ function LoginForm() {
     const err = params.get('error');
     const errEmail = params.get('email');
     const errName = params.get('name');
+    const reason = params.get('reason');
 
-    if (err === 'account_not_found') {
+    if (reason === 'inactivity') {
+      toast.info(
+        'Session Expired ⏱️',
+        'You have been logged out after 10 minutes of inactivity. Please sign in again to continue.'
+      );
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (err === 'account_not_found') {
       setTab('register');
       if (errEmail) setRegEmail(errEmail);
       if (errName) setRegName(errName);
