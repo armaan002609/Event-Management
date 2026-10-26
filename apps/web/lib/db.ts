@@ -38,12 +38,60 @@ export interface DatabaseSchema {
   auditLogs: AuditLog[];
 }
 
-const DB_FILE = path.join(process.cwd(), 'data', 'db.json');
+declare global {
+  // eslint-disable-next-line no-var
+  var __UNIFEST_IN_MEMORY_DB__: DatabaseSchema | undefined;
+}
 
-function ensureDataDir() {
-  const dir = path.dirname(DB_FILE);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
+const LOCAL_DB_FILE = path.join(process.cwd(), 'data', 'db.json');
+
+function isServerlessEnvironment(): boolean {
+  return Boolean(
+    process.env.VERCEL ||
+    process.env.AWS_LAMBDA_FUNCTION_NAME ||
+    process.env.LAMBDA_TASK_ROOT ||
+    (typeof process.cwd === 'function' && process.cwd().startsWith('/var/task'))
+  );
+}
+
+function getWritableDbFilePath(): string {
+  if (isServerlessEnvironment()) {
+    return '/tmp/unifest_db.json';
+  }
+  return LOCAL_DB_FILE;
+}
+
+function getFallbackTmpPath(): string {
+  if (process.platform === 'win32') {
+    return path.join(process.env.TEMP || process.env.TMP || 'C:\\Temp', 'unifest_db.json');
+  }
+  return '/tmp/unifest_db.json';
+}
+
+function safeWriteToDisk(filePath: string, content: string): boolean {
+  try {
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(filePath, content, 'utf-8');
+    return true;
+  } catch (err: any) {
+    const fallback = getFallbackTmpPath();
+    if (filePath !== fallback) {
+      try {
+        const tmpDir = path.dirname(fallback);
+        if (!fs.existsSync(tmpDir)) {
+          fs.mkdirSync(tmpDir, { recursive: true });
+        }
+        fs.writeFileSync(fallback, content, 'utf-8');
+        return true;
+      } catch {
+        // Fallback write failed, keep in-memory
+      }
+    }
+    console.warn(`Could not persist db to disk (${err?.code || err?.message}). Keeping state in memory.`);
+    return false;
   }
 }
 
@@ -393,46 +441,56 @@ export function getInitialSeedData(): DatabaseSchema {
 }
 
 export function readDatabase(): DatabaseSchema {
-  ensureDataDir();
-  if (!fs.existsSync(DB_FILE)) {
-    const seed = getInitialSeedData();
-    fs.writeFileSync(DB_FILE, JSON.stringify(seed, null, 2), 'utf-8');
-    return seed;
+  // 1. Return in-memory cached copy if already initialized
+  if (globalThis.__UNIFEST_IN_MEMORY_DB__) {
+    return globalThis.__UNIFEST_IN_MEMORY_DB__;
   }
-  try {
-    const raw = fs.readFileSync(DB_FILE, 'utf-8');
-    const data: DatabaseSchema = JSON.parse(raw);
-    let changed = false;
-    data.users = data.users.map((u) => {
-      if (!u.password) {
-        u.password = 'unifest123';
-        changed = true;
-      }
-      if (u.id === 'usr-sneha' && u.emailVerified) {
-        u.emailVerified = false;
-        u.verificationCode = '749215';
-        changed = true;
-      }
-      return u;
-    });
-    if (changed) {
-      fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+
+  const writablePath = getWritableDbFilePath();
+
+  // 2. Try loading from writable path (e.g. /tmp/unifest_db.json on Vercel or data/db.json locally)
+  if (fs.existsSync(writablePath)) {
+    try {
+      const raw = fs.readFileSync(writablePath, 'utf-8');
+      const data: DatabaseSchema = JSON.parse(raw);
+      globalThis.__UNIFEST_IN_MEMORY_DB__ = data;
+      return data;
+    } catch (err) {
+      console.warn('Could not read writable db file, checking fallback...', err);
     }
-    return data;
-  } catch (err) {
-    console.error('Error reading db.json, returning initial seed data', err);
-    return getInitialSeedData();
   }
+
+  // 3. Try reading bundled read-only seed from LOCAL_DB_FILE
+  if (fs.existsSync(LOCAL_DB_FILE)) {
+    try {
+      const raw = fs.readFileSync(LOCAL_DB_FILE, 'utf-8');
+      const data: DatabaseSchema = JSON.parse(raw);
+      globalThis.__UNIFEST_IN_MEMORY_DB__ = data;
+      safeWriteToDisk(writablePath, JSON.stringify(data, null, 2));
+      return data;
+    } catch (err) {
+      console.warn('Could not read bundled LOCAL_DB_FILE:', err);
+    }
+  }
+
+  // 4. Fallback to initial seed data
+  const seed = getInitialSeedData();
+  globalThis.__UNIFEST_IN_MEMORY_DB__ = seed;
+  safeWriteToDisk(writablePath, JSON.stringify(seed, null, 2));
+  return seed;
 }
 
 export function writeDatabase(data: DatabaseSchema): void {
-  ensureDataDir();
-  fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  // Always update in-memory instance immediately so subsequent requests in container see changes
+  globalThis.__UNIFEST_IN_MEMORY_DB__ = data;
+  const writablePath = getWritableDbFilePath();
+  safeWriteToDisk(writablePath, JSON.stringify(data, null, 2));
 }
 
 export function resetDatabase(): DatabaseSchema {
-  ensureDataDir();
   const seed = getInitialSeedData();
-  fs.writeFileSync(DB_FILE, JSON.stringify(seed, null, 2), 'utf-8');
+  globalThis.__UNIFEST_IN_MEMORY_DB__ = seed;
+  const writablePath = getWritableDbFilePath();
+  safeWriteToDisk(writablePath, JSON.stringify(seed, null, 2));
   return seed;
 }
