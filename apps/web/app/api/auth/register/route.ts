@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { readDatabase, writeDatabase } from '@/lib/db';
 import { User, Role, Gender } from '@unifest/shared';
+import { supabaseUpsertUser } from '@/lib/supabase';
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,6 +34,9 @@ export async function POST(req: NextRequest) {
 
     db.users.push(newUser);
     writeDatabase(db);
+
+    // Sync to Supabase in background
+    supabaseUpsertUser(newUser).catch(() => {});
 
     return NextResponse.json({
       success: true,

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { readDatabase, writeDatabase } from '@/lib/db';
 import { SESSION_COOKIE } from '@/lib/auth';
+import { supabaseUpsertUser } from '@/lib/supabase';
 
 export async function POST(req: NextRequest) {
   try {
@@ -39,6 +40,9 @@ export async function POST(req: NextRequest) {
     user.emailVerified = true;
     delete user.verificationCode;
     writeDatabase(db);
+
+    // Sync to Supabase in background
+    supabaseUpsertUser(user).catch(() => {});
 
     const college = db.colleges.find((c) => c.id === user.collegeId);
     const userWithCollege = { ...user, college };

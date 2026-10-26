@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { readDatabase, writeDatabase } from '@/lib/db';
 import { SESSION_COOKIE } from '@/lib/auth';
+import { supabaseGetUserByEmail } from '@/lib/supabase';
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,7 +13,16 @@ export async function POST(req: NextRequest) {
 
     const cleanEmail = email.trim().toLowerCase();
     const db = readDatabase();
-    const user = db.users.find((u) => u.email.toLowerCase() === cleanEmail);
+    let user = db.users.find((u) => u.email.toLowerCase() === cleanEmail);
+
+    if (!user) {
+      const sbUser = await supabaseGetUserByEmail(cleanEmail);
+      if (sbUser) {
+        db.users.push(sbUser);
+        writeDatabase(db);
+        user = sbUser;
+      }
+    }
 
     if (!user) {
       return NextResponse.json({ error: 'No account found with this email address' }, { status: 401 });
