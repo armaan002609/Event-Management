@@ -151,7 +151,7 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab, onOpenPro
                 Complete Your Student Profile
               </h4>
               <p className="text-[11px] text-slate-600">
-                Add your Father&apos;s phone, address, college, roll no, and course to unlock festival event registrations.
+                Add your Father&apos;s name &amp; phone, address, college, roll no, course, and photo to unlock festival event registrations.
               </p>
             </div>
           </div>

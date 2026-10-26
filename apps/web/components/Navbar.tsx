@@ -307,9 +307,17 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                     }}
                     className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-slate-50/80 hover:bg-slate-100 transition-all text-xs"
                   >
-                    <div className="w-6 h-6 rounded-full bg-primary text-white font-bold flex items-center justify-center text-[10px]">
-                      {activeUser.name?.charAt(0) || 'U'}
-                    </div>
+                    {activeUser.avatarUrl ? (
+                      <img
+                        src={activeUser.avatarUrl}
+                        alt={activeUser.name}
+                        className="w-6 h-6 rounded-full object-cover border border-primary/30 shrink-0"
+                      />
+                    ) : (
+                      <div className="w-6 h-6 rounded-full bg-primary text-white font-bold flex items-center justify-center text-[10px] shrink-0">
+                        {activeUser.name?.charAt(0) || 'U'}
+                      </div>
+                    )}
                     <div className="text-left hidden sm:block">
                       <p className="font-bold text-slate-800 leading-tight truncate max-w-[120px]">
                         {activeUser.name}
@@ -327,9 +335,17 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                       {/* User Info Header */}
                       <div className="pb-3 border-b border-slate-100">
                         <div className="flex items-center gap-2.5 mb-2">
-                          <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary font-bold flex items-center justify-center text-sm shrink-0">
-                            {activeUser.name?.charAt(0) || 'U'}
-                          </div>
+                          {activeUser.avatarUrl ? (
+                            <img
+                              src={activeUser.avatarUrl}
+                              alt={activeUser.name}
+                              className="w-9 h-9 rounded-xl object-cover border border-primary/20 shrink-0 shadow-sm"
+                            />
+                          ) : (
+                            <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary font-bold flex items-center justify-center text-sm shrink-0">
+                              {activeUser.name?.charAt(0) || 'U'}
+                            </div>
+                          )}
                           <div className="truncate">
                             <p className="font-bold text-xs text-slate-900 truncate">{activeUser.name}</p>
                             <p className="text-[11px] text-slate-500 truncate">{activeUser.email}</p>

@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
   email TEXT NOT NULL UNIQUE,
   name TEXT NOT NULL,
   phone TEXT,
+  father_name TEXT,
   father_phone TEXT,
   address TEXT,
   college_id TEXT REFERENCES colleges(id) ON DELETE SET NULL,
@@ -35,6 +36,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- If users table already exists, safe column additions:
+ALTER TABLE users ADD COLUMN IF NOT EXISTS father_name TEXT;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS father_phone TEXT;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS address TEXT;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS college_name TEXT;

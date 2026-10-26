@@ -31,6 +31,7 @@ export interface User {
   email: string;
   name: string;
   phone?: string | null;
+  fatherName?: string | null;
   fatherPhone?: string | null;
   address?: string | null;
   collegeId?: string | null;
@@ -55,12 +56,14 @@ export function isUserProfileComplete(user: User | null | undefined): boolean {
   return Boolean(
     user.name?.trim() &&
     user.phone?.trim() &&
+    user.fatherName?.trim() &&
     user.fatherPhone?.trim() &&
     user.address?.trim() &&
     (user.collegeId || user.collegeName?.trim()) &&
     user.rollNo?.trim() &&
     user.course?.trim() &&
-    user.passingYear
+    user.passingYear &&
+    user.avatarUrl?.trim()
   );
 }
 

@@ -70,6 +70,7 @@ export async function supabaseUpsertUser(user: User): Promise<boolean> {
       verification_code: user.verificationCode || null,
     };
 
+    if (user.fatherName !== undefined) userPayload.father_name = user.fatherName;
     if (user.fatherPhone !== undefined) userPayload.father_phone = user.fatherPhone;
     if (user.address !== undefined) userPayload.address = user.address;
     if (user.collegeName !== undefined) userPayload.college_name = user.collegeName;
@@ -125,10 +126,19 @@ export async function supabaseGetUserByEmail(email: string): Promise<User | null
       email: data.email,
       name: data.name,
       phone: data.phone,
+      fatherName: data.father_name || null,
+      fatherPhone: data.father_phone || null,
+      address: data.address || null,
+      collegeId: data.college_id,
+      collegeName: data.college_name || data.college?.name || null,
+      college: data.college,
+      rollNo: data.roll_no || null,
+      course: data.course || null,
+      passingYear: data.passing_year || null,
+      avatarUrl: data.avatar_url || null,
+      isProfileComplete: data.is_profile_complete || false,
       gender: data.gender,
       role: data.role,
-      collegeId: data.college_id,
-      college: data.college,
       emailVerified: data.email_verified,
       password: data.password,
       verificationCode: data.verification_code,

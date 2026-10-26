@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
     const {
       name,
       phone,
+      fatherName,
       fatherPhone,
       address,
       collegeId,
@@ -53,6 +54,7 @@ export async function POST(req: NextRequest) {
     // Update fields
     if (name) existingUser.name = name.trim();
     if (phone !== undefined) existingUser.phone = phone?.trim() || null;
+    if (fatherName !== undefined) existingUser.fatherName = fatherName?.trim() || null;
     if (fatherPhone !== undefined) existingUser.fatherPhone = fatherPhone?.trim() || null;
     if (address !== undefined) existingUser.address = address?.trim() || null;
     if (collegeId !== undefined) existingUser.collegeId = collegeId || null;
