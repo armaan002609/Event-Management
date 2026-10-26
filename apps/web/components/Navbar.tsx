@@ -234,8 +234,19 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
               </nav>
             )}
 
-            {/* Right Controls: Scanner shortcut, Notifications, Switch Role */}
+            {/* Right Controls: Admin shortcut, Scanner shortcut, Notifications, Profile */}
             <div className="flex items-center gap-2.5">
+              {/* Quick Admin Portal button for authorized administrators */}
+              {(activeUser?.role === 'ADMIN' || activeUser?.email === 'armaan002609@gmail.com') && (
+                <Link
+                  href="/admin"
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold hover:bg-rose-100 transition-colors shadow-sm"
+                >
+                  <Shield className="w-3.5 h-3.5 text-rose-600" />
+                  <span>Admin Portal</span>
+                </Link>
+              )}
+
               {/* Quick Scanner PWA button */}
               <Link
                 href="/scanner"
@@ -383,6 +394,23 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                           Digital Badge
                         </span>
                       </button>
+
+                      {/* Admin Command Center for Administrators */}
+                      {(activeUser.role === 'ADMIN' || activeUser.email === 'armaan002609@gmail.com') && (
+                        <Link
+                          href="/admin"
+                          onClick={() => setShowUserDropdown(false)}
+                          className="w-full flex items-center justify-between py-2 px-3 rounded-xl text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 transition-colors border border-rose-100"
+                        >
+                          <span className="flex items-center gap-1.5">
+                            <Shield className="w-3.5 h-3.5 text-rose-600" />
+                            <span>Admin Command Center</span>
+                          </span>
+                          <span className="text-[9px] bg-rose-600 text-white px-1.5 py-0.5 rounded-full font-bold">
+                            Root Admin
+                          </span>
+                        </Link>
+                      )}
 
                       {/* Student Profile Action */}
                       {activeUser.role === 'STUDENT' && onOpenProfileModal && (

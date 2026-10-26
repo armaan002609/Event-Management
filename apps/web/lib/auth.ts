@@ -15,12 +15,22 @@ export function getOptionalActiveUserId(): string | null {
   return null;
 }
 
+export const ADMIN_EMAILS = ['armaan002609@gmail.com', 'admin@unifest.org'];
+
+export function isAdminUser(user?: User | null): boolean {
+  if (!user) return false;
+  return user.role === 'ADMIN' || (!!user.email && ADMIN_EMAILS.includes(user.email.toLowerCase()));
+}
+
 export function getOptionalActiveUser(): User | null {
   const userId = getOptionalActiveUserId();
   if (!userId) return null;
   const db = readDatabase();
   const user = db.users.find((u) => u.id === userId);
   if (user) {
+    if (user.email && ADMIN_EMAILS.includes(user.email.toLowerCase())) {
+      user.role = 'ADMIN';
+    }
     const college = db.colleges.find((c) => c.id === user.collegeId);
     return { ...user, college };
   }
@@ -38,6 +48,9 @@ export async function getOptionalActiveUserAsync(): Promise<User | null> {
       const { supabaseGetUserById } = await import('./supabase');
       const sbUser = await supabaseGetUserById(userId);
       if (sbUser) {
+        if (sbUser.email && ADMIN_EMAILS.includes(sbUser.email.toLowerCase())) {
+          sbUser.role = 'ADMIN';
+        }
         const existingIdx = db.users.findIndex((u) => u.id === sbUser.id);
         if (existingIdx >= 0) {
           db.users[existingIdx] = sbUser;
@@ -53,6 +66,9 @@ export async function getOptionalActiveUserAsync(): Promise<User | null> {
   }
 
   if (user) {
+    if (user.email && ADMIN_EMAILS.includes(user.email.toLowerCase())) {
+      user.role = 'ADMIN';
+    }
     const college = db.colleges.find((c) => c.id === user.collegeId);
     return { ...user, college };
   }

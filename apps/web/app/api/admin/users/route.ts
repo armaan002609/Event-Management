@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getActiveUser } from '@/lib/auth';
+import { getActiveUser, getOptionalActiveUserAsync, isAdminUser } from '@/lib/auth';
 import { readDatabase, writeDatabase } from '@/lib/db';
 import { User, Role, AuditLog } from '@unifest/shared';
 
 export async function GET(req: NextRequest) {
-  const activeUser = getActiveUser();
-  if (activeUser.role !== 'ADMIN') {
+  const activeUser = (await getOptionalActiveUserAsync()) || getActiveUser();
+  if (!isAdminUser(activeUser)) {
     return NextResponse.json({ error: 'Forbidden: Admin access required.' }, { status: 403 });
   }
 
@@ -43,8 +43,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const activeUser = getActiveUser();
-  if (activeUser.role !== 'ADMIN') {
+  const activeUser = (await getOptionalActiveUserAsync()) || getActiveUser();
+  if (!isAdminUser(activeUser)) {
     return NextResponse.json({ error: 'Forbidden: Admin access required.' }, { status: 403 });
   }
 
@@ -109,8 +109,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  const activeUser = getActiveUser();
-  if (activeUser.role !== 'ADMIN') {
+  const activeUser = (await getOptionalActiveUserAsync()) || getActiveUser();
+  if (!isAdminUser(activeUser)) {
     return NextResponse.json({ error: 'Forbidden: Admin access required.' }, { status: 403 });
   }
 
