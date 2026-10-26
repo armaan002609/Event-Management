@@ -19,7 +19,7 @@ export async function GET() {
         sb.from('rooms').select('*'),
       ]);
 
-      if (sbColleges && sbColleges.length > 0) {
+      if (sbColleges) {
         const usersList = sbUsers || [];
         const roomsList = sbRooms || [];
         const collegesWithStats = sbColleges.map((col: any) => {
@@ -93,6 +93,22 @@ export async function POST(req: NextRequest) {
       color: color || '#4F46E5',
     };
 
+    // Save to Supabase
+    try {
+      const { getSupabase } = await import('@/lib/supabase');
+      const sb = getSupabase();
+      if (sb) {
+        await sb.from('colleges').upsert({
+          id: newCollege.id,
+          name: newCollege.name,
+          code: newCollege.code,
+          color: newCollege.color,
+        });
+      }
+    } catch (e) {
+      console.warn('Supabase college insert error:', e);
+    }
+
     db.colleges.push(newCollege);
 
     // Audit Log
@@ -115,5 +131,45 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(newCollege);
   } catch (err: unknown) {
     return NextResponse.json({ error: (err as Error).message }, { status: 400 });
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  const activeUser = (await getOptionalActiveUserAsync()) || getActiveUser();
+  if (!isAdminUser(activeUser)) {
+    return NextResponse.json({ error: 'Forbidden: Admin access required.' }, { status: 403 });
+  }
+
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
+    if (!id) {
+      return NextResponse.json({ error: 'College ID is required.' }, { status: 400 });
+    }
+
+    // Delete in Supabase
+    try {
+      const { getSupabase } = await import('@/lib/supabase');
+      const sb = getSupabase();
+      if (sb) {
+        await sb.from('rooms').update({ locked_college_id: null }).eq('locked_college_id', id);
+        await sb.from('meal_batches').delete().eq('college_id', id);
+        await sb.from('colleges').delete().eq('id', id);
+      }
+    } catch (e) {
+      console.warn('Supabase college delete error:', e);
+    }
+
+    const db = readDatabase();
+    db.colleges = db.colleges.filter((c) => c.id !== id);
+    db.rooms.forEach((r) => {
+      if (r.lockedCollegeId === id) r.lockedCollegeId = null;
+    });
+    db.mealBatches = db.mealBatches.filter((b) => b.collegeId !== id);
+    writeDatabase(db);
+
+    return NextResponse.json({ success: true, deletedId: id });
+  } catch (err: unknown) {
+    return NextResponse.json({ error: (err as Error).message }, { status: 500 });
   }
 }

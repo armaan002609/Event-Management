@@ -241,58 +241,7 @@ CREATE POLICY "Allow all operations for audit_logs" ON audit_logs FOR ALL USING 
 
 -- Colleges
 INSERT INTO colleges (id, name, code, color) VALUES
-  ('col-cgc-univ-mohali', 'CGC University Mohali', 'CGC', '#4F46E5'),
-  ('col-pce', 'Punjab College of Engineering', 'PCE', '#2563EB'),
-  ('col-lpu', 'Lovely Professional University', 'LPU', '#7C3AED'),
-  ('col-iitd', 'IIT Delhi', 'IITD', '#059669'),
-  ('col-du', 'Delhi University', 'DU', '#D97706'),
-  ('col-bits', 'BITS Pilani', 'BITS', '#DC2626')
-ON CONFLICT (id) DO NOTHING;
-
--- Hostels
-INSERT INTO hostels (id, name, gender) VALUES
-  ('hostel-boys-1', 'Aryabhatta Boys Hostel', 'MALE'),
-  ('hostel-girls-1', 'Gargi Girls Hostel', 'FEMALE')
-ON CONFLICT (id) DO NOTHING;
-
--- Rooms
-INSERT INTO rooms (id, hostel_id, number, floor, capacity, gender, locked_college_id) VALUES
-  ('room-b101', 'hostel-boys-1', '101', 1, 3, 'MALE', 'col-pce'),
-  ('room-b102', 'hostel-boys-1', '102', 1, 3, 'MALE', 'col-lpu'),
-  ('room-b201', 'hostel-boys-1', '201', 2, 2, 'MALE', NULL),
-  ('room-b202', 'hostel-boys-1', '202', 2, 4, 'MALE', NULL),
-  ('room-g101', 'hostel-girls-1', '101', 1, 3, 'FEMALE', 'col-du'),
-  ('room-g102', 'hostel-girls-1', '102', 1, 2, 'FEMALE', NULL),
-  ('room-g201', 'hostel-girls-1', '201', 2, 3, 'FEMALE', NULL),
-  ('room-g202', 'hostel-girls-1', '202', 2, 4, 'FEMALE', NULL)
-ON CONFLICT (id) DO NOTHING;
-
--- Beds
-INSERT INTO beds (id, room_id, label) VALUES
-  ('bed-b101-1', 'room-b101', 'Bed A'),
-  ('bed-b101-2', 'room-b101', 'Bed B'),
-  ('bed-b101-3', 'room-b101', 'Bed C'),
-  ('bed-b102-1', 'room-b102', 'Bed A'),
-  ('bed-b102-2', 'room-b102', 'Bed B'),
-  ('bed-b102-3', 'room-b102', 'Bed C'),
-  ('bed-b201-1', 'room-b201', 'Bed A'),
-  ('bed-b201-2', 'room-b201', 'Bed B'),
-  ('bed-b202-1', 'room-b202', 'Bed A'),
-  ('bed-b202-2', 'room-b202', 'Bed B'),
-  ('bed-b202-3', 'room-b202', 'Bed C'),
-  ('bed-b202-4', 'room-b202', 'Bed D'),
-  ('bed-g101-1', 'room-g101', 'Bed A'),
-  ('bed-g101-2', 'room-g101', 'Bed B'),
-  ('bed-g101-3', 'room-g101', 'Bed C'),
-  ('bed-g102-1', 'room-g102', 'Bed A'),
-  ('bed-g102-2', 'room-g102', 'Bed B'),
-  ('bed-g201-1', 'room-g201', 'Bed A'),
-  ('bed-g201-2', 'room-g201', 'Bed B'),
-  ('bed-g201-3', 'room-g201', 'Bed C'),
-  ('bed-g202-1', 'room-g202', 'Bed A'),
-  ('bed-g202-2', 'room-g202', 'Bed B'),
-  ('bed-g202-3', 'room-g202', 'Bed C'),
-  ('bed-g202-4', 'room-g202', 'Bed D')
+  ('col-cgc-univ-mohali', 'CGC University, Mohali', 'CGC-M', '#4F46E5')
 ON CONFLICT (id) DO NOTHING;
 
 -- Staff Users
@@ -316,14 +265,6 @@ INSERT INTO meal_slots (id, date, type) VALUES
   ('slot-breakfast-1', TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD'), 'BREAKFAST'),
   ('slot-lunch-1', TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD'), 'LUNCH'),
   ('slot-dinner-1', TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD'), 'DINNER')
-ON CONFLICT (id) DO NOTHING;
-
--- Lunch Batches
-INSERT INTO meal_batches (id, slot_id, college_id, gender, starts_at, ends_at) VALUES
-  ('batch-lunch-pce-m', 'slot-lunch-1', 'col-pce', 'MALE', NOW() - INTERVAL '30 minutes', NOW() + INTERVAL '30 minutes'),
-  ('batch-lunch-pce-f', 'slot-lunch-1', 'col-pce', 'FEMALE', NOW() - INTERVAL '30 minutes', NOW() + INTERVAL '30 minutes'),
-  ('batch-lunch-lpu-m', 'slot-lunch-1', 'col-lpu', 'MALE', NOW() + INTERVAL '30 minutes', NOW() + INTERVAL '90 minutes'),
-  ('batch-lunch-du-f', 'slot-lunch-1', 'col-du', 'FEMALE', NOW() - INTERVAL '15 minutes', NOW() + INTERVAL '45 minutes')
 ON CONFLICT (id) DO NOTHING;
 
 

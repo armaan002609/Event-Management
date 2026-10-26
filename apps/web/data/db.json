@@ -173,14 +173,9 @@
       "fatherName": null,
       "fatherPhone": null,
       "address": null,
-      "collegeId": "col-pce",
-      "collegeName": "Punjab College of Engineering",
-      "college": {
-        "id": "col-pce",
-        "code": "PCE",
-        "name": "Punjab College of Engineering",
-        "color": "#2563EB"
-      },
+      "collegeId": null,
+      "collegeName": null,
+      "college": null,
       "rollNo": null,
       "course": null,
       "passingYear": null,

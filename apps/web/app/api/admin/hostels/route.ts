@@ -27,7 +27,7 @@ export async function GET() {
         sb.from('colleges').select('*'),
       ]);
 
-      if (sbHostels && sbHostels.length > 0) {
+      if (sbHostels) {
         const roomsList = sbRooms || [];
         const bedsList = sbBeds || [];
         const allocsList = sbAllocations || [];
@@ -132,6 +132,20 @@ export async function POST(req: NextRequest) {
         gender: gender as Gender,
       };
 
+      try {
+        const { getSupabase } = await import('@/lib/supabase');
+        const sb = getSupabase();
+        if (sb) {
+          await sb.from('hostels').insert({
+            id: newHostel.id,
+            name: newHostel.name,
+            gender: newHostel.gender,
+          });
+        }
+      } catch (e) {
+        console.warn('Supabase insert hostel error:', e);
+      }
+
       db.hostels.push(newHostel);
 
       // Audit Log
@@ -156,15 +170,26 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'hostelId, room number, and capacity are required.' }, { status: 400 });
       }
 
-      const hostel = db.hostels.find((h) => h.id === hostelId);
-      if (!hostel) {
-        return NextResponse.json({ error: 'Hostel not found' }, { status: 404 });
-      }
+      let hostelGender: Gender = 'MALE';
+      let hostelName = '';
 
-      // Check duplicate room number in this hostel
-      const existing = db.rooms.find((r) => r.hostelId === hostelId && r.number === number);
-      if (existing) {
-        return NextResponse.json({ error: `Room ${number} already exists in ${hostel.name}` }, { status: 400 });
+      // Check DB or Supabase
+      const hostel = db.hostels.find((h) => h.id === hostelId);
+      if (hostel) {
+        hostelGender = hostel.gender;
+        hostelName = hostel.name;
+      } else {
+        try {
+          const { getSupabase } = await import('@/lib/supabase');
+          const sb = getSupabase();
+          if (sb) {
+            const { data } = await sb.from('hostels').select('*').eq('id', hostelId).single();
+            if (data) {
+              hostelGender = data.gender;
+              hostelName = data.name;
+            }
+          }
+        } catch {}
       }
 
       const capInt = parseInt(capacity, 10);
@@ -176,13 +201,10 @@ export async function POST(req: NextRequest) {
         number,
         floor: floorInt,
         capacity: capInt,
-        gender: hostel.gender, // BR-1: Inherited strictly from hostel gender
+        gender: hostelGender,
         lockedCollegeId: null,
       };
 
-      db.rooms.push(newRoom);
-
-      // Generate beds
       const labels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
       const newBeds: Bed[] = [];
       for (let i = 0; i < capInt; i++) {
@@ -194,9 +216,36 @@ export async function POST(req: NextRequest) {
         newBeds.push(bed);
       }
 
+      try {
+        const { getSupabase } = await import('@/lib/supabase');
+        const sb = getSupabase();
+        if (sb) {
+          await sb.from('rooms').insert({
+            id: newRoom.id,
+            hostel_id: newRoom.hostelId,
+            number: newRoom.number,
+            floor: newRoom.floor,
+            capacity: newRoom.capacity,
+            gender: newRoom.gender,
+            locked_college_id: newRoom.lockedCollegeId,
+          });
+          if (newBeds.length > 0) {
+            await sb.from('beds').insert(
+              newBeds.map((b) => ({
+                id: b.id,
+                room_id: b.roomId,
+                label: b.label,
+              }))
+            );
+          }
+        }
+      } catch (e) {
+        console.warn('Supabase insert room error:', e);
+      }
+
+      db.rooms.push(newRoom);
       db.beds.push(...newBeds);
 
-      // Audit Log
       db.auditLogs.unshift({
         id: `audit-${Date.now()}`,
         actorId: activeUser.id,
@@ -204,7 +253,7 @@ export async function POST(req: NextRequest) {
         action: 'ROOM_CREATE',
         entity: 'Room',
         entityId: newRoom.id,
-        reason: `Admin added Room ${number} to ${hostel.name} with ${capInt} beds.`,
+        reason: `Admin added Room ${number} to ${hostelName || 'hostel'} with ${capInt} beds.`,
         before: null,
         after: { room: newRoom, bedsCount: newBeds.length },
         at: new Date().toISOString(),
@@ -218,5 +267,73 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid action. Must be ADD_HOSTEL or ADD_ROOM' }, { status: 400 });
   } catch (err: unknown) {
     return NextResponse.json({ error: (err as Error).message }, { status: 400 });
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  const activeUser = (await getOptionalActiveUserAsync()) || getActiveUser();
+  if (!isAdminUser(activeUser)) {
+    return NextResponse.json({ error: 'Forbidden: Admin access required.' }, { status: 403 });
+  }
+
+  try {
+    const { searchParams } = new URL(req.url);
+    const hostelId = searchParams.get('hostelId');
+    const roomId = searchParams.get('roomId');
+
+    if (!hostelId && !roomId) {
+      return NextResponse.json({ error: 'hostelId or roomId is required.' }, { status: 400 });
+    }
+
+    try {
+      const { getSupabase } = await import('@/lib/supabase');
+      const sb = getSupabase();
+      if (sb) {
+        if (roomId) {
+          const { data: bList } = await sb.from('beds').select('id').eq('room_id', roomId);
+          const bedIds = (bList || []).map((b: any) => b.id);
+          if (bedIds.length > 0) {
+            await sb.from('allocations').delete().in('bed_id', bedIds);
+          }
+          await sb.from('beds').delete().eq('room_id', roomId);
+          await sb.from('rooms').delete().eq('id', roomId);
+        } else if (hostelId) {
+          const { data: rList } = await sb.from('rooms').select('id').eq('hostel_id', hostelId);
+          const rIds = (rList || []).map((r: any) => r.id);
+          if (rIds.length > 0) {
+            const { data: bList } = await sb.from('beds').select('id').in('room_id', rIds);
+            const bIds = (bList || []).map((b: any) => b.id);
+            if (bIds.length > 0) {
+              await sb.from('allocations').delete().in('bed_id', bIds);
+              await sb.from('beds').delete().in('id', bIds);
+            }
+            await sb.from('rooms').delete().in('id', rIds);
+          }
+          await sb.from('hostels').delete().eq('id', hostelId);
+        }
+      }
+    } catch (e) {
+      console.warn('Supabase delete error:', e);
+    }
+
+    const db = readDatabase();
+    if (roomId) {
+      const bedIds = db.beds.filter((b) => b.roomId === roomId).map((b) => b.id);
+      db.allocations = db.allocations.filter((a) => !bedIds.includes(a.bedId));
+      db.beds = db.beds.filter((b) => b.roomId !== roomId);
+      db.rooms = db.rooms.filter((r) => r.id !== roomId);
+    } else if (hostelId) {
+      const rIds = db.rooms.filter((r) => r.hostelId === hostelId).map((r) => r.id);
+      const bIds = db.beds.filter((b) => rIds.includes(b.roomId)).map((b) => b.id);
+      db.allocations = db.allocations.filter((a) => !bIds.includes(a.bedId));
+      db.beds = db.beds.filter((b) => !bIds.includes(b.id));
+      db.rooms = db.rooms.filter((r) => !rIds.includes(r.id));
+      db.hostels = db.hostels.filter((h) => h.id !== hostelId);
+    }
+    writeDatabase(db);
+
+    return NextResponse.json({ success: true });
+  } catch (err: unknown) {
+    return NextResponse.json({ error: (err as Error).message }, { status: 500 });
   }
 }

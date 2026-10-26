@@ -24,6 +24,7 @@ import {
   Utensils,
   ChevronRight,
   ShieldAlert,
+  Trash2,
 } from 'lucide-react';
 import { User, College, Hostel, Role } from '@unifest/shared';
 import { useToast } from '@/components/ui/Toast';
@@ -278,6 +279,65 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       }
     } catch {
       toast.error('Network Error', 'Failed to save config');
+    }
+  };
+
+  const handleDeleteCollege = async (collegeId: string, collegeName: string) => {
+    if (!confirm(`Are you sure you want to remove ${collegeName}?`)) return;
+    try {
+      const res = await fetch(`/api/admin/colleges?id=${encodeURIComponent(collegeId)}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        setCollegesList((prev) => prev.filter((c) => c.id !== collegeId));
+        toast.success('College Removed', `${collegeName} was deleted.`);
+      } else {
+        const err = await res.json();
+        toast.error('Failed to remove college', err.error);
+      }
+    } catch {
+      toast.error('Error', 'Failed to communicate with server.');
+    }
+  };
+
+  const handleDeleteHostel = async (hostelId: string, hostelName: string) => {
+    if (!confirm(`Are you sure you want to remove ${hostelName} and all its rooms?`)) return;
+    try {
+      const res = await fetch(`/api/admin/hostels?hostelId=${encodeURIComponent(hostelId)}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        setHostelsList((prev) => prev.filter((h) => h.id !== hostelId));
+        toast.success('Hostel Removed', `${hostelName} has been deleted.`);
+      } else {
+        const err = await res.json();
+        toast.error('Failed to remove hostel', err.error);
+      }
+    } catch {
+      toast.error('Error', 'Failed to communicate with server.');
+    }
+  };
+
+  const handleDeleteRoom = async (roomId: string, roomNumber: string) => {
+    if (!confirm(`Delete Room ${roomNumber}?`)) return;
+    try {
+      const res = await fetch(`/api/admin/hostels?roomId=${encodeURIComponent(roomId)}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        setHostelsList((prev) =>
+          prev.map((h) => ({
+            ...h,
+            rooms: h.rooms?.filter((r: any) => r.id !== roomId),
+          }))
+        );
+        toast.success('Room Deleted', `Room ${roomNumber} deleted.`);
+      } else {
+        const err = await res.json();
+        toast.error('Failed to remove room', err.error);
+      }
+    } catch {
+      toast.error('Error', 'Failed to communicate with server.');
     }
   };
 
@@ -600,39 +660,64 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {collegesList.map((col) => (
-              <div
-                key={col.id}
-                className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3 relative overflow-hidden"
+          {collegesList.length === 0 ? (
+            <div className="bg-white rounded-2xl p-12 border border-slate-200 text-center space-y-3">
+              <Building2 className="w-10 h-10 text-slate-300 mx-auto" />
+              <h4 className="font-heading font-bold text-slate-700 text-base">No Colleges Registered Yet</h4>
+              <p className="text-xs text-slate-400 max-w-sm mx-auto">
+                No participating institutions are currently enrolled. Click below to add your college.
+              </p>
+              <button
+                onClick={() => setShowAddCollegeModal(true)}
+                className="inline-flex items-center gap-1.5 px-4 py-2 bg-primary text-white text-xs font-bold rounded-xl shadow-md hover:bg-primary-dark transition-all"
               >
+                <Plus className="w-3.5 h-3.5" /> Register College
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {collegesList.map((col) => (
                 <div
-                  className="absolute top-0 left-0 right-0 h-1.5"
-                  style={{ backgroundColor: col.color || '#2563EB' }}
-                />
-
-                <div className="flex items-center justify-between">
-                  <span
-                    className="font-heading font-black text-sm px-2.5 py-1 rounded-lg text-white"
+                  key={col.id}
+                  className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3 relative overflow-hidden group"
+                >
+                  <div
+                    className="absolute top-0 left-0 right-0 h-1.5"
                     style={{ backgroundColor: col.color || '#2563EB' }}
-                  >
-                    {col.code}
-                  </span>
-                  <span className="text-xs font-semibold text-slate-500">
-                    {col.lockedRooms || 0} Locked Rooms
-                  </span>
-                </div>
+                  />
 
-                <div>
-                  <h4 className="font-heading font-bold text-sm text-slate-900 leading-snug">{col.name}</h4>
-                  <div className="flex items-center gap-3 text-xs text-slate-500 mt-2">
-                    <span>Total Students: <strong>{col.totalStudents || 0}</strong></span>
-                    <span>♂ {col.maleStudents || 0} · ♀ {col.femaleStudents || 0}</span>
+                  <div className="flex items-center justify-between">
+                    <span
+                      className="font-heading font-black text-sm px-2.5 py-1 rounded-lg text-white"
+                      style={{ backgroundColor: col.color || '#2563EB' }}
+                    >
+                      {col.code}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-slate-500">
+                        {col.lockedRooms || 0} Locked Rooms
+                      </span>
+                      <button
+                        onClick={() => handleDeleteCollege(col.id, col.name)}
+                        title="Delete College"
+                        className="p-1 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-heading font-bold text-sm text-slate-900 leading-snug">{col.name}</h4>
+                    <div className="flex items-center gap-3 text-xs text-slate-500 mt-2">
+                      <span>Total Students: <strong>{col.totalStudents || 0}</strong></span>
+                      <span>♂ {col.maleStudents || 0} · ♀ {col.femaleStudents || 0}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -649,7 +734,8 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   if (hostelsList.length > 0) setRoomHostelId(hostelsList[0].id);
                   setShowAddRoomModal(true);
                 }}
-                className="flex items-center gap-1.5 px-3.5 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-50 shadow-sm transition-all"
+                disabled={hostelsList.length === 0}
+                className="flex items-center gap-1.5 px-3.5 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-50 shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Plus className="w-3.5 h-3.5" /> Add Room to Hostel
               </button>
@@ -662,63 +748,110 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
             </div>
           </div>
 
-          <div className="space-y-4">
-            {hostelsList.map((h) => (
-              <div key={h.id} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                  <div className="flex items-center gap-2.5">
-                    <span className="w-9 h-9 rounded-xl bg-slate-100 font-bold flex items-center justify-center text-sm">
-                      {h.gender === 'MALE' ? '♂' : '♀'}
-                    </span>
-                    <div>
-                      <h3 className="font-heading font-extrabold text-base text-slate-900">{h.name}</h3>
-                      <p className="text-xs text-slate-400">Gender Policy: {h.gender === 'MALE' ? 'Boys Only' : 'Girls Only'}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4 text-xs">
-                    <div>
-                      <span className="text-slate-400">Total Capacity</span>
-                      <p className="font-heading font-bold text-slate-800 text-sm">{h.totalCapacity} beds</p>
-                    </div>
-                    <div>
-                      <span className="text-slate-400">Occupied</span>
-                      <p className="font-heading font-bold text-blue-600 text-sm">{h.totalOccupied} beds</p>
-                    </div>
-                    <div>
-                      <span className="text-slate-400">Free Beds</span>
-                      <p className="font-heading font-bold text-emerald-600 text-sm">{h.vacantBeds} beds</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Rooms Grid inside Hostel */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2.5">
-                  {h.rooms?.map((r: any) => (
-                    <div
-                      key={r.id}
-                      className="p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs space-y-1"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-slate-800">Room {r.number}</span>
-                        <span className="text-[10px] text-slate-400">F{r.floor}</span>
+          {hostelsList.length === 0 ? (
+            <div className="bg-white rounded-2xl p-12 border border-slate-200 text-center space-y-3">
+              <Home className="w-10 h-10 text-slate-300 mx-auto" />
+              <h4 className="font-heading font-bold text-slate-700 text-base">No Hostels Configured Yet</h4>
+              <p className="text-xs text-slate-400 max-w-sm mx-auto">
+                No hostel facilities or room inventories are in the system. Click below to add your first hostel facility.
+              </p>
+              <button
+                onClick={() => setShowAddHostelModal(true)}
+                className="inline-flex items-center gap-1.5 px-4 py-2 bg-primary text-white text-xs font-bold rounded-xl shadow-md hover:bg-primary-dark transition-all"
+              >
+                <Plus className="w-3.5 h-3.5" /> Add Hostel Facility
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {hostelsList.map((h) => (
+                <div key={h.id} className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <div className="flex items-center gap-2.5">
+                      <span className="w-9 h-9 rounded-xl bg-slate-100 font-bold flex items-center justify-center text-sm">
+                        {h.gender === 'MALE' ? '♂' : '♀'}
+                      </span>
+                      <div>
+                        <h3 className="font-heading font-extrabold text-base text-slate-900">{h.name}</h3>
+                        <p className="text-xs text-slate-400">Gender Policy: {h.gender === 'MALE' ? 'Boys Only' : 'Girls Only'}</p>
                       </div>
-                      <p className="text-[11px] text-slate-500">
-                        {r.occupiedCount}/{r.capacity} beds
-                      </p>
-                      {r.lockedCollege ? (
-                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded text-white inline-block" style={{ backgroundColor: r.lockedCollege.color }}>
-                          {r.lockedCollege.code}
-                        </span>
-                      ) : (
-                        <span className="text-[9px] text-slate-400">Unlocked</span>
-                      )}
                     </div>
-                  ))}
+
+                    <div className="flex items-center gap-4 text-xs">
+                      <div>
+                        <span className="text-slate-400">Total Capacity</span>
+                        <p className="font-heading font-bold text-slate-800 text-sm">{h.totalCapacity} beds</p>
+                      </div>
+                      <div>
+                        <span className="text-slate-400">Occupied</span>
+                        <p className="font-heading font-bold text-blue-600 text-sm">{h.totalOccupied} beds</p>
+                      </div>
+                      <div>
+                        <span className="text-slate-400">Free Beds</span>
+                        <p className="font-heading font-bold text-emerald-600 text-sm">{h.vacantBeds} beds</p>
+                      </div>
+                      <button
+                        onClick={() => handleDeleteHostel(h.id, h.name)}
+                        title="Delete Hostel"
+                        className="p-2 rounded-xl text-slate-300 hover:text-rose-600 hover:bg-rose-50 transition-colors ml-2"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Rooms Grid inside Hostel */}
+                  {h.rooms && h.rooms.length > 0 ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2.5">
+                      {h.rooms.map((r: any) => (
+                        <div
+                          key={r.id}
+                          className="p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs space-y-1 relative group"
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-slate-800">Room {r.number}</span>
+                            <div className="flex items-center gap-1">
+                              <span className="text-[10px] text-slate-400">F{r.floor}</span>
+                              <button
+                                onClick={() => handleDeleteRoom(r.id, r.number)}
+                                title="Delete Room"
+                                className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-rose-600 transition-opacity"
+                              >
+                                <Trash2 className="w-2.5 h-2.5" />
+                              </button>
+                            </div>
+                          </div>
+                          <p className="text-[11px] text-slate-500">
+                            {r.occupiedCount}/{r.capacity} beds
+                          </p>
+                          {r.lockedCollege ? (
+                            <span className="text-[9px] font-bold px-1.5 py-0.2 rounded text-white inline-block" style={{ backgroundColor: r.lockedCollege.color }}>
+                              {r.lockedCollege.code}
+                            </span>
+                          ) : (
+                            <span className="text-[9px] text-slate-400">Unlocked</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-4 rounded-xl bg-slate-50 border border-dashed border-slate-200 text-center">
+                      <p className="text-xs text-slate-400">No rooms added to this hostel yet.</p>
+                      <button
+                        onClick={() => {
+                          setRoomHostelId(h.id);
+                          setShowAddRoomModal(true);
+                        }}
+                        className="mt-1 text-xs font-bold text-primary hover:underline"
+                      >
+                        + Add Room
+                      </button>
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
