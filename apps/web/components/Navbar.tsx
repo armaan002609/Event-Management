@@ -19,6 +19,9 @@ import {
   CheckCircle2,
   X,
   AlertTriangle,
+  LayoutDashboard,
+  Radio,
+  FileText,
 } from 'lucide-react';
 import { User, NotificationLog } from '@unifest/shared';
 
@@ -99,6 +102,19 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab }: 
 
   const isScannerRoute = pathname === '/scanner';
 
+  // Close dropdowns on outside click
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('[data-dropdown]')) {
+        setShowUserDropdown(false);
+        setShowNotifications(false);
+      }
+    };
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, []);
+
   return (
     <>
       <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
@@ -126,7 +142,7 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab }: 
               </Link>
             </div>
 
-            {/* Navigation Tabs (desktop) */}
+            {/* Navigation Tabs (desktop only) */}
             {!isScannerRoute && activeUser && (
               <nav className="hidden md:flex items-center space-x-1">
                 {activeUser.role === 'STUDENT' ? (
@@ -263,9 +279,13 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab }: 
               </Link>
 
               {/* Notification Bell */}
-              <div className="relative">
+              <div className="relative" data-dropdown>
                 <button
-                  onClick={() => setShowNotifications(!showNotifications)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowNotifications(!showNotifications);
+                    setShowUserDropdown(false);
+                  }}
                   className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors relative"
                   aria-label="Notifications"
                 >
@@ -277,7 +297,7 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab }: 
 
                 {/* Notifications Drawer Dropdown */}
                 {showNotifications && (
-                  <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 z-50 animate-in fade-in slide-in-from-top-2">
+                  <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 z-50 toast-enter">
                     <div className="flex items-center justify-between pb-3 border-b border-slate-100">
                       <div className="flex items-center gap-2">
                         <Bell className="w-4 h-4 text-primary" />
@@ -320,9 +340,13 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab }: 
               </button>
 
               {/* Persona Switcher Dropdown */}
-              <div className="relative">
+              <div className="relative" data-dropdown>
                 <button
-                  onClick={() => setShowUserDropdown(!showUserDropdown)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowUserDropdown(!showUserDropdown);
+                    setShowNotifications(false);
+                  }}
                   className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-slate-50/80 hover:bg-slate-100 transition-all text-xs"
                 >
                   <div className="w-6 h-6 rounded-full bg-primary text-white font-bold flex items-center justify-center text-[10px]">
@@ -341,7 +365,7 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab }: 
                 </button>
 
                 {showUserDropdown && (
-                  <div className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 p-2 z-50 animate-in fade-in slide-in-from-top-2">
+                  <div className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 p-2 z-50 toast-enter">
                     <div className="px-3 py-2 border-b border-slate-100">
                       <p className="text-xs font-bold text-slate-900">Switch Demo Persona</p>
                       <p className="text-[11px] text-slate-500">Test platform across different roles</p>
@@ -382,43 +406,42 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab }: 
             </div>
           </div>
         </div>
+      </header>
 
-        {/* Mobile Sub-Navigation Bar */}
-        {!isScannerRoute && activeUser && (
-          <div className="md:hidden border-t border-slate-200 bg-white/95 px-2 py-1.5 flex items-center justify-around overflow-x-auto">
+      {/* ═══ MOBILE BOTTOM NAVIGATION BAR ═══ */}
+      {/* Replaces the old scrollable sub-nav with a proper iOS/Android-style fixed bottom bar */}
+      {!isScannerRoute && activeUser && (
+        <nav className="bottom-nav md:hidden">
+          <div className="flex items-stretch h-full">
             {activeUser.role === 'STUDENT' ? (
               <>
                 <button
                   onClick={() => setActiveTab('dashboard')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${
-                    activeTab === 'dashboard' ? 'bg-primary text-white' : 'text-slate-600'
-                  }`}
+                  className={`bottom-nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
                 >
-                  Dashboard
+                  <Home className="w-5 h-5" />
+                  <span>Home</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('events')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${
-                    activeTab === 'events' ? 'bg-primary text-white' : 'text-slate-600'
-                  }`}
+                  className={`bottom-nav-item ${activeTab === 'events' ? 'active' : ''}`}
                 >
-                  Events
+                  <Sparkles className="w-5 h-5" />
+                  <span>Events</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('qr')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${
-                    activeTab === 'qr' ? 'bg-primary text-white' : 'text-slate-600'
-                  }`}
+                  className={`bottom-nav-item ${activeTab === 'qr' ? 'active' : ''}`}
                 >
-                  My QR
+                  <QrCode className="w-5 h-5" />
+                  <span>QR Pass</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('meals')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${
-                    activeTab === 'meals' ? 'bg-primary text-white' : 'text-slate-600'
-                  }`}
+                  className={`bottom-nav-item ${activeTab === 'meals' ? 'active' : ''}`}
                 >
-                  Meals
+                  <Utensils className="w-5 h-5" />
+                  <span>Meals</span>
                 </button>
               </>
             ) : (
@@ -426,54 +449,50 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab }: 
                 {activeUser.role === 'ADMIN' && (
                   <button
                     onClick={() => setActiveTab('admin-center')}
-                    className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold ${
-                      activeTab === 'admin-center' ? 'bg-rose-600 text-white font-bold' : 'text-rose-700 bg-rose-50'
-                    }`}
+                    className={`bottom-nav-item ${activeTab === 'admin-center' ? 'active' : ''}`}
+                    style={activeTab === 'admin-center' ? { color: '#E11D48' } : {}}
                   >
-                    Admin
+                    <Shield className="w-5 h-5" />
+                    <span>Admin</span>
                   </button>
                 )}
                 <button
                   onClick={() => setActiveTab('overview')}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold ${
-                    activeTab === 'overview' ? 'bg-primary text-white' : 'text-slate-600'
-                  }`}
+                  className={`bottom-nav-item ${activeTab === 'overview' ? 'active' : ''}`}
                 >
-                  Overview
+                  <LayoutDashboard className="w-5 h-5" />
+                  <span>Overview</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('allocation-matrix')}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold ${
-                    activeTab === 'allocation-matrix' ? 'bg-primary text-white' : 'text-slate-600'
-                  }`}
+                  className={`bottom-nav-item ${activeTab === 'allocation-matrix' ? 'active' : ''}`}
                 >
-                  Hostels
+                  <Layers className="w-5 h-5" />
+                  <span>Hostels</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('event-manager')}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold ${
-                    activeTab === 'event-manager' ? 'bg-primary text-white' : 'text-slate-600'
-                  }`}
+                  className={`bottom-nav-item ${activeTab === 'event-manager' ? 'active' : ''}`}
                 >
-                  Events
+                  <Calendar className="w-5 h-5" />
+                  <span>Events</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('meals-live')}
-                  className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold ${
-                    activeTab === 'meals-live' ? 'bg-primary text-white' : 'text-slate-600'
-                  }`}
+                  className={`bottom-nav-item ${activeTab === 'meals-live' ? 'active' : ''}`}
                 >
-                  Meals
+                  <Utensils className="w-5 h-5" />
+                  <span>Meals</span>
                 </button>
               </>
             )}
           </div>
-        )}
-      </header>
+        </nav>
+      )}
 
       {/* Reset Confirmation Toast */}
       {resetSuccess && (
-        <div className="fixed bottom-6 right-6 bg-emerald-600 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 z-50 animate-in fade-in">
+        <div className="fixed bottom-6 right-6 bg-emerald-600 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 z-50 toast-enter">
           <CheckCircle2 className="w-5 h-5" />
           <span className="text-sm font-semibold">Demo database reset and re-seeded successfully!</span>
         </div>

@@ -13,6 +13,8 @@ import {
   Send,
   ArrowUpRight,
   ShieldAlert,
+  RefreshCw,
+  Sparkles,
 } from 'lucide-react';
 import { ScanLog, NotificationLog } from '@unifest/shared';
 
@@ -40,14 +42,32 @@ export function ManagerDashboard({ onNavigateTab }: ManagerDashboardProps) {
   const [recentScans, setRecentScans] = useState<ScanLog[]>([]);
   const [alerts, setAlerts] = useState<NotificationLog[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [secondsAgo, setSecondsAgo] = useState(0);
 
   useEffect(() => {
     loadDashboardData();
+
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(() => {
+      loadDashboardData(true);
+    }, 30000);
+
+    // Seconds counter
+    const secTimer = setInterval(() => {
+      setSecondsAgo((s) => s + 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(secTimer);
+    };
   }, []);
 
-  const loadDashboardData = async () => {
+  const loadDashboardData = async (silent = false) => {
     try {
-      setLoading(true);
+      if (!silent) setLoading(true);
+      else setIsRefreshing(true);
       const [matrixRes, scansRes, notifsRes, mealsRes] = await Promise.all([
         fetch('/api/allocations/matrix').then((r) => r.json()),
         fetch('/api/scans').then((r) => r.json()),
@@ -90,6 +110,8 @@ export function ManagerDashboard({ onNavigateTab }: ManagerDashboardProps) {
       console.error(e);
     } finally {
       setLoading(false);
+      setIsRefreshing(false);
+      setSecondsAgo(0);
     }
   };
 
@@ -100,10 +122,24 @@ export function ManagerDashboard({ onNavigateTab }: ManagerDashboardProps) {
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="font-heading font-extrabold text-2xl text-slate-900">Festival Operations Control</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Real-time monitoring for inter-college events, safety-locked hostels, and meal batches.
-          </p>
+          <div className="flex items-center gap-2 mb-1">
+            <h2 className="font-heading font-extrabold text-2xl text-slate-900">Festival Operations Control</h2>
+            <button
+              onClick={() => loadDashboardData(true)}
+              title="Refresh dashboard metrics"
+              className="p-1 rounded-lg text-slate-400 hover:text-primary hover:bg-slate-100 transition-colors"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-primary' : ''}`} />
+            </button>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-slate-500">
+            <span className="flex items-center gap-1.5 font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              Live Sync
+            </span>
+            <span>•</span>
+            <span className="text-slate-400">Updated {secondsAgo === 0 ? 'just now' : `${secondsAgo}s ago`}</span>
+          </div>
         </div>
 
         {/* Quick Action Buttons */}

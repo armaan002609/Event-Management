@@ -13,12 +13,14 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { User } from '@unifest/shared';
+import { useToast } from '@/components/ui/Toast';
 
 interface MealsLiveViewProps {
   currentUser: User;
 }
 
 export function MealsLiveView({ currentUser }: MealsLiveViewProps) {
+  const toast = useToast();
   const [liveData, setLiveData] = useState<{
     slots: Array<{
       slotId: string;
@@ -109,13 +111,14 @@ export function MealsLiveView({ currentUser }: MealsLiveViewProps) {
       });
       if (res.ok) {
         setShowGenModal(false);
+        toast.success('Batches Generated', 'Meal batches have been generated successfully.');
         loadLiveMeals();
       } else {
         const d = await res.json();
-        alert(d.error || 'Failed to generate batches');
+        toast.error('Generation Failed', d.error || 'Failed to generate batches');
       }
     } catch {
-      alert('Network error');
+      toast.error('Network Error', 'Could not reach the server to generate batches.');
     } finally {
       setIsGenerating(false);
     }

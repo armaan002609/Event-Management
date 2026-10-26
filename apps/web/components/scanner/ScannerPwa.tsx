@@ -154,8 +154,14 @@ export function ScannerPwa() {
 
     if (res.allowed) {
       if (soundEnabled) sounds.playSuccess();
+      if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+        try { navigator.vibrate(80); } catch {}
+      }
     } else {
       if (soundEnabled) sounds.playError();
+      if (typeof window !== 'undefined' && 'vibrate' in navigator) {
+        try { navigator.vibrate([120, 60, 120]); } catch {}
+      }
     }
 
     // Add to recent feed
@@ -305,8 +311,9 @@ export function ScannerPwa() {
           <div className="absolute bottom-3 left-3 w-6 h-6 border-b-4 border-l-4 border-primary rounded-bl-lg" />
           <div className="absolute bottom-3 right-3 w-6 h-6 border-b-4 border-r-4 border-primary rounded-br-lg" />
 
-          {/* Camera Viewfinder Graphic */}
-          <div className="flex flex-col items-center text-center p-4">
+          {/* Camera Viewfinder Graphic with Laser Beam */}
+          <div className="scanner-laser" />
+          <div className="flex flex-col items-center text-center p-4 relative z-10">
             <Camera className="w-10 h-10 text-indigo-400/80 mb-2 animate-pulse" />
             <span className="text-xs font-bold text-slate-300">Point at Student QR</span>
             <span className="text-[10px] text-slate-500 mt-0.5">High-speed verification active</span>
@@ -390,7 +397,8 @@ export function ScannerPwa() {
       {/* FULL-SCREEN RESULT OVERLAY (UX SPEC 4.3: High-contrast Green / Red readable from arm's length) */}
       {scanResultOverlay && (
         <div
-          className={`fixed inset-0 z-50 flex flex-col items-center justify-center p-6 text-white text-center animate-in zoom-in-95 duration-150 ${
+          onClick={() => setScanResultOverlay(null)}
+          className={`fixed inset-0 z-50 flex flex-col items-center justify-center p-6 text-white text-center animate-in zoom-in-95 duration-150 cursor-pointer ${
             scanResultOverlay.allowed ? 'scan-allowed-overlay' : 'scan-denied-overlay'
           }`}
         >
@@ -425,7 +433,9 @@ export function ScannerPwa() {
                 )}
               </div>
 
-              <span className="text-[11px] text-white/70 animate-pulse">Auto-resetting in 2s...</span>
+              <span className="text-[11px] text-white/80 animate-pulse bg-black/20 px-3 py-1 rounded-full">
+                Tap anywhere to scan next
+              </span>
             </div>
           ) : (
             <div className="flex flex-col items-center space-y-4 max-w-sm">

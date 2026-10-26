@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import confetti from 'canvas-confetti';
 import {
   Trophy,
   Music,
@@ -14,8 +15,10 @@ import {
   Filter,
 } from 'lucide-react';
 import { Event } from '@unifest/shared';
+import { useToast } from '@/components/ui/Toast';
 
 export function EventsBrowser() {
+  const toast = useToast();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState<'ALL' | 'SPORTS' | 'FOLK'>('ALL');
@@ -43,7 +46,7 @@ export function EventsBrowser() {
       const res = await fetch(`/api/events/${eventId}/register`, { method: 'POST' });
       const data = await res.json();
       if (!res.ok) {
-        alert(data.error || 'Failed to register');
+        toast.error('Registration Failed', data.error || 'Could not register for this event.');
       } else {
         // Optimistic state update
         setEvents((prev) =>
@@ -53,9 +56,18 @@ export function EventsBrowser() {
               : e
           )
         );
+        // Celebration confetti burst! 🎉
+        const evt = events.find((e) => e.id === eventId);
+        toast.success('You\'re In! 🎉', `Successfully registered for ${evt?.title || 'the event'}.`);
+        confetti({
+          particleCount: 80,
+          spread: 70,
+          origin: { y: 0.7 },
+          colors: ['#3B3FD9', '#6366F1', '#10B981', '#F59E0B'],
+        });
       }
     } catch {
-      alert('Network error while registering');
+      toast.error('Network Error', 'Could not reach the server. Please try again.');
     } finally {
       setActingEventId(null);
     }
@@ -74,9 +86,10 @@ export function EventsBrowser() {
               : e
           )
         );
+        toast.info('Registration Withdrawn', 'You have been removed from this event.');
       }
     } catch {
-      alert('Network error while withdrawing');
+      toast.error('Network Error', 'Could not withdraw registration. Try again.');
     } finally {
       setActingEventId(null);
     }
@@ -164,34 +177,47 @@ export function EventsBrowser() {
           <p className="text-xs text-slate-400 mt-1">Try adjusting your filters or search query.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 stagger-children">
           {filteredEvents.map((evt) => {
             const isFull = evt.capacity ? (evt.registrationsCount || 0) >= evt.capacity : false;
             const isActing = actingEventId === evt.id;
+            const now = Date.now();
+            const startsAtMs = new Date(evt.startsAt).getTime();
+            const endsAtMs = new Date(evt.endsAt).getTime();
+            const isLive = evt.status === 'LIVE' || (now >= startsAtMs && now <= endsAtMs);
 
             return (
               <div
                 key={evt.id}
-                className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden"
+                className={`bg-white rounded-2xl p-5 border border-slate-200 shadow-sm card-hover-lift flex flex-col justify-between relative overflow-hidden ${
+                  evt.isRegistered ? 'registered-shimmer ring-1 ring-primary/20' : ''
+                } ${isLive ? 'ring-2 ring-emerald-500/40' : ''}`}
               >
                 {/* Top Accent Strip */}
                 <div
                   className={`absolute top-0 left-0 right-0 h-1.5 ${
-                    evt.type === 'SPORTS' ? 'bg-sports' : 'bg-folk'
+                    isLive ? 'bg-emerald-500 animate-pulse' : evt.type === 'SPORTS' ? 'bg-sports' : 'bg-folk'
                   }`}
                 />
 
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <span
-                      className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${
-                        evt.type === 'SPORTS'
-                          ? 'bg-sports/10 text-sports dark:text-teal-700'
-                          : 'bg-folk/10 text-folk-dark'
-                      }`}
-                    >
-                      {evt.type}
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${
+                          evt.type === 'SPORTS'
+                            ? 'bg-sports/10 text-sports dark:text-teal-700'
+                            : 'bg-folk/10 text-folk-dark'
+                        }`}
+                      >
+                        {evt.type}
+                      </span>
+                      {isLive && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 flex items-center gap-1 border border-emerald-200 shadow-sm animate-pulse">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" /> LIVE NOW
+                        </span>
+                      )}
+                    </div>
 
                     {evt.isRegistered && (
                       <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 flex items-center gap-1">
@@ -210,10 +236,10 @@ export function EventsBrowser() {
                     </p>
                   )}
 
-                  <div className="space-y-1.5 my-3 text-xs text-slate-600 bg-slate-50/80 p-3 rounded-xl border border-slate-100">
+                  <div className="space-y-2 my-3 text-xs text-slate-600 bg-slate-50/90 p-3.5 rounded-2xl border border-slate-100">
                     <div className="flex items-center gap-2">
                       <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span>
+                      <span className="font-medium text-slate-700">
                         {new Date(evt.startsAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}{' · '}
                         {new Date(evt.startsAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{' '}
                         {new Date(evt.endsAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -222,15 +248,34 @@ export function EventsBrowser() {
 
                     <div className="flex items-center gap-2">
                       <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span className="truncate">{evt.venue}</span>
+                      <span className="truncate font-medium text-slate-700">{evt.venue}</span>
                     </div>
 
                     {evt.capacity && (
-                      <div className="flex items-center gap-2">
-                        <Users className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                        <span>
-                          {evt.registrationsCount || 0} / {evt.capacity} seats filled
-                        </span>
+                      <div className="pt-1.5 border-t border-slate-200/60">
+                        <div className="flex items-center justify-between text-[11px] mb-1">
+                          <span className="flex items-center gap-1 text-slate-500 font-medium">
+                            <Users className="w-3 h-3 text-slate-400" /> Seats Capacity
+                          </span>
+                          <span className={`font-bold ${isFull ? 'text-rose-600' : 'text-slate-700'}`}>
+                            {evt.registrationsCount || 0} / {evt.capacity} {isFull ? '(Full)' : ''}
+                          </span>
+                        </div>
+                        {/* Visual Progress Bar */}
+                        <div className="w-full h-1.5 bg-slate-200/80 rounded-full overflow-hidden">
+                          <div
+                            className={`h-full rounded-full transition-all duration-500 ${
+                              isFull
+                                ? 'bg-rose-500'
+                                : (evt.registrationsCount || 0) / evt.capacity > 0.75
+                                ? 'bg-amber-500'
+                                : 'bg-primary'
+                            }`}
+                            style={{
+                              width: `${Math.min(100, Math.round(((evt.registrationsCount || 0) / evt.capacity) * 100))}%`,
+                            }}
+                          />
+                        </div>
                       </div>
                     )}
                   </div>

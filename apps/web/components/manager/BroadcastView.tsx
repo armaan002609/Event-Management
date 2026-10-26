@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { Send, Bell, Filter, CheckCircle2, Users, AlertCircle } from 'lucide-react';
 import { NotificationLog, College, Event } from '@unifest/shared';
+import { useToast } from '@/components/ui/Toast';
 
 export function BroadcastView() {
+  const toast = useToast();
   const [logs, setLogs] = useState<NotificationLog[]>([]);
   const [colleges, setColleges] = useState<College[]>([]);
   const [events, setEvents] = useState<Event[]>([]);
@@ -79,14 +81,15 @@ export function BroadcastView() {
       const data = await res.json();
       if (res.ok) {
         setBroadcastResult(data.message);
+        toast.success('Broadcast Sent', data.message || 'Notification sent successfully');
         setSubject('');
         setMessage('');
         loadData();
       } else {
-        alert(data.error || 'Failed to send broadcast');
+        toast.error('Broadcast Failed', data.error || 'Failed to send broadcast');
       }
     } catch {
-      alert('Network error');
+      toast.error('Network Error', 'Could not reach server to send broadcast');
     } finally {
       setIsSending(false);
     }

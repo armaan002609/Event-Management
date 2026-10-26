@@ -26,6 +26,7 @@ import {
   ShieldAlert,
 } from 'lucide-react';
 import { User, College, Hostel, Role } from '@unifest/shared';
+import { useToast } from '@/components/ui/Toast';
 
 interface AdminDashboardProps {
   currentUser: User;
@@ -33,6 +34,7 @@ interface AdminDashboardProps {
 }
 
 export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardProps) {
+  const toast = useToast();
   const [adminTab, setAdminTab] = useState<'overview' | 'users' | 'colleges' | 'hostels' | 'config'>('overview');
 
   // Stats & Config
@@ -115,9 +117,12 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
         setUsersList((prev) =>
           prev.map((u) => (u.id === userId ? { ...u, role: newRole } : u))
         );
+        toast.success('Role Updated', `User role changed to ${newRole}`);
+      } else {
+        toast.error('Update Failed', 'Failed to update user role');
       }
     } catch {
-      alert('Failed to update role');
+      toast.error('Network Error', 'Failed to update role');
     }
   };
 
@@ -132,9 +137,12 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
         setUsersList((prev) =>
           prev.map((u) => (u.id === userId ? { ...u, emailVerified: !currentStatus } : u))
         );
+        toast.success('Status Updated', `User verification marked as ${!currentStatus ? 'Verified' : 'Unverified'}`);
+      } else {
+        toast.error('Update Failed', 'Failed to toggle verification status');
       }
     } catch {
-      alert('Failed to toggle verification');
+      toast.error('Network Error', 'Failed to toggle verification');
     }
   };
 
@@ -159,12 +167,13 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
         setNewUserName('');
         setNewUserEmail('');
         setNewUserPhone('');
+        toast.success('User Created', `User ${newUserName || ''} added successfully`);
         loadAllAdminData();
       } else {
-        alert(data.error || 'Failed to create user');
+        toast.error('Create User Failed', data.error || 'Failed to create user');
       }
     } catch {
-      alert('Network error');
+      toast.error('Network Error', 'Failed to reach server');
     }
   };
 
@@ -185,12 +194,13 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
         setShowAddCollegeModal(false);
         setNewColName('');
         setNewColCode('');
+        toast.success('College Created', `College ${newColName || ''} registered successfully`);
         loadAllAdminData();
       } else {
-        alert(data.error || 'Failed to create college');
+        toast.error('Create College Failed', data.error || 'Failed to create college');
       }
     } catch {
-      alert('Network error');
+      toast.error('Network Error', 'Failed to reach server');
     }
   };
 
@@ -210,12 +220,13 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       if (res.ok) {
         setShowAddHostelModal(false);
         setNewHostelName('');
+        toast.success('Hostel Created', `Hostel ${newHostelName || ''} registered successfully`);
         loadAllAdminData();
       } else {
-        alert(data.error || 'Failed to create hostel');
+        toast.error('Create Hostel Failed', data.error || 'Failed to create hostel');
       }
     } catch {
-      alert('Network error');
+      toast.error('Network Error', 'Failed to reach server');
     }
   };
 
@@ -237,12 +248,13 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       if (res.ok) {
         setShowAddRoomModal(false);
         setRoomNumber('');
+        toast.success('Room Added', `Room ${roomNumber || ''} created successfully`);
         loadAllAdminData();
       } else {
-        alert(data.error || 'Failed to create room');
+        toast.error('Add Room Failed', data.error || 'Failed to create room');
       }
     } catch {
-      alert('Network error');
+      toast.error('Network Error', 'Failed to reach server');
     }
   };
 
@@ -259,10 +271,13 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       });
       if (res.ok) {
         setConfigSaved(true);
+        toast.success('Settings Saved', 'System configuration updated successfully');
         setTimeout(() => setConfigSaved(false), 2500);
+      } else {
+        toast.error('Save Failed', 'Failed to save configuration');
       }
     } catch {
-      alert('Failed to save config');
+      toast.error('Network Error', 'Failed to save config');
     }
   };
 

@@ -12,6 +12,7 @@
   --bg: #F8FAFC;
   --surface: #FFFFFF;
   --text: #0F172A;
+  --bottom-nav-height: 64px;
 }
 
 body {
@@ -26,7 +27,7 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Poppins', sans-serif;
 }
 
-/* Glassmorphism helpers */
+/* ─── Glassmorphism helpers ───────────────────────────────────── */
 .glass-panel {
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
@@ -41,7 +42,7 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid rgba(99, 102, 241, 0.2);
 }
 
-/* Custom scrollbars */
+/* ─── Custom scrollbars ───────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -57,7 +58,7 @@ h1, h2, h3, h4, h5, h6 {
   background: #94A3B8;
 }
 
-/* Scanner target box */
+/* ─── Scanner target box ──────────────────────────────────────── */
 .scanner-reticle {
   position: relative;
 }
@@ -78,11 +79,278 @@ h1, h2, h3, h4, h5, h6 {
   100% { transform: translateY(220px); }
 }
 
-/* High contrast scan results */
+/* ─── High contrast scan results ──────────────────────────────── */
 .scan-allowed-overlay {
   background: linear-gradient(145deg, #16A34A, #15803D);
 }
 
 .scan-denied-overlay {
   background: linear-gradient(145deg, #DC2626, #B91C1C);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PHASE 1 UX ENHANCEMENTS — Animations, Transitions, Toast
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Tab Panel Transitions ───────────────────────────────────── */
+.tab-panel-enter {
+  animation: tabFadeSlideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes tabFadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Staggered Children Animation ────────────────────────────── */
+.stagger-children > * {
+  opacity: 0;
+  animation: staggerFadeIn 0.4s ease-out forwards;
+}
+
+.stagger-children > *:nth-child(1) { animation-delay: 0.04s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.08s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.12s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.16s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.20s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.24s; }
+.stagger-children > *:nth-child(7) { animation-delay: 0.28s; }
+.stagger-children > *:nth-child(8) { animation-delay: 0.32s; }
+.stagger-children > *:nth-child(n+9) { animation-delay: 0.36s; }
+
+@keyframes staggerFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ─── Skeleton Shimmer ────────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 12px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ─── Toast Animations ────────────────────────────────────────── */
+.toast-enter {
+  animation: toastSlideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.toast-exit {
+  animation: toastSlideOut 0.3s cubic-bezier(0.55, 0, 1, 0.45) forwards;
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%) scale(0.95);
+  }
+}
+
+@keyframes toast-progress {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+/* ─── Card Hover Lift ─────────────────────────────────────────── */
+.card-hover-lift {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+}
+.card-hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.08), 0 4px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* ─── Glow Pulse for Live Events ──────────────────────────────── */
+.glow-pulse-green {
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  animation: glowPulseGreen 2s ease-in-out infinite;
+}
+
+@keyframes glowPulseGreen {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+}
+
+/* ─── Registered Event Shimmer Border ─────────────────────────── */
+.registered-shimmer {
+  position: relative;
+}
+.registered-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #10B981, #3B82F6, #8B5CF6, #10B981);
+  background-size: 300% 300%;
+  z-index: -1;
+  animation: shimmerBorder 4s ease infinite;
+  opacity: 0.5;
+}
+
+@keyframes shimmerBorder {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ─── Button Tap Feedback ─────────────────────────────────────── */
+.btn-tap {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-tap:active {
+  transform: scale(0.96);
+}
+
+/* ─── Animated Number Counters ────────────────────────────────── */
+.count-up {
+  display: inline-block;
+  transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ─── Mobile Bottom Navigation ────────────────────────────────── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  height: var(--bottom-nav-height);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex: 1;
+  padding: 6px 4px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #94A3B8;
+  transition: all 0.2s ease;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.bottom-nav-item.active {
+  color: var(--primary);
+}
+
+.bottom-nav-item.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 0 0 4px 4px;
+}
+
+.bottom-nav-item:active {
+  transform: scale(0.92);
+}
+
+/* ─── QR FAB (Floating Action Button) ─────────────────────────── */
+.fab-qr {
+  position: fixed;
+  bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px) + 12px);
+  right: 16px;
+  z-index: 41;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), #6366F1);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px -4px rgba(59, 63, 217, 0.5), 0 4px 8px -2px rgba(59, 63, 217, 0.3);
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.fab-qr:hover {
+  transform: scale(1.08);
+  box-shadow: 0 12px 32px -4px rgba(59, 63, 217, 0.6), 0 6px 12px -2px rgba(59, 63, 217, 0.4);
+}
+
+.fab-qr:active {
+  transform: scale(0.95);
+}
+
+/* Give main content space when bottom nav is showing on mobile */
+@media (max-width: 767px) {
+  .has-bottom-nav {
+    padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px) + 16px);
+  }
+}
+
+/* ─── Progress Ring (for seats filled) ────────────────────────── */
+.progress-ring-bg {
+  stroke: #E2E8F0;
+}
+.progress-ring-fill {
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+/* ─── Scanner Laser Beam ─────────────────────────────────────── */
+.scanner-laser {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #6366F1, #A855F7, #6366F1, transparent);
+  box-shadow: 0 0 12px 3px rgba(168, 85, 247, 0.8);
+  animation: laserScan 2.4s ease-in-out infinite alternate;
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+@keyframes laserScan {
+  0% { top: 10%; opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { top: 90%; opacity: 0.4; }
 }

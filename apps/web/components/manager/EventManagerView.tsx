@@ -15,8 +15,10 @@ import {
   Trash2,
 } from 'lucide-react';
 import { Event } from '@unifest/shared';
+import { useToast } from '@/components/ui/Toast';
 
 export function EventManagerView() {
+  const toast = useToast();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -74,12 +76,13 @@ export function EventManagerView() {
       if (res.ok) {
         setShowCreateModal(false);
         loadEvents();
+        toast.success('Event Created!', `"${newTitle}" is now live for student registrations.`);
       } else {
         const d = await res.json();
-        alert(d.error || 'Failed to create event');
+        toast.error('Creation Failed', d.error || 'Could not create the event.');
       }
     } catch {
-      alert('Network error');
+      toast.error('Network Error', 'Unable to reach the server.');
     } finally {
       setIsSubmitting(false);
     }
@@ -115,13 +118,18 @@ export function EventManagerView() {
         setEditingEvent(null);
         loadEvents();
         if (data.notificationSummary?.studentsNotified) {
-          alert(`Schedule updated! Real-time alerts sent to ${data.notificationSummary.studentsNotified} registered students.`);
+          toast.success(
+            'Schedule Updated & Alerts Sent',
+            `Real-time notifications pushed to ${data.notificationSummary.studentsNotified} registered students.`
+          );
+        } else {
+          toast.success('Event Updated', 'Schedule changes saved successfully.');
         }
       } else {
-        alert(data.error || 'Failed to update event');
+        toast.error('Update Failed', data.error || 'Could not update event.');
       }
     } catch {
-      alert('Network error');
+      toast.error('Network Error', 'Unable to reach the server.');
     } finally {
       setIsSubmitting(false);
     }

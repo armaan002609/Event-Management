@@ -22,12 +22,14 @@ import {
   AllocationRunResult,
   User,
 } from '@unifest/shared';
+import { useToast } from '@/components/ui/Toast';
 
 interface AllocationMatrixViewProps {
   currentUser: User;
 }
 
 export function AllocationMatrixView({ currentUser }: AllocationMatrixViewProps) {
+  const toast = useToast();
   const [matrixData, setMatrixData] = useState<{
     matrix: AllocationMatrixHostel[];
     stats: {
@@ -107,12 +109,13 @@ export function AllocationMatrixView({ currentUser }: AllocationMatrixViewProps)
       const data = await res.json();
       if (res.ok) {
         setShowAutoAllocModal(false);
+        toast.success('Allocation Committed', 'Room allocations have been finalized and committed.');
         loadMatrix();
       } else {
-        alert(data.error || 'Commit failed');
+        toast.error('Commit Failed', data.error || 'Commit failed');
       }
     } catch {
-      alert('Network error while committing');
+      toast.error('Network Error', 'Network error while committing allocations');
     } finally {
       setIsCommitting(false);
     }
