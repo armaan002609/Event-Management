@@ -40,7 +40,8 @@
       "gender": "MALE",
       "role": "STUDENT",
       "collegeId": "col-pce",
-      "emailVerified": true
+      "emailVerified": true,
+      "password": "unifest123"
     },
     {
       "id": "usr-amit",
@@ -50,7 +51,8 @@
       "gender": "MALE",
       "role": "STUDENT",
       "collegeId": "col-pce",
-      "emailVerified": true
+      "emailVerified": true,
+      "password": "unifest123"
     },
     {
       "id": "usr-priya",
@@ -60,7 +62,8 @@
       "gender": "FEMALE",
       "role": "STUDENT",
       "collegeId": "col-du",
-      "emailVerified": true
+      "emailVerified": true,
+      "password": "unifest123"
     },
     {
       "id": "usr-rohit",
@@ -70,7 +73,8 @@
       "gender": "MALE",
       "role": "STUDENT",
       "collegeId": "col-lpu",
-      "emailVerified": true
+      "emailVerified": true,
+      "password": "unifest123"
     },
     {
       "id": "usr-sneha",
@@ -80,7 +84,9 @@
       "gender": "FEMALE",
       "role": "STUDENT",
       "collegeId": "col-pce",
-      "emailVerified": true
+      "emailVerified": false,
+      "password": "unifest123",
+      "verificationCode": "749215"
     },
     {
       "id": "usr-simran",
@@ -90,7 +96,8 @@
       "gender": "FEMALE",
       "role": "STUDENT",
       "collegeId": "col-lpu",
-      "emailVerified": true
+      "emailVerified": true,
+      "password": "unifest123"
     },
     {
       "id": "usr-kabir",
@@ -100,7 +107,8 @@
       "gender": "MALE",
       "role": "STUDENT",
       "collegeId": "col-iitd",
-      "emailVerified": true
+      "emailVerified": true,
+      "password": "unifest123"
     },
     {
       "id": "usr-ananya",
@@ -110,7 +118,8 @@
       "gender": "FEMALE",
       "role": "STUDENT",
       "collegeId": "col-du",
-      "emailVerified": true
+      "emailVerified": true,
+      "password": "unifest123"
     },
     {
       "id": "usr-divya",
@@ -120,7 +129,8 @@
       "gender": "FEMALE",
       "role": "STUDENT",
       "collegeId": "col-bits",
-      "emailVerified": true
+      "emailVerified": true,
+      "password": "unifest123"
     },
     {
       "id": "usr-manager",
@@ -130,7 +140,8 @@
       "gender": "MALE",
       "role": "MANAGER",
       "collegeId": null,
-      "emailVerified": true
+      "emailVerified": true,
+      "password": "unifest123"
     },
     {
       "id": "usr-scanner",
@@ -140,7 +151,8 @@
       "gender": "MALE",
       "role": "SCANNER",
       "collegeId": null,
-      "emailVerified": true
+      "emailVerified": true,
+      "password": "unifest123"
     },
     {
       "id": "usr-admin",
@@ -150,7 +162,8 @@
       "gender": "FEMALE",
       "role": "ADMIN",
       "collegeId": null,
-      "emailVerified": true
+      "emailVerified": true,
+      "password": "unifest123"
     }
   ],
   "events": [

@@ -121,20 +121,20 @@ export function getInitialSeedData(): DatabaseSchema {
 
   const users: User[] = [
     // Students
-    { id: 'usr-aarav', email: 'aarav.sharma@pce.edu', name: 'Aarav Sharma', phone: '+91 98765 43210', gender: 'MALE', role: 'STUDENT', collegeId: 'col-pce', emailVerified: true },
-    { id: 'usr-amit', email: 'amit.verma@pce.edu', name: 'Amit Verma', phone: '+91 98765 43211', gender: 'MALE', role: 'STUDENT', collegeId: 'col-pce', emailVerified: true },
-    { id: 'usr-priya', email: 'priya.singh@du.ac.in', name: 'Priya Singh', phone: '+91 98765 43212', gender: 'FEMALE', role: 'STUDENT', collegeId: 'col-du', emailVerified: true },
-    { id: 'usr-rohit', email: 'rohit.kumar@lpu.co.in', name: 'Rohit Kumar', phone: '+91 98765 43213', gender: 'MALE', role: 'STUDENT', collegeId: 'col-lpu', emailVerified: true },
-    { id: 'usr-sneha', email: 'sneha.patel@pce.edu', name: 'Sneha Patel', phone: '+91 98765 43214', gender: 'FEMALE', role: 'STUDENT', collegeId: 'col-pce', emailVerified: true },
-    { id: 'usr-simran', email: 'simran.kaur@lpu.co.in', name: 'Simran Kaur', phone: '+91 98765 43215', gender: 'FEMALE', role: 'STUDENT', collegeId: 'col-lpu', emailVerified: true },
-    { id: 'usr-kabir', email: 'kabir.mehta@iitd.ac.in', name: 'Kabir Mehta', phone: '+91 98765 43216', gender: 'MALE', role: 'STUDENT', collegeId: 'col-iitd', emailVerified: true },
-    { id: 'usr-ananya', email: 'ananya.iyer@du.ac.in', name: 'Ananya Iyer', phone: '+91 98765 43217', gender: 'FEMALE', role: 'STUDENT', collegeId: 'col-du', emailVerified: true },
-    { id: 'usr-divya', email: 'divya.joshi@bits.ac.in', name: 'Divya Joshi', phone: '+91 98765 43218', gender: 'FEMALE', role: 'STUDENT', collegeId: 'col-bits', emailVerified: true },
+    { id: 'usr-aarav', email: 'aarav.sharma@pce.edu', name: 'Aarav Sharma', phone: '+91 98765 43210', gender: 'MALE', role: 'STUDENT', collegeId: 'col-pce', emailVerified: true, password: 'unifest123' },
+    { id: 'usr-amit', email: 'amit.verma@pce.edu', name: 'Amit Verma', phone: '+91 98765 43211', gender: 'MALE', role: 'STUDENT', collegeId: 'col-pce', emailVerified: true, password: 'unifest123' },
+    { id: 'usr-priya', email: 'priya.singh@du.ac.in', name: 'Priya Singh', phone: '+91 98765 43212', gender: 'FEMALE', role: 'STUDENT', collegeId: 'col-du', emailVerified: true, password: 'unifest123' },
+    { id: 'usr-rohit', email: 'rohit.kumar@lpu.co.in', name: 'Rohit Kumar', phone: '+91 98765 43213', gender: 'MALE', role: 'STUDENT', collegeId: 'col-lpu', emailVerified: true, password: 'unifest123' },
+    { id: 'usr-sneha', email: 'sneha.patel@pce.edu', name: 'Sneha Patel', phone: '+91 98765 43214', gender: 'FEMALE', role: 'STUDENT', collegeId: 'col-pce', emailVerified: false, verificationCode: '749215', password: 'unifest123' },
+    { id: 'usr-simran', email: 'simran.kaur@lpu.co.in', name: 'Simran Kaur', phone: '+91 98765 43215', gender: 'FEMALE', role: 'STUDENT', collegeId: 'col-lpu', emailVerified: true, password: 'unifest123' },
+    { id: 'usr-kabir', email: 'kabir.mehta@iitd.ac.in', name: 'Kabir Mehta', phone: '+91 98765 43216', gender: 'MALE', role: 'STUDENT', collegeId: 'col-iitd', emailVerified: true, password: 'unifest123' },
+    { id: 'usr-ananya', email: 'ananya.iyer@du.ac.in', name: 'Ananya Iyer', phone: '+91 98765 43217', gender: 'FEMALE', role: 'STUDENT', collegeId: 'col-du', emailVerified: true, password: 'unifest123' },
+    { id: 'usr-divya', email: 'divya.joshi@bits.ac.in', name: 'Divya Joshi', phone: '+91 98765 43218', gender: 'FEMALE', role: 'STUDENT', collegeId: 'col-bits', emailVerified: true, password: 'unifest123' },
 
     // Staff
-    { id: 'usr-manager', email: 'manager@unifest.org', name: 'Vikram Malhotra (Manager)', phone: '+91 99999 11111', gender: 'MALE', role: 'MANAGER', collegeId: null, emailVerified: true },
-    { id: 'usr-scanner', email: 'scanner@unifest.org', name: 'Dev Raj (Hostel/Mess Scanner)', phone: '+91 99999 22222', gender: 'MALE', role: 'SCANNER', collegeId: null, emailVerified: true },
-    { id: 'usr-admin', email: 'admin@unifest.org', name: 'Dr. Sunita Rao (System Admin)', phone: '+91 99999 33333', gender: 'FEMALE', role: 'ADMIN', collegeId: null, emailVerified: true },
+    { id: 'usr-manager', email: 'manager@unifest.org', name: 'Vikram Malhotra (Manager)', phone: '+91 99999 11111', gender: 'MALE', role: 'MANAGER', collegeId: null, emailVerified: true, password: 'unifest123' },
+    { id: 'usr-scanner', email: 'scanner@unifest.org', name: 'Dev Raj (Hostel/Mess Scanner)', phone: '+91 99999 22222', gender: 'MALE', role: 'SCANNER', collegeId: null, emailVerified: true, password: 'unifest123' },
+    { id: 'usr-admin', email: 'admin@unifest.org', name: 'Dr. Sunita Rao (System Admin)', phone: '+91 99999 33333', gender: 'FEMALE', role: 'ADMIN', collegeId: null, emailVerified: true, password: 'unifest123' },
   ];
 
   const allocations: RoomAllocation[] = [
@@ -401,7 +401,24 @@ export function readDatabase(): DatabaseSchema {
   }
   try {
     const raw = fs.readFileSync(DB_FILE, 'utf-8');
-    return JSON.parse(raw);
+    const data: DatabaseSchema = JSON.parse(raw);
+    let changed = false;
+    data.users = data.users.map((u) => {
+      if (!u.password) {
+        u.password = 'unifest123';
+        changed = true;
+      }
+      if (u.id === 'usr-sneha' && u.emailVerified) {
+        u.emailVerified = false;
+        u.verificationCode = '749215';
+        changed = true;
+      }
+      return u;
+    });
+    if (changed) {
+      fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+    }
+    return data;
   } catch (err) {
     console.error('Error reading db.json, returning initial seed data', err);
     return getInitialSeedData();

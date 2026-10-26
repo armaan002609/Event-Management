@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { QrCode } from 'lucide-react';
 import { Navbar } from '@/components/Navbar';
 import { StudentDashboard } from '@/components/student/StudentDashboard';
@@ -46,6 +47,7 @@ function AnimatedTabPanel({ tabKey, children }: { tabKey: string; children: Reac
 }
 
 export default function HomePage() {
+  const router = useRouter();
   const [activeUser, setActiveUser] = useState<User | null>(null);
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [showQrModal, setShowQrModal] = useState(false);
@@ -64,11 +66,16 @@ export default function HomePage() {
           } else {
             setActiveTab('overview');
           }
+        } else {
+          router.push('/login');
         }
         setLoading(false);
       })
-      .catch(() => setLoading(false));
-  }, []);
+      .catch(() => {
+        router.push('/login');
+        setLoading(false);
+      });
+  }, [router]);
 
   const handleUserSwitched = (newUser: User) => {
     setActiveUser(newUser);

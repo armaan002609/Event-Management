@@ -2,9 +2,9 @@ import { cookies } from 'next/headers';
 import { User } from '@unifest/shared';
 import { readDatabase } from './db';
 
-const SESSION_COOKIE = 'unifest_active_user_id';
+export const SESSION_COOKIE = 'unifest_active_user_id';
 
-export function getActiveUserId(): string {
+export function getOptionalActiveUserId(): string | null {
   try {
     const cookieStore = cookies();
     const cookieVal = cookieStore.get(SESSION_COOKIE)?.value;
@@ -12,18 +12,32 @@ export function getActiveUserId(): string {
   } catch {
     // If outside request context or cookies unavailable
   }
-  return 'usr-aarav'; // Default demo student
+  return null;
 }
 
-export function getActiveUser(): User {
-  const userId = getActiveUserId();
+export function getOptionalActiveUser(): User | null {
+  const userId = getOptionalActiveUserId();
+  if (!userId) return null;
   const db = readDatabase();
   const user = db.users.find((u) => u.id === userId);
   if (user) {
     const college = db.colleges.find((c) => c.id === user.collegeId);
     return { ...user, college };
   }
-  // Fallback to Aarav
+  return null;
+}
+
+export function getActiveUserId(): string {
+  const id = getOptionalActiveUserId();
+  if (id) return id;
+  return 'usr-aarav'; // Default demo student
+}
+
+export function getActiveUser(): User {
+  const optional = getOptionalActiveUser();
+  if (optional) return optional;
+  // Fallback to first user
+  const db = readDatabase();
   const fallback = db.users[0];
   const college = db.colleges.find((c) => c.id === fallback.collegeId);
   return { ...fallback, college };

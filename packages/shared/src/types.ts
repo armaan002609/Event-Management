@@ -36,6 +36,8 @@ export interface User {
   collegeId?: string | null;
   college?: College | null;
   emailVerified: boolean;
+  password?: string;
+  verificationCode?: string;
 }
 
 export interface Event {
