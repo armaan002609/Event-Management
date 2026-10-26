@@ -38,21 +38,11 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab }: 
   const pathname = usePathname();
   const router = useRouter();
 
-  const [demoUsers, setDemoUsers] = useState<Array<User & { college?: { code: string; color: string } }>>([]);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState<NotificationLog[]>([]);
-  const [isResetting, setIsResetting] = useState(false);
-  const [resetSuccess, setResetSuccess] = useState(false);
 
   useEffect(() => {
-    fetch('/api/auth/me')
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.demoUsers) setDemoUsers(data.demoUsers);
-      })
-      .catch(() => {});
-
     loadNotifications();
   }, [activeUser?.id]);
 
@@ -63,43 +53,6 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab }: 
         if (Array.isArray(logs)) setNotifications(logs);
       })
       .catch(() => {});
-  };
-
-  const handleSwitchDemo = async (userId: string) => {
-    try {
-      const res = await fetch('/api/auth/switch-demo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId }),
-      });
-      const data = await res.json();
-      if (data.user) {
-        onUserSwitched(data.user);
-        setShowUserDropdown(false);
-        // Reset to first tab for new role
-        if (data.user.role === 'STUDENT') setActiveTab('dashboard');
-        else if (data.user.role === 'SCANNER') router.push('/scanner');
-        else if (data.user.role === 'ADMIN') setActiveTab('admin-center');
-        else setActiveTab('overview');
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const handleResetData = async () => {
-    if (!confirm('Reset all test data back to default initial state?')) return;
-    setIsResetting(true);
-    try {
-      await fetch('/api/seed', { method: 'POST' });
-      setResetSuccess(true);
-      setTimeout(() => {
-        setResetSuccess(false);
-        window.location.reload();
-      }, 1000);
-    } catch {
-      setIsResetting(false);
-    }
   };
 
   const handleSignOut = async () => {
@@ -342,98 +295,81 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab }: 
                 )}
               </div>
 
-              {/* Reset Demo Data Button */}
-              <button
-                onClick={handleResetData}
-                disabled={isResetting}
-                title="Reset test data to original state"
-                className="p-2 rounded-lg text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors disabled:opacity-50"
-              >
-                <RefreshCw className={`w-4 h-4 ${isResetting ? 'animate-spin text-primary' : ''}`} />
-              </button>
-
-              {/* Persona Switcher Dropdown */}
-              <div className="relative" data-dropdown>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowUserDropdown(!showUserDropdown);
-                    setShowNotifications(false);
-                  }}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-slate-50/80 hover:bg-slate-100 transition-all text-xs"
-                >
-                  <div className="w-6 h-6 rounded-full bg-primary text-white font-bold flex items-center justify-center text-[10px]">
-                    {activeUser?.name?.charAt(0) || 'U'}
-                  </div>
-                  <div className="text-left hidden sm:block">
-                    <p className="font-bold text-slate-800 leading-tight truncate max-w-[110px]">
-                      {activeUser?.name}
-                    </p>
-                    <p className="text-[10px] text-primary font-semibold leading-none">
-                      {activeUser?.role}
-                      {activeUser?.college ? ` · ${activeUser.college.code}` : ''}
-                    </p>
-                  </div>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-                </button>
-
-                {showUserDropdown && (
-                  <div className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 p-2 z-50 toast-enter">
-                    <div className="px-3 py-2 border-b border-slate-100">
-                      <p className="text-xs font-bold text-slate-900">Switch Demo Persona</p>
-                      <p className="text-[11px] text-slate-500">Test platform across different roles</p>
+              {/* User Profile & Sign Out Dropdown */}
+              {activeUser ? (
+                <div className="relative" data-dropdown>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowUserDropdown(!showUserDropdown);
+                      setShowNotifications(false);
+                    }}
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-slate-50/80 hover:bg-slate-100 transition-all text-xs"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-primary text-white font-bold flex items-center justify-center text-[10px]">
+                      {activeUser.name?.charAt(0) || 'U'}
                     </div>
-
-                    <div className="py-1 max-h-72 overflow-y-auto space-y-1">
-                      {demoUsers.map((u) => {
-                        const isCurrent = u.id === activeUser?.id;
-                        return (
-                          <button
-                            key={u.id}
-                            onClick={() => handleSwitchDemo(u.id)}
-                            className={`w-full text-left px-3 py-2 rounded-xl flex items-center justify-between text-xs transition-colors ${
-                              isCurrent ? 'bg-primary/10 text-primary font-bold' : 'hover:bg-slate-50 text-slate-700'
-                            }`}
-                          >
-                            <div className="flex items-center gap-2.5 truncate">
-                              <span className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 font-bold flex items-center justify-center text-xs">
-                                {u.role === 'STUDENT' ? '🎓' : u.role === 'MANAGER' ? '👔' : u.role === 'SCANNER' ? '📱' : '🛡️'}
-                              </span>
-                              <div className="truncate">
-                                <p className="font-semibold truncate">{u.name}</p>
-                                <p className="text-[10px] text-slate-500">
-                                  {u.role}
-                                  {u.college ? ` · ${u.college.code}` : ''}
-                                  {u.gender ? ` · ${u.gender === 'MALE' ? '♂' : '♀'}` : ''}
-                                </p>
-                              </div>
-                            </div>
-                            {isCurrent && <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />}
-                          </button>
-                        );
-                      })}
+                    <div className="text-left hidden sm:block">
+                      <p className="font-bold text-slate-800 leading-tight truncate max-w-[120px]">
+                        {activeUser.name}
+                      </p>
+                      <p className="text-[10px] text-primary font-semibold leading-none">
+                        {activeUser.role}
+                        {activeUser.college ? ` · ${activeUser.college.code}` : ''}
+                      </p>
                     </div>
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                  </button>
 
-                    {/* Bottom Links: Login Page & Sign Out */}
-                    <div className="pt-2 mt-1 border-t border-slate-100 flex items-center justify-between gap-1.5">
-                      <Link
-                        href="/login"
-                        onClick={() => setShowUserDropdown(false)}
-                        className="flex-1 text-center py-2 px-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors"
-                      >
-                        Login Options
-                      </Link>
+                  {showUserDropdown && (
+                    <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-slate-200 p-3 z-50 toast-enter space-y-3">
+                      {/* User Info Header */}
+                      <div className="pb-3 border-b border-slate-100">
+                        <div className="flex items-center gap-2.5 mb-2">
+                          <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary font-bold flex items-center justify-center text-sm shrink-0">
+                            {activeUser.name?.charAt(0) || 'U'}
+                          </div>
+                          <div className="truncate">
+                            <p className="font-bold text-xs text-slate-900 truncate">{activeUser.name}</p>
+                            <p className="text-[11px] text-slate-500 truncate">{activeUser.email}</p>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-primary/10 text-primary border border-primary/20">
+                            {activeUser.role}
+                          </span>
+                          {activeUser.college && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700">
+                              {activeUser.college.code}
+                            </span>
+                          )}
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 flex items-center gap-1">
+                            <CheckCircle2 className="w-3 h-3" /> Verified
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Sign Out Action */}
                       <button
                         onClick={handleSignOut}
-                        className="flex-1 flex items-center justify-center gap-1.5 py-2 px-2.5 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors"
+                        className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 transition-colors"
                       >
-                        <LogOut className="w-3.5 h-3.5" />
+                        <LogOut className="w-4 h-4" />
                         <span>Sign Out</span>
                       </button>
                     </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-dark transition-colors shadow-sm"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  <span>Sign In</span>
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -521,13 +457,6 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab }: 
         </nav>
       )}
 
-      {/* Reset Confirmation Toast */}
-      {resetSuccess && (
-        <div className="fixed bottom-6 right-6 bg-emerald-600 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 z-50 toast-enter">
-          <CheckCircle2 className="w-5 h-5" />
-          <span className="text-sm font-semibold">Demo database reset and re-seeded successfully!</span>
-        </div>
-      )}
     </>
   );
 }

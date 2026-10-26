@@ -18,10 +18,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No account found with this email address' }, { status: 401 });
     }
 
-    // Verify password (default: unifest123)
+    // Verify password
     const expectedPassword = user.password || 'unifest123';
     if (password !== expectedPassword) {
-      return NextResponse.json({ error: 'Incorrect password. (Default is unifest123)' }, { status: 401 });
+      return NextResponse.json({ error: 'Incorrect password.' }, { status: 401 });
     }
 
     // Check email verification status!

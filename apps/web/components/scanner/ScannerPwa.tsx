@@ -41,8 +41,6 @@ export function ScannerPwa() {
   const [isOnline, setIsOnline] = useState(true);
   const [offlineQueue, setOfflineQueue] = useState<any[]>([]);
 
-  // Demo scan users
-  const [demoStudents, setDemoStudents] = useState<any[]>([]);
   const [soundEnabled, setSoundEnabled] = useState(true);
 
   useEffect(() => {
@@ -64,16 +62,6 @@ export function ScannerPwa() {
         if (Array.isArray(d)) {
           setMealSlots(d);
           if (d.length > 0) setSlotId(d[0].id);
-        }
-      })
-      .catch(() => {});
-
-    // Load demo students for fast 1-click test scanning
-    fetch('/api/auth/me')
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.demoUsers) {
-          setDemoStudents(d.demoUsers.filter((u: any) => u.role === 'STUDENT'));
         }
       })
       .catch(() => {});
@@ -179,23 +167,6 @@ export function ScannerPwa() {
     setTimeout(() => {
       setScanResultOverlay(null);
     }, 2500);
-  };
-
-  // Quick test scan for a student
-  const handleQuickTestScan = async (userId: string) => {
-    // Generate valid signed token for this student
-    const res = await fetch(`/api/me/qr`);
-    // Or switch demo to student, fetch their QR token, and scan it!
-    const tokenRes = await fetch('/api/auth/switch-demo', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId }),
-    });
-    const qrRes = await fetch('/api/me/qr');
-    const qrData = await qrRes.json();
-    if (qrData.token) {
-      executeScan(qrData.token);
-    }
   };
 
   return (
@@ -317,27 +288,6 @@ export function ScannerPwa() {
             <Camera className="w-10 h-10 text-indigo-400/80 mb-2 animate-pulse" />
             <span className="text-xs font-bold text-slate-300">Point at Student QR</span>
             <span className="text-[10px] text-slate-500 mt-0.5">High-speed verification active</span>
-          </div>
-        </div>
-
-        {/* Quick Simulation Buttons (Test Scanner without physical camera) */}
-        <div className="w-full max-w-sm mt-6 space-y-2">
-          <div className="flex items-center justify-between text-xs text-slate-400 font-semibold px-1">
-            <span>Quick Test Scan:</span>
-            <span>Tap to verify</span>
-          </div>
-
-          <div className="flex flex-wrap gap-1.5">
-            {demoStudents.map((st) => (
-              <button
-                key={st.id}
-                onClick={() => handleQuickTestScan(st.id)}
-                className="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-200 border border-slate-700 transition-colors flex items-center gap-1.5"
-              >
-                <span className="w-2 h-2 rounded-full bg-primary" />
-                <span>{st.name.split(' ')[0]} ({st.college?.code || 'PCE'})</span>
-              </button>
-            ))}
           </div>
         </div>
 

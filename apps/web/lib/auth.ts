@@ -30,7 +30,7 @@ export function getOptionalActiveUser(): User | null {
 export function getActiveUserId(): string {
   const id = getOptionalActiveUserId();
   if (id) return id;
-  return 'usr-aarav'; // Default demo student
+  return 'usr-aarav'; // Default fallback user ID
 }
 
 export function getActiveUser(): User {

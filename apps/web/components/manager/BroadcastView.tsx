@@ -41,10 +41,10 @@ export function BroadcastView() {
       fetch('/api/auth/me')
         .then((r) => r.json())
         .then((d) => {
-          if (d.demoUsers) {
+          if (d.users) {
             // Extract unique colleges
             const colMap = new Map<string, College>();
-            d.demoUsers.forEach((u: any) => {
+            d.users.forEach((u: any) => {
               if (u.college) colMap.set(u.college.code, u.college);
             });
             setColleges(Array.from(colMap.values()));

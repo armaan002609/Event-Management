@@ -76,8 +76,8 @@ export function MealsLiveView({ currentUser }: MealsLiveViewProps) {
     fetch('/api/auth/me')
       .then((r) => r.json())
       .then((d) => {
-        if (d.demoUsers) {
-          setStudentsList(d.demoUsers.filter((u: any) => u.role === 'STUDENT'));
+        if (d.users) {
+          setStudentsList(d.users.filter((u: any) => u.role === 'STUDENT'));
         }
       })
       .catch(() => {});

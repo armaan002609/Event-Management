@@ -5,7 +5,7 @@ import { readDatabase } from '@/lib/db';
 export async function GET() {
   const activeUser = getOptionalActiveUser();
   const db = readDatabase();
-  const demoUsers = db.users.map((u) => {
+  const users = db.users.map((u) => {
     const col = db.colleges.find((c) => c.id === u.collegeId);
     return {
       id: u.id,
@@ -20,6 +20,6 @@ export async function GET() {
 
   return NextResponse.json({
     user: activeUser,
-    demoUsers,
+    users,
   });
 }
