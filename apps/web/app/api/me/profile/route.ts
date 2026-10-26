@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getActiveUser, getOptionalActiveUser } from '@/lib/auth';
+import { getActiveUser, getOptionalActiveUserAsync } from '@/lib/auth';
 import { readDatabase, writeDatabase } from '@/lib/db';
 import { supabaseUpsertUser } from '@/lib/supabase';
 import { isUserProfileComplete } from '@unifest/shared';
 
 export async function GET() {
-  const user = getOptionalActiveUser();
+  const user = await getOptionalActiveUserAsync();
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
@@ -22,7 +22,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const activeUser = getOptionalActiveUser();
+    const activeUser = await getOptionalActiveUserAsync();
     if (!activeUser) {
       return NextResponse.json({ error: 'Unauthorized. Please sign in.' }, { status: 401 });
     }

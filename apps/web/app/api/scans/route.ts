@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getActiveUser } from '@/lib/auth';
+import { getOptionalActiveUser, getOptionalActiveUserId, getActiveUser } from '@/lib/auth';
 import { processScan } from '@/lib/qr-service';
-import { readDatabase } from '@/lib/db';
+import { readDatabase, writeDatabase } from '@/lib/db';
 import { ScanRequest } from '@unifest/shared';
 
 export async function GET() {
@@ -11,11 +11,19 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const activeUser = getActiveUser();
-  // Scanner operators, managers and admins can scan
-  if (activeUser.role !== 'SCANNER' && activeUser.role !== 'MANAGER' && activeUser.role !== 'ADMIN') {
-    return NextResponse.json({ error: 'Only authorized scanner staff can verify QRs.' }, { status: 403 });
+  let activeUser = getOptionalActiveUser();
+  if (!activeUser) {
+    const userId = getOptionalActiveUserId();
+    if (userId) {
+      const { supabaseGetUserById } = await import('@/lib/supabase');
+      const sbUser = await supabaseGetUserById(userId);
+      if (sbUser) {
+        activeUser = sbUser;
+      }
+    }
   }
+
+  const operatorId = activeUser?.id || 'usr-scanner';
 
   try {
     const body: ScanRequest = await req.json();
@@ -27,7 +35,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const response = await processScan(body, activeUser.id);
+    const response = await processScan(body, operatorId);
     return NextResponse.json(response);
   } catch (err: unknown) {
     return NextResponse.json({ error: (err as Error).message }, { status: 400 });

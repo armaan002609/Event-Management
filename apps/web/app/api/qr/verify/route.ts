@@ -13,8 +13,18 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Token is required' }, { status: 400 });
   }
 
+  let cleanToken = token.trim();
+  if (cleanToken.includes('token=')) {
+    try {
+      const match = cleanToken.match(/token=([a-zA-Z0-9_\-\.]+)/);
+      if (match && match[1]) {
+        cleanToken = match[1];
+      }
+    } catch {}
+  }
+
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const { payload } = await jwtVerify(cleanToken, JWT_SECRET);
     const typedPayload = payload as unknown as QrTicketPayload;
 
     if (typedPayload.fest !== FESTIVAL_ID) {

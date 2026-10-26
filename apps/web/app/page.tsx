@@ -201,13 +201,13 @@ export default function HomePage() {
           </AnimatedTabPanel>
         </main>
 
-        {/* QR Modal for Student */}
-        {isStudent && (
+        {/* QR Modal for Any Authenticated User */}
+        {activeUser && (
           <MyQrModal
             isOpen={showQrModal || activeTab === 'qr'}
             onClose={() => {
               setShowQrModal(false);
-              if (activeTab === 'qr') setActiveTab('dashboard');
+              if (activeTab === 'qr') setActiveTab(isStudent ? 'dashboard' : 'overview');
             }}
             user={activeUser}
           />

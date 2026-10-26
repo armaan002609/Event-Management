@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { getOptionalActiveUser } from '@/lib/auth';
+import { getOptionalActiveUserAsync } from '@/lib/auth';
 import { readDatabase } from '@/lib/db';
 
 export async function GET() {
-  const activeUser = getOptionalActiveUser();
+  const activeUser = await getOptionalActiveUserAsync();
   const db = readDatabase();
   const users = db.users.map((u) => {
     const col = db.colleges.find((c) => c.id === u.collegeId);

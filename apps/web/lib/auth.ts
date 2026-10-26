@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { User } from '@unifest/shared';
-import { readDatabase } from './db';
+import { readDatabase, writeDatabase } from './db';
 
 export const SESSION_COOKIE = 'unifest_active_user_id';
 
@@ -27,6 +27,38 @@ export function getOptionalActiveUser(): User | null {
   return null;
 }
 
+export async function getOptionalActiveUserAsync(): Promise<User | null> {
+  const userId = getOptionalActiveUserId();
+  if (!userId) return null;
+  const db = readDatabase();
+  let user = db.users.find((u) => u.id === userId);
+
+  if (!user) {
+    try {
+      const { supabaseGetUserById } = await import('./supabase');
+      const sbUser = await supabaseGetUserById(userId);
+      if (sbUser) {
+        const existingIdx = db.users.findIndex((u) => u.id === sbUser.id);
+        if (existingIdx >= 0) {
+          db.users[existingIdx] = sbUser;
+        } else {
+          db.users.push(sbUser);
+        }
+        writeDatabase(db);
+        user = sbUser;
+      }
+    } catch {
+      // Supabase unavailable or mock mode
+    }
+  }
+
+  if (user) {
+    const college = db.colleges.find((c) => c.id === user.collegeId);
+    return { ...user, college };
+  }
+  return null;
+}
+
 export function getActiveUserId(): string {
   const id = getOptionalActiveUserId();
   if (id) return id;
@@ -42,3 +74,4 @@ export function getActiveUser(): User {
   const college = db.colleges.find((c) => c.id === fallback.collegeId);
   return { ...fallback, college };
 }
+

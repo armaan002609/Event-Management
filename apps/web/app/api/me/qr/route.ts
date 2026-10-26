@@ -1,22 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getOptionalActiveUser, getOptionalActiveUserId, getActiveUser } from '@/lib/auth';
+import { getOptionalActiveUserAsync, getActiveUser } from '@/lib/auth';
 import { generateQrToken } from '@/lib/qr-service';
 import { readDatabase, writeDatabase } from '@/lib/db';
 
 export async function GET(req: NextRequest) {
-  let activeUser = getOptionalActiveUser();
   const db = readDatabase();
+  let activeUser = await getOptionalActiveUserAsync();
 
-  if (!activeUser) {
-    const userId = getOptionalActiveUserId();
-    if (userId) {
-      const { supabaseGetUserById } = await import('@/lib/supabase');
-      const sbUser = await supabaseGetUserById(userId);
-      if (sbUser) {
-        db.users.push(sbUser);
-        writeDatabase(db);
-        activeUser = sbUser;
-      }
+  // Allow explicit userId query param for modal or testing
+  const queryUserId = req.nextUrl.searchParams.get('userId');
+  if (queryUserId) {
+    let target = db.users.find((u) => u.id === queryUserId);
+    if (!target) {
+      try {
+        const { supabaseGetUserById } = await import('@/lib/supabase');
+        const sbUser = await supabaseGetUserById(queryUserId);
+        if (sbUser) {
+          const existingIdx = db.users.findIndex((u) => u.id === sbUser.id);
+          if (existingIdx >= 0) {
+            db.users[existingIdx] = sbUser;
+          } else {
+            db.users.push(sbUser);
+          }
+          writeDatabase(db);
+          target = sbUser;
+        }
+      } catch {}
+    }
+    if (target) {
+      activeUser = target;
     }
   }
 

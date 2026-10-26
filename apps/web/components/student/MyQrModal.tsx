@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { QrCode, X, Download, Sun, ShieldCheck, CheckCircle2, AlertCircle } from 'lucide-react';
+import { QrCode, X, Download, Sun, ShieldCheck, CheckCircle2, AlertCircle, ExternalLink } from 'lucide-react';
 import { User, ScanLog } from '@unifest/shared';
 
 interface MyQrModalProps {
@@ -14,6 +14,7 @@ export function MyQrModal({ isOpen, onClose, user }: MyQrModalProps) {
   const [qrData, setQrData] = useState<{
     token: string;
     qrDataUrl: string;
+    verifyUrl?: string;
     lastScan?: ScanLog | null;
   } | null>(null);
 
@@ -23,7 +24,8 @@ export function MyQrModal({ isOpen, onClose, user }: MyQrModalProps) {
   useEffect(() => {
     if (isOpen) {
       setLoading(true);
-      fetch('/api/me/qr')
+      const endpoint = user?.id ? `/api/me/qr?userId=${encodeURIComponent(user.id)}` : '/api/me/qr';
+      fetch(endpoint)
         .then((r) => r.json())
         .then((data) => {
           setQrData(data);
@@ -31,7 +33,7 @@ export function MyQrModal({ isOpen, onClose, user }: MyQrModalProps) {
         })
         .catch(() => setLoading(false));
     }
-  }, [isOpen, user.id]);
+  }, [isOpen, user?.id]);
 
   if (!isOpen) return null;
 
@@ -127,6 +129,18 @@ export function MyQrModal({ isOpen, onClose, user }: MyQrModalProps) {
             {showToken ? 'Hide Token' : 'View Token'}
           </button>
         </div>
+
+        {qrData?.verifyUrl && (
+          <a
+            href={qrData.verifyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full mt-2 py-2 px-3 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-primary border border-indigo-200 text-xs font-bold transition-colors flex items-center justify-center gap-1.5"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            <span>Open &amp; Test Digital Pass</span>
+          </a>
+        )}
 
         {showToken && qrData?.token && (
           <div className="mt-3 p-2 bg-slate-900 text-slate-200 rounded-lg text-[9px] font-mono break-all text-left max-h-24 overflow-y-auto w-full">

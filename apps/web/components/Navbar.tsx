@@ -367,6 +367,23 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                         </div>
                       </div>
 
+                      {/* My QR Pass Action for any authenticated user */}
+                      <button
+                        onClick={() => {
+                          setShowUserDropdown(false);
+                          setActiveTab('qr');
+                        }}
+                        className="w-full flex items-center justify-between py-2 px-3 rounded-xl text-xs font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-100"
+                      >
+                        <span className="flex items-center gap-1.5">
+                          <QrCode className="w-3.5 h-3.5 text-primary" />
+                          <span>My QR Pass</span>
+                        </span>
+                        <span className="text-[9px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-bold">
+                          Digital Badge
+                        </span>
+                      </button>
+
                       {/* Student Profile Action */}
                       {activeUser.role === 'STUDENT' && onOpenProfileModal && (
                         <button

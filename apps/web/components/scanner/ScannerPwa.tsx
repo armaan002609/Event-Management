@@ -250,12 +250,25 @@ export function ScannerPwa() {
     if (!file) return;
 
     try {
-      const { Html5Qrcode } = await import('html5-qrcode');
-      const tempScanner = new Html5Qrcode('scanner-viewport-box');
-      const result = await tempScanner.scanFile(file, true);
-      executeScan(result);
+      let result: string | null = null;
+      if (html5QrCodeRef.current) {
+        result = await html5QrCodeRef.current.scanFile(file, true);
+      } else {
+        const { Html5Qrcode } = await import('html5-qrcode');
+        const tempScanner = new Html5Qrcode('scanner-viewport-box');
+        result = await tempScanner.scanFile(file, true);
+        try {
+          await tempScanner.clear();
+        } catch {}
+      }
+
+      if (result) {
+        executeScan(result);
+      }
     } catch {
       alert('Could not detect a QR code in the selected image. Please try a clearer picture.');
+    } finally {
+      if (e.target) e.target.value = '';
     }
   };
 
@@ -455,6 +468,29 @@ export function ScannerPwa() {
           >
             <Upload className="w-3.5 h-3.5" />
             <span>Upload Image</span>
+          </button>
+
+          {/* Quick Test Button */}
+          <button
+            type="button"
+            onClick={async () => {
+              try {
+                const r = await fetch('/api/me/qr');
+                const d = await r.json();
+                if (d.token) {
+                  executeScan(d.token);
+                } else {
+                  alert('Unable to load QR token for test.');
+                }
+              } catch (e: any) {
+                alert('Test scan error: ' + e.message);
+              }
+            }}
+            className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow"
+            title="Instantly test scanner with your active festival QR pass"
+          >
+            <QrCode className="w-3.5 h-3.5" />
+            <span>Test My Pass</span>
           </button>
         </div>
 
