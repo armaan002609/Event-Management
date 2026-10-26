@@ -46,6 +46,7 @@ import {
   FileSpreadsheet,
   Eye,
   Info,
+  LogOut,
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 import { User, College, Hostel, Role, NORTH_INDIA_COLLEGES, NorthIndiaCollegeItem, Gender } from '@unifest/shared';
@@ -630,6 +631,101 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       }
     } catch {
       toast.error('Error', 'Failed to reach server.');
+    }
+  };
+
+  const handleCheckoutAllFleet = async () => {
+    if (totalFleetOccupied === 0) {
+      toast.error('No Occupants', 'All hostel rooms are already vacant.');
+      return;
+    }
+    if (
+      !confirm(
+        `Are you sure you want to checkout ALL ${totalFleetOccupied} students from all rooms across all hostels?\n\nThis will clear all bed allocations and unlock all rooms for new assignments.`
+      )
+    ) {
+      return;
+    }
+    try {
+      const res = await fetch('/api/admin/hostels?action=checkout-all', { method: 'DELETE' });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success('All Rooms Checked Out', data.message || 'All hostel rooms are now vacant and unlocked.');
+        if (selectedRoomDetails) {
+          setSelectedRoomDetails(null);
+          setShowRoomDetailsModal(false);
+        }
+        loadAllAdminData();
+      } else {
+        toast.error('Checkout Failed', data.error || 'Failed to checkout rooms.');
+      }
+    } catch {
+      toast.error('Network Error', 'Failed to reach server.');
+    }
+  };
+
+  const handleCheckoutHostel = async (hostelId: string, hostelName: string, occupiedCount: number) => {
+    if (occupiedCount === 0) {
+      toast.error('No Occupants', `${hostelName} is already completely vacant.`);
+      return;
+    }
+    if (
+      !confirm(
+        `Are you sure you want to checkout all ${occupiedCount} occupants from ${hostelName}?\n\nAll rooms in this facility will be vacated and unlocked.`
+      )
+    ) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/admin/hostels?action=checkout-hostel&hostelId=${encodeURIComponent(hostelId)}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success('Facility Checked Out', `All rooms in ${hostelName} are now vacant and unlocked.`);
+        if (selectedRoomDetails && selectedRoomHostel?.id === hostelId) {
+          setSelectedRoomDetails(null);
+          setShowRoomDetailsModal(false);
+        }
+        loadAllAdminData();
+      } else {
+        toast.error('Checkout Failed', data.error || 'Failed to checkout hostel.');
+      }
+    } catch {
+      toast.error('Network Error', 'Failed to reach server.');
+    }
+  };
+
+  const handleCheckoutRoom = async (roomId: string, roomNumber: string) => {
+    if (
+      !confirm(
+        `Are you sure you want to checkout all students from Room ${roomNumber}?\n\nThis room will be completely vacated and unlocked.`
+      )
+    ) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/admin/hostels?action=checkout-room&roomId=${encodeURIComponent(roomId)}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success('Room Checked Out', `Room ${roomNumber} has been vacated and unlocked.`);
+        if (selectedRoomDetails) {
+          setSelectedRoomDetails((prev: any) => ({
+            ...prev,
+            occupiedCount: 0,
+            occupants: [],
+            lockedCollegeId: null,
+            lockedCollege: null,
+          }));
+        }
+        loadAllAdminData();
+      } else {
+        toast.error('Checkout Failed', data.error || 'Failed to checkout room.');
+      }
+    } catch {
+      toast.error('Network Error', 'Failed to reach server.');
     }
   };
 
@@ -1665,6 +1761,16 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
 
             <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto shrink-0">
               <button
+                type="button"
+                onClick={handleCheckoutAllFleet}
+                disabled={totalFleetOccupied === 0}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-amber-50 hover:bg-amber-100 disabled:opacity-40 disabled:hover:bg-amber-50 text-amber-800 border border-amber-200/80 rounded-xl text-xs font-bold transition-all shadow-sm disabled:cursor-not-allowed"
+                title={totalFleetOccupied === 0 ? 'All rooms are already vacant' : `Checkout all ${totalFleetOccupied} occupants across all rooms`}
+              >
+                <LogOut className="w-3.5 h-3.5 text-amber-700" />
+                <span>Checkout All Rooms ({totalFleetOccupied})</span>
+              </button>
+              <button
                 onClick={() => {
                   setUploadedStudentsPreview([]);
                   setBulkAllotResult(null);
@@ -1803,6 +1909,15 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                             className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
                           >
                             <Download className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleCheckoutHostel(h.id, h.name, totalOcc)}
+                            disabled={totalOcc === 0}
+                            title={totalOcc === 0 ? `${h.name} is completely vacant` : `Checkout all ${totalOcc} occupants in ${h.name}`}
+                            className="p-2 rounded-xl bg-amber-50 hover:bg-amber-100 disabled:opacity-30 disabled:hover:bg-amber-50 text-amber-800 transition-colors flex items-center gap-1 text-xs font-bold border border-amber-200/60 disabled:cursor-not-allowed"
+                          >
+                            <LogOut className="w-3.5 h-3.5 text-amber-700" />
+                            <span className="hidden xl:inline">Checkout All</span>
                           </button>
                           <button
                             onClick={() => {
@@ -2774,17 +2889,41 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">
                     Floor {selectedRoomDetails.floor}
                   </span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-50 text-blue-700">
-                    {selectedRoomDetails.gender === 'MALE' ? '♂ Boys Room' : '♀ Girls Room'}
-                  </span>
+                  {(() => {
+                    const isBoysRoom = (
+                      (selectedRoomDetails.gender || selectedRoomHostel?.gender || '')
+                        .toString()
+                        .toUpperCase() === 'MALE' ||
+                      (selectedRoomHostel?.name || '').toLowerCase().includes('chanakya') ||
+                      (selectedRoomHostel?.name || '').toLowerCase().includes('aryabhatta')
+                    );
+                    return (
+                      <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-md ${
+                        isBoysRoom
+                          ? 'bg-blue-50 text-blue-700 border border-blue-200/60'
+                          : 'bg-rose-50 text-rose-700 border border-rose-200/60'
+                      }`}>
+                        {isBoysRoom ? '♂ Boys Room' : '♀ Girls Room'}
+                      </span>
+                    );
+                  })()}
                 </div>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Hostel: <strong className="text-slate-700">{selectedRoomHostel?.name || 'Hostel'}</strong>
-                </p>
+                <div className="flex flex-wrap items-center gap-1.5 mt-1 text-xs text-slate-500">
+                  <span>Hostel: <strong className="text-slate-800">{selectedRoomHostel?.name || 'Hostel'}</strong></span>
+                  {(selectedRoomHostel?.collegeName || selectedRoomDetails?.collegeName || selectedRoomDetails?.lockedCollege?.name) && (
+                    <>
+                      <span className="text-slate-300">·</span>
+                      <span className="inline-flex items-center gap-1 font-semibold text-indigo-700 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-md text-[11px]">
+                        <Building2 className="w-3 h-3 text-indigo-600" />
+                        {selectedRoomHostel?.collegeName || selectedRoomDetails?.collegeName || selectedRoomDetails?.lockedCollege?.name}
+                      </span>
+                    </>
+                  )}
+                </div>
               </div>
               <button
                 onClick={() => setShowRoomDetailsModal(false)}
-                className="p-1 rounded-xl text-slate-400 hover:text-slate-600"
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
               >
                 ✕
               </button>
@@ -2815,9 +2954,22 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
 
             {/* Occupants List */}
             <div className="space-y-2">
-              <h4 className="font-heading font-black text-xs text-slate-700 uppercase tracking-wider">
-                Assigned Occupants ({selectedRoomDetails.occupants?.length || 0})
-              </h4>
+              <div className="flex items-center justify-between">
+                <h4 className="font-heading font-black text-xs text-slate-700 uppercase tracking-wider">
+                  Assigned Occupants ({selectedRoomDetails.occupants?.length || 0})
+                </h4>
+                {selectedRoomDetails.occupants && selectedRoomDetails.occupants.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => handleCheckoutRoom(selectedRoomDetails.id, selectedRoomDetails.number)}
+                    className="px-2.5 py-1 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold transition-all flex items-center gap-1 shadow-sm"
+                    title={`Checkout all ${selectedRoomDetails.occupants.length} students from Room ${selectedRoomDetails.number}`}
+                  >
+                    <LogOut className="w-3 h-3 text-amber-700" />
+                    <span>Checkout Room ({selectedRoomDetails.occupants.length})</span>
+                  </button>
+                )}
+              </div>
 
               {!selectedRoomDetails.occupants || selectedRoomDetails.occupants.length === 0 ? (
                 <div className="p-8 rounded-2xl bg-slate-50 border border-dashed border-slate-200 text-center text-slate-400 space-y-1">

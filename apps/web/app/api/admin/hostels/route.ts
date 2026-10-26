@@ -77,16 +77,21 @@ export async function GET() {
               };
             });
 
+            const hCol = colsList.find((c: any) => c.id === (hostel.college_id || hostel.collegeId));
+            const hostelCollegeName = hostel.college_name || hostel.collegeName || hCol?.name || null;
+
             return {
               id: room.id,
               hostelId: room.hostel_id,
               number: room.number,
               floor: room.floor,
               capacity: room.capacity,
+              gender: room.gender || hostel.gender,
               occupiedCount,
               occupants,
               lockedCollegeId: room.locked_college_id,
               lockedCollege: lockedCol,
+              collegeName: lockedCol?.name || hostelCollegeName || null,
               beds: beds.map((b: any) => ({
                 id: b.id,
                 roomId: b.room_id,
@@ -97,13 +102,15 @@ export async function GET() {
 
           const totalCapacity = rooms.reduce((acc: number, r: any) => acc + (r.capacity || 0), 0);
           const totalOccupied = roomsWithBeds.reduce((acc: number, r: any) => acc + r.occupiedCount, 0);
+          const hCol = colsList.find((c: any) => c.id === (hostel.college_id || hostel.collegeId));
+          const hostelCollegeName = hostel.college_name || hostel.collegeName || hCol?.name || null;
 
           return {
             id: hostel.id,
             name: hostel.name,
             gender: hostel.gender,
-            collegeId: hostel.college_id || hostel.collegeId || null,
-            collegeName: hostel.college_name || hostel.collegeName || null,
+            collegeId: hostel.college_id || hostel.collegeId || hCol?.id || null,
+            collegeName: hostelCollegeName,
             roomsCount: rooms.length,
             totalCapacity,
             totalOccupied,
@@ -136,7 +143,7 @@ export async function GET() {
           userName: u?.name || 'Unknown Student',
           userEmail: u?.email || '',
           userPhone: u?.phone || '',
-          userGender: u?.gender || room.gender,
+          userGender: u?.gender || room.gender || hostel.gender,
           age: (u as any)?.age || (a as any)?.age || '',
           city: (u as any)?.city || (a as any)?.city || '',
           state: (u as any)?.state || (a as any)?.state || '',
@@ -154,22 +161,29 @@ export async function GET() {
         };
       });
 
+      const hCol = db.colleges.find((c) => c.id === hostel.collegeId);
+      const hostelCollegeName = hostel.collegeName || hCol?.name || null;
+
       return {
         ...room,
+        gender: room.gender || hostel.gender,
         occupiedCount,
         occupants,
         lockedCollege: lockedCol,
+        collegeName: lockedCol?.name || hostelCollegeName || null,
         beds,
       };
     });
 
     const totalCapacity = rooms.reduce((acc, r) => acc + r.capacity, 0);
     const totalOccupied = roomsWithBeds.reduce((acc, r) => acc + r.occupiedCount, 0);
+    const hCol = db.colleges.find((c) => c.id === hostel.collegeId);
+    const hostelCollegeName = hostel.collegeName || hCol?.name || null;
 
     return {
       ...hostel,
-      collegeId: hostel.collegeId || null,
-      collegeName: hostel.collegeName || null,
+      collegeId: hostel.collegeId || hCol?.id || null,
+      collegeName: hostelCollegeName,
       roomsCount: rooms.length,
       totalCapacity,
       totalOccupied,
@@ -354,9 +368,108 @@ export async function DELETE(req: NextRequest) {
 
   try {
     const { searchParams } = new URL(req.url);
+    const action = searchParams.get('action'); // 'checkout-all', 'checkout-hostel', 'checkout-room'
     const hostelId = searchParams.get('hostelId');
     const roomId = searchParams.get('roomId');
     const allocationId = searchParams.get('allocationId');
+
+    // 1. Checkout All Rooms Across All Hostels
+    if (action === 'checkout-all' || searchParams.get('all') === 'true') {
+      try {
+        const { getSupabase } = await import('@/lib/supabase');
+        const sb = getSupabase();
+        if (sb) {
+          await sb.from('allocations').delete().neq('id', 'keep_none');
+          await sb.from('rooms').update({ locked_college_id: null }).neq('id', 'keep_none');
+        }
+      } catch (e) {
+        console.warn('Supabase checkout-all error:', e);
+      }
+
+      const db = readDatabase();
+      const vacatedCount = db.allocations.length;
+      db.allocations = [];
+      db.rooms.forEach((r) => {
+        r.lockedCollegeId = null;
+      });
+      writeDatabase(db);
+
+      return NextResponse.json({
+        success: true,
+        message: 'All rooms across all hostels successfully checked out and unlocked.',
+        vacatedCount,
+      });
+    }
+
+    // 2. Checkout All Rooms in a Specific Hostel
+    if ((action === 'checkout-hostel' || action === 'checkout') && hostelId) {
+      try {
+        const { getSupabase } = await import('@/lib/supabase');
+        const sb = getSupabase();
+        if (sb) {
+          const { data: rList } = await sb.from('rooms').select('id').eq('hostel_id', hostelId);
+          const rIds = (rList || []).map((r: any) => r.id);
+          if (rIds.length > 0) {
+            const { data: bList } = await sb.from('beds').select('id').in('room_id', rIds);
+            const bIds = (bList || []).map((b: any) => b.id);
+            if (bIds.length > 0) {
+              await sb.from('allocations').delete().in('bed_id', bIds);
+            }
+            await sb.from('rooms').update({ locked_college_id: null }).in('id', rIds);
+          }
+        }
+      } catch (e) {
+        console.warn('Supabase checkout-hostel error:', e);
+      }
+
+      const db = readDatabase();
+      const rIds = db.rooms.filter((r) => r.hostelId === hostelId).map((r) => r.id);
+      const bIds = db.beds.filter((b) => rIds.includes(b.roomId)).map((b) => b.id);
+      const vacatedCount = db.allocations.filter((a) => bIds.includes(a.bedId)).length;
+      db.allocations = db.allocations.filter((a) => !bIds.includes(a.bedId));
+      db.rooms.forEach((r) => {
+        if (r.hostelId === hostelId) r.lockedCollegeId = null;
+      });
+      writeDatabase(db);
+
+      return NextResponse.json({
+        success: true,
+        message: 'All rooms in hostel checked out and unlocked.',
+        vacatedCount,
+      });
+    }
+
+    // 3. Checkout Single Room
+    if ((action === 'checkout-room' || action === 'checkout') && roomId) {
+      try {
+        const { getSupabase } = await import('@/lib/supabase');
+        const sb = getSupabase();
+        if (sb) {
+          const { data: bList } = await sb.from('beds').select('id').eq('room_id', roomId);
+          const bIds = (bList || []).map((b: any) => b.id);
+          if (bIds.length > 0) {
+            await sb.from('allocations').delete().in('bed_id', bIds);
+          }
+          await sb.from('rooms').update({ locked_college_id: null }).eq('id', roomId);
+        }
+      } catch (e) {
+        console.warn('Supabase checkout-room error:', e);
+      }
+
+      const db = readDatabase();
+      const bIds = db.beds.filter((b) => b.roomId === roomId).map((b) => b.id);
+      const vacatedCount = db.allocations.filter((a) => bIds.includes(a.bedId)).length;
+      db.allocations = db.allocations.filter((a) => !bIds.includes(a.bedId));
+      const room = db.rooms.find((r) => r.id === roomId);
+      if (room) room.lockedCollegeId = null;
+      writeDatabase(db);
+
+      return NextResponse.json({
+        success: true,
+        message: `Room ${room?.number || ''} checked out and unlocked.`,
+        vacatedCount,
+      });
+    }
 
     if (!hostelId && !roomId && !allocationId) {
       return NextResponse.json({ error: 'hostelId, roomId, or allocationId is required.' }, { status: 400 });
