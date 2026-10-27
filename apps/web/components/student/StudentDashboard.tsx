@@ -53,9 +53,20 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab, onOpenPro
 
   useEffect(() => {
     loadData();
+    const handleEventUpdate = () => loadData();
+    if (typeof window !== 'undefined') {
+      window.addEventListener('unifest:event-registered', handleEventUpdate);
+      window.addEventListener('unifest:event-unregistered', handleEventUpdate);
+    }
     // Live polling every 5s so newly assigned room & check-in status appear automatically without reload
     const poll = setInterval(loadData, 5000);
-    return () => clearInterval(poll);
+    return () => {
+      clearInterval(poll);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('unifest:event-registered', handleEventUpdate);
+        window.removeEventListener('unifest:event-unregistered', handleEventUpdate);
+      }
+    };
   }, [user.id]);
 
   const loadData = () => {
@@ -234,6 +245,22 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab, onOpenPro
               View Full Schedule <ChevronRight className="w-4 h-4" />
             </button>
           </div>
+
+          {/* Enrolled Events Quick Strip */}
+          {scheduleData.schedule && scheduleData.schedule.length > 1 && (
+            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center gap-2">
+              <span className="text-[11px] font-bold text-slate-400">All Registered ({scheduleData.schedule.length}):</span>
+              {scheduleData.schedule.map((ev) => (
+                <span
+                  key={ev.id}
+                  className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
+                >
+                  <CheckCircle2 className="w-2.5 h-2.5 text-emerald-500" />
+                  {ev.title}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       ) : (
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm text-center transition-colors">

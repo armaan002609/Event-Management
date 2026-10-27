@@ -129,17 +129,25 @@ export function emitDomainNotification(
     });
   }
 
-  // 2. Notify managers for global and critical events
-  if (['EVENT_UPDATED', 'EVENT_CANCELLED', 'CAPACITY_SHORTFALL', 'BROADCAST'].includes(eventType)) {
+  // 2. Notify managers for global and critical events (including new event registrations)
+  if (['EVENT_UPDATED', 'EVENT_CANCELLED', 'CAPACITY_SHORTFALL', 'BROADCAST', 'EVENT_REGISTRATION'].includes(eventType)) {
     for (const manager of managers) {
+      let subject = `[Manager Alert] ${payload.subject || payload.title || eventType}`;
+      let body = `Alert triggered by ${actorName}:\n${payload.message || payload.shortfallsSummary || 'Status update.'}`;
+
+      if (eventType === 'EVENT_REGISTRATION') {
+        subject = `[New Registration] ${payload.title || 'Event Registration'}`;
+        body = payload.message || `A student has registered for ${payload.title || 'an event'}.`;
+      }
+
       logsToInsert.push({
         id: `notif-mgr-${Date.now()}-${manager.id}`,
         userId: manager.id,
         userEmail: manager.email,
         userName: manager.name,
         type: eventType,
-        subject: `[Manager Alert] ${payload.subject || payload.title || eventType}`,
-        body: `Alert triggered by ${actorName}:\n${payload.message || payload.shortfallsSummary || 'Status update.'}`,
+        subject,
+        body,
         status: 'SENT',
         eventId: payload.eventId,
         attempts: 1,

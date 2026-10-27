@@ -137,20 +137,52 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
   const [selectedRosterHostelId, setSelectedRosterHostelId] = useState<string>('ALL');
   const [rosterSearch, setRosterSearch] = useState('');
 
+  // Event Registrations Roster State
+  const [eventRegistrationsData, setEventRegistrationsData] = useState<any>(null);
+  const [showEventRosterModal, setShowEventRosterModal] = useState(false);
+  const [selectedEventIdForRoster, setSelectedEventIdForRoster] = useState<string>('ALL');
+  const [eventRosterSearch, setEventRosterSearch] = useState('');
+
   useEffect(() => {
     loadAllAdminData();
+
+    const refreshRegistrations = () => {
+      fetch('/api/admin/events/registrations')
+        .then((r) => r.json())
+        .then((data) => {
+          if (data && data.events) setEventRegistrationsData(data);
+        })
+        .catch(() => {});
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('unifest:event-registered', refreshRegistrations);
+      window.addEventListener('unifest:event-unregistered', refreshRegistrations);
+    }
+
+    // Live polling every 5s so registrations reflect immediately on admin dashboard
+    const poll = setInterval(refreshRegistrations, 5000);
+
+    return () => {
+      clearInterval(poll);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('unifest:event-registered', refreshRegistrations);
+        window.removeEventListener('unifest:event-unregistered', refreshRegistrations);
+      }
+    };
   }, []);
 
   const loadAllAdminData = async () => {
     try {
-      const [confRes, usersRes, colRes, hosRes] = await Promise.all([
-        fetch('/api/admin/config').then((r) => r.json()),
-        fetch('/api/admin/users').then((r) => r.json()),
-        fetch('/api/admin/colleges').then((r) => r.json()),
-        fetch('/api/admin/hostels').then((r) => r.json()),
+      const [confRes, usersRes, colRes, hosRes, evRegRes] = await Promise.all([
+        fetch('/api/admin/config').then((r) => r.json()).catch(() => ({})),
+        fetch('/api/admin/users').then((r) => r.json()).catch(() => []),
+        fetch('/api/admin/colleges').then((r) => r.json()).catch(() => []),
+        fetch('/api/admin/hostels').then((r) => r.json()).catch(() => []),
+        fetch('/api/admin/events/registrations').then((r) => r.json()).catch(() => null),
       ]);
 
-      if (confRes.config) {
+      if (confRes?.config) {
         setConfigData(confRes);
         setGracePeriod(String(confRes.config.mealGracePeriodMinutes || 15));
         setCutoffHours(String(confRes.config.registrationCutoffHours || 2));
@@ -158,11 +190,48 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       if (Array.isArray(usersRes)) setUsersList(usersRes);
       if (Array.isArray(colRes)) setCollegesList(colRes);
       if (Array.isArray(hosRes)) setHostelsList(hosRes);
+      if (evRegRes?.events) setEventRegistrationsData(evRegRes);
     } catch (e) {
       console.error(e);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleExportEventRosterCSV = () => {
+    if (!eventRegistrationsData?.events) return;
+    const eventsToExport = selectedEventIdForRoster === 'ALL'
+      ? eventRegistrationsData.events
+      : eventRegistrationsData.events.filter((e: any) => e.id === selectedEventIdForRoster);
+
+    const headers = ['Event ID', 'Event Title', 'Type', 'Student Name', 'College', 'Roll Number', 'Gender', 'Email', 'Phone', 'Registered At', 'Status'];
+    const rows: string[][] = [];
+    for (const ev of eventsToExport) {
+      for (const p of (ev.participants || [])) {
+        rows.push([
+          `"${ev.id}"`,
+          `"${ev.title}"`,
+          `"${ev.type}"`,
+          `"${p.name || ''}"`,
+          `"${p.college?.name || p.college?.code || 'N/A'}"`,
+          `"${p.rollNo || ''}"`,
+          `"${p.gender || ''}"`,
+          `"${p.email || ''}"`,
+          `"${p.phone || ''}"`,
+          `"${new Date(p.registeredAt).toLocaleString()}"`,
+          `"${p.status || 'CONFIRMED'}"`,
+        ]);
+      }
+    }
+    const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Event_Registrations_Roster_${selectedEventIdForRoster}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+    toast.success('Roster Exported', 'Event attendees CSV spreadsheet exported successfully.');
   };
 
   const handleRefresh = async () => {
@@ -1059,7 +1128,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       {adminTab === 'overview' && (
         <div className="space-y-6">
           {/* Key Metric Tiles */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
             {/* Tile 1: User Accounts */}
             <div 
               onClick={() => setAdminTab('users')}
@@ -1132,7 +1201,35 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
               </div>
             </div>
 
-            {/* Tile 4: Security Audit Ledger */}
+            {/* Tile 4: Event Registrations */}
+            <div 
+              onClick={() => {
+                setSelectedEventIdForRoster('ALL');
+                setEventRosterSearch('');
+                setShowEventRosterModal(true);
+              }}
+              className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-purple-300 dark:hover:border-purple-800 transition-all cursor-pointer group"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <span className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/50 border border-purple-100 dark:border-purple-800/60 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                  <Calendar className="w-5 h-5" />
+                </span>
+                <span className="text-[11px] font-bold text-purple-600 dark:text-purple-400 group-hover:underline flex items-center gap-0.5">
+                  Roster <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                </span>
+              </div>
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Event Registrations</span>
+              <p className="font-heading font-black text-3xl text-purple-600 dark:text-purple-400 mt-1">
+                {eventRegistrationsData?.stats?.totalRegistrations ?? 0}
+              </p>
+              <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400 font-semibold">
+                <span className="text-purple-600 dark:text-purple-400">{eventRegistrationsData?.stats?.uniqueStudentsCount ?? 0} Students</span>
+                <span>·</span>
+                <span>{eventRegistrationsData?.stats?.totalEvents ?? 0} Events</span>
+              </div>
+            </div>
+
+            {/* Tile 5: Security Audit Ledger */}
             <div 
               onClick={() => onNavigateTab('audit')}
               className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer group"
@@ -1164,7 +1261,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
               <button
                 onClick={() => setShowAddCollegeModal(true)}
                 className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-primary dark:hover:border-primary-400 hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-all text-left space-y-2 group"
@@ -1196,6 +1293,21 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 </div>
                 <h4 className="font-heading font-bold text-xs text-slate-900 dark:text-slate-100">Add Staff Account</h4>
                 <p className="text-[11px] text-slate-400 leading-snug">Provision Manager, Scanner, or Admin privileges.</p>
+              </button>
+
+              <button
+                onClick={() => {
+                  setSelectedEventIdForRoster('ALL');
+                  setEventRosterSearch('');
+                  setShowEventRosterModal(true);
+                }}
+                className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-purple-500 dark:hover:border-purple-400 hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-all text-left space-y-2 group"
+              >
+                <div className="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <Calendar className="w-4 h-4" />
+                </div>
+                <h4 className="font-heading font-bold text-xs text-slate-900 dark:text-slate-100">Event Attendees Roster</h4>
+                <p className="text-[11px] text-slate-400 leading-snug">Inspect student registrations per competition & export CSV.</p>
               </button>
 
               <button
@@ -1431,6 +1543,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   <tr>
                     <th className="py-3 px-4">User</th>
                     <th className="py-3 px-4">College / Institution</th>
+                    <th className="py-3 px-4">Events</th>
                     <th className="py-3 px-4">Gender</th>
                     <th className="py-3 px-4">Role (RBAC)</th>
                     <th className="py-3 px-4">Status</th>
@@ -1440,7 +1553,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                   {filteredUsers.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="py-16 text-center text-slate-400">
+                      <td colSpan={7} className="py-16 text-center text-slate-400">
                         <Users className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
                         <p className="font-heading font-bold text-sm text-slate-700 dark:text-slate-200">No matching users found</p>
                         <p className="text-xs text-slate-400 mt-1">Try adjusting your search terms or filters.</p>
@@ -1460,6 +1573,9 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   ) : (
                     filteredUsers.map((user) => {
                       const initials = (user.name || 'U').split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
+                      const registeredEventsCount = eventRegistrationsData?.events?.filter((ev: any) =>
+                        ev.participants?.some((p: any) => p.id === user.id)
+                      ).length || 0;
                       return (
                         <tr key={user.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
                           <td className="py-3.5 px-4">
@@ -1494,6 +1610,26 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                             ) : (
                               <span className="text-[11px] font-semibold text-slate-400 italic">
                                 Campus Staff
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-3.5 px-4">
+                            {user.role === 'STUDENT' && registeredEventsCount > 0 ? (
+                              <button
+                                onClick={() => {
+                                  setSelectedEventIdForRoster('ALL');
+                                  setEventRosterSearch(user.email || user.name || '');
+                                  setShowEventRosterModal(true);
+                                }}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/60 transition-colors"
+                                title="Click to view enrolled events"
+                              >
+                                <Calendar className="w-3 h-3 text-purple-600 dark:text-purple-400" />
+                                <span>{registeredEventsCount} {registeredEventsCount === 1 ? 'Event' : 'Events'}</span>
+                              </button>
+                            ) : (
+                              <span className="text-[11px] font-semibold text-slate-400 italic">
+                                {user.role === 'STUDENT' ? '0 Events' : '—'}
                               </span>
                             )}
                           </td>
@@ -3221,6 +3357,190 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 className="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-800 text-white text-xs font-bold hover:bg-slate-800 dark:hover:bg-slate-700 transition-all"
               >
                 Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 8: EVENT COMPETITIONS & ATTENDEE ROSTER MODAL */}
+      {showEventRosterModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-4xl w-full p-6 sm:p-8 shadow-2xl space-y-4 border border-slate-100 dark:border-slate-800 my-8 max-h-[90vh] overflow-y-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-purple-50 dark:bg-purple-950/50 border border-purple-100 dark:border-purple-800 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                  <Calendar className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-heading font-black text-base text-slate-900 dark:text-white">
+                    Event Competitions & Attendee Roster
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Live registration tracking across all sports, cultural, and flagship festival events.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowEventRosterModal(false)}
+                className="p-1 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Filter & Actions Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+              <div className="flex flex-wrap items-center gap-2 flex-1">
+                {/* Event Selector */}
+                <select
+                  value={selectedEventIdForRoster}
+                  onChange={(e) => setSelectedEventIdForRoster(e.target.value)}
+                  className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white font-bold text-xs focus:ring-1 focus:ring-primary cursor-pointer max-w-[240px] truncate"
+                >
+                  <option value="ALL">All Competitions ({eventRegistrationsData?.events?.length || 0})</option>
+                  {(eventRegistrationsData?.events || []).map((ev: any) => (
+                    <option key={ev.id} value={ev.id}>
+                      {ev.title} ({ev.participants?.length || 0}/{ev.capacity || '∞'})
+                    </option>
+                  ))}
+                </select>
+
+                {/* Search Box */}
+                <div className="relative flex-1 min-w-[180px] max-w-xs">
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
+                  <input
+                    type="text"
+                    value={eventRosterSearch}
+                    onChange={(e) => setEventRosterSearch(e.target.value)}
+                    placeholder="Search by student, college, roll no..."
+                    className="w-full pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-slate-400"
+                  />
+                </div>
+              </div>
+
+              <button
+                onClick={handleExportEventRosterCSV}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/50 border border-purple-200 dark:border-purple-800 font-bold transition-colors shrink-0"
+              >
+                <Download className="w-3.5 h-3.5" />
+                Export CSV
+              </button>
+            </div>
+
+            {/* Content Table */}
+            {(() => {
+              const activeEvents = selectedEventIdForRoster === 'ALL'
+                ? (eventRegistrationsData?.events || [])
+                : (eventRegistrationsData?.events || []).filter((e: any) => e.id === selectedEventIdForRoster);
+
+              const allRows: Array<{
+                event: any;
+                participant: any;
+              }> = [];
+
+              for (const ev of activeEvents) {
+                for (const p of (ev.participants || [])) {
+                  allRows.push({ event: ev, participant: p });
+                }
+              }
+
+              const filtered = allRows.filter(({ event, participant }) => {
+                if (!eventRosterSearch.trim()) return true;
+                const q = eventRosterSearch.toLowerCase();
+                const colName = typeof participant.college === 'string' ? participant.college : (participant.college?.name || participant.college?.code || '');
+                return (
+                  (participant.name && participant.name.toLowerCase().includes(q)) ||
+                  (participant.email && participant.email.toLowerCase().includes(q)) ||
+                  (participant.rollNo && participant.rollNo.toLowerCase().includes(q)) ||
+                  (event.title && event.title.toLowerCase().includes(q)) ||
+                  colName.toLowerCase().includes(q)
+                );
+              });
+
+              if (filtered.length === 0) {
+                return (
+                  <div className="py-12 text-center text-slate-400">
+                    <Calendar className="w-10 h-10 mx-auto mb-2 opacity-30 text-purple-400" />
+                    <p className="font-bold text-sm text-slate-700 dark:text-slate-300">
+                      {allRows.length === 0 ? 'No event registrations recorded yet' : 'No attendees match your search'}
+                    </p>
+                    <p className="text-xs text-slate-400 mt-1">
+                      {allRows.length === 0
+                        ? 'Registrations made by students in the portal will sync and appear here automatically.'
+                        : 'Try typing a different search query or clear the filter.'}
+                    </p>
+                  </div>
+                );
+              }
+
+              return (
+                <div className="border border-slate-100 dark:border-slate-800 rounded-2xl overflow-hidden">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50 dark:bg-slate-950 border-b border-slate-100 dark:border-slate-800 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+                      <tr>
+                        <th className="py-2.5 px-3">#</th>
+                        <th className="py-2.5 px-3">Student</th>
+                        <th className="py-2.5 px-3">Event / Venue</th>
+                        <th className="py-2.5 px-3">Roll No</th>
+                        <th className="py-2.5 px-3">College</th>
+                        <th className="py-2.5 px-3">Registered At</th>
+                        <th className="py-2.5 px-3 text-right">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
+                      {filtered.map(({ event, participant }, idx) => (
+                        <tr key={`${event.id}-${participant.id}-${idx}`} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                          <td className="py-2.5 px-3 text-slate-400 font-mono text-[10px]">{idx + 1}</td>
+                          <td className="py-2.5 px-3">
+                            <div className="flex items-center gap-2">
+                              <div className="w-7 h-7 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300 flex items-center justify-center font-bold text-xs">
+                                {participant.name ? participant.name.charAt(0).toUpperCase() : 'S'}
+                              </div>
+                              <div>
+                                <p className="font-bold text-slate-900 dark:text-white leading-tight">{participant.name}</p>
+                                <p className="text-[10px] text-slate-400">{participant.email || participant.phone || 'No email'}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="py-2.5 px-3">
+                            <span className="font-bold text-slate-800 dark:text-slate-200 block">{event.title}</span>
+                            <span className="text-[10px] text-slate-400">{event.venue || event.type}</span>
+                          </td>
+                          <td className="py-2.5 px-3 font-mono text-[11px] text-slate-600 dark:text-slate-400">
+                            {participant.rollNo || 'N/A'}
+                          </td>
+                          <td className="py-2.5 px-3 max-w-[160px] truncate" title={participant.college?.name || participant.college?.code}>
+                            <span className="font-semibold">{participant.college?.code || participant.college?.name || 'Festival Guest'}</span>
+                          </td>
+                          <td className="py-2.5 px-3 text-slate-400 text-[10px] whitespace-nowrap">
+                            {participant.registeredAt ? new Date(participant.registeredAt).toLocaleString() : 'Recent'}
+                          </td>
+                          <td className="py-2.5 px-3 text-right">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+                              <CheckCircle2 className="w-3 h-3" />
+                              CONFIRMED
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            })()}
+
+            {/* Footer */}
+            <div className="pt-2 flex items-center justify-between">
+              <span className="text-xs text-slate-400">
+                Total Competitions: <strong>{eventRegistrationsData?.stats?.totalEvents ?? 0}</strong> • Registered Participants: <strong>{eventRegistrationsData?.stats?.totalRegistrations ?? 0}</strong>
+              </span>
+              <button
+                onClick={() => setShowEventRosterModal(false)}
+                className="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-800 text-white text-xs font-bold hover:bg-slate-800 dark:hover:bg-slate-700 transition-all"
+              >
+                Close Roster
               </button>
             </div>
           </div>

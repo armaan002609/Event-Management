@@ -82,6 +82,11 @@ export function EventsBrowser() {
           origin: { y: 0.7 },
           colors: ['#3B3FD9', '#6366F1', '#10B981', '#F59E0B'],
         });
+
+        // Notify other components (Dashboard, Navbar) to refresh immediately
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('unifest:event-registered', { detail: { eventId } }));
+        }
       }
     } catch {
       toast.error('Network Error', 'Could not reach the server. Please try again.');
@@ -129,6 +134,9 @@ export function EventsBrowser() {
           )
         );
         toast.info('Registration Withdrawn', 'You have been removed from this event.');
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('unifest:event-unregistered', { detail: { eventId } }));
+        }
       }
     } catch {
       toast.error('Network Error', 'Could not withdraw registration. Try again.');

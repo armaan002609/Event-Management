@@ -8,26 +8,94 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   const db = readDatabase();
-  const event = db.events.find((e) => e.id === params.id);
+  let event = db.events.find((e) => e.id === params.id);
+
+  // Fallback to Supabase if event not found locally
+  if (!event) {
+    try {
+      const { getSupabase } = await import('@/lib/supabase');
+      const sb = getSupabase();
+      if (sb) {
+        const { data: sbEvt } = await sb.from('events').select('*').eq('id', params.id).single();
+        if (sbEvt) {
+          event = {
+            id: sbEvt.id,
+            title: sbEvt.title,
+            type: sbEvt.type,
+            description: sbEvt.description,
+            venue: sbEvt.venue,
+            startsAt: sbEvt.starts_at || sbEvt.startsAt,
+            endsAt: sbEvt.ends_at || sbEvt.endsAt,
+            capacity: sbEvt.capacity,
+            status: sbEvt.status || 'SCHEDULED',
+          };
+          db.events.push(event);
+        }
+      }
+    } catch (e) {
+      console.warn('Supabase event fetch error:', e);
+    }
+  }
+
   if (!event) {
     return NextResponse.json({ error: 'Event not found' }, { status: 404 });
   }
 
-  const registrations = db.registrations.filter((r) => r.eventId === params.id && r.status === 'CONFIRMED');
-  const registeredUsers = registrations.map((r) => {
+  // Combine registrations from local DB and Supabase
+  const regMap = new Map<string, any>();
+  for (const r of db.registrations.filter((r) => r.eventId === params.id && r.status === 'CONFIRMED')) {
+    regMap.set(r.userId, r);
+  }
+
+  try {
+    const { getSupabase } = await import('@/lib/supabase');
+    const sb = getSupabase();
+    if (sb) {
+      const { data: sbRegs } = await sb
+        .from('registrations')
+        .select('*')
+        .eq('event_id', params.id)
+        .eq('status', 'CONFIRMED');
+
+      if (sbRegs) {
+        for (const sr of sbRegs) {
+          const uid = sr.user_id || sr.userId;
+          if (!regMap.has(uid)) {
+            regMap.set(uid, {
+              id: sr.id,
+              userId: uid,
+              eventId: sr.event_id || sr.eventId,
+              status: sr.status,
+              createdAt: sr.created_at || sr.createdAt,
+            });
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Supabase registrations query error:', err);
+  }
+
+  // Map user details
+  const registeredUsers = Array.from(regMap.values()).map((r) => {
     const user = db.users.find((u) => u.id === r.userId);
     const col = db.colleges.find((c) => c.id === user?.collegeId);
     return {
-      id: user?.id,
-      name: user?.name,
-      college: col ? { code: col.code, name: col.name } : null,
-      gender: user?.gender,
+      id: user?.id || r.userId,
+      name: user?.name || 'Registered Participant',
+      email: user?.email || '',
+      phone: user?.phone || '',
+      rollNo: user?.rollNo || 'N/A',
+      college: col ? { id: col.id, code: col.code, name: col.name, color: col.color } : null,
+      gender: user?.gender || 'N/A',
+      registeredAt: r.createdAt || new Date().toISOString(),
+      status: r.status,
     };
   });
 
   return NextResponse.json({
     event,
-    registrationsCount: registrations.length,
+    registrationsCount: registeredUsers.length,
     registeredUsers,
   });
 }

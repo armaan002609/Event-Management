@@ -1,18 +1,64 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getActiveUser } from '@/lib/auth';
 import { readDatabase } from '@/lib/db';
+import { Event } from '@unifest/shared';
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const activeUser = getActiveUser();
+  const requestedUserId = req.nextUrl.searchParams.get('userId') || activeUser.id;
   const db = readDatabase();
 
-  const userRegs = db.registrations.filter(
-    (r) => r.userId === activeUser.id && r.status === 'CONFIRMED'
-  );
-  const eventIds = new Set(userRegs.map((r) => r.eventId));
+  const userRegIds = new Set<string>();
 
-  const registeredEvents = db.events
-    .filter((e) => eventIds.has(e.id))
+  // 1. Local registrations
+  for (const r of db.registrations) {
+    if (r.userId === requestedUserId && r.status === 'CONFIRMED') {
+      userRegIds.add(r.eventId);
+    }
+  }
+
+  // 2. Supabase registrations
+  let allEvents: Event[] = [...db.events];
+  try {
+    const { getSupabase } = await import('@/lib/supabase');
+    const sb = getSupabase();
+    if (sb) {
+      const [{ data: sbRegs }, { data: sbEvents }] = await Promise.all([
+        sb.from('registrations').select('*').eq('user_id', requestedUserId).eq('status', 'CONFIRMED'),
+        sb.from('events').select('*'),
+      ]);
+
+      if (sbRegs) {
+        for (const sr of sbRegs) {
+          const eid = sr.event_id || sr.eventId;
+          if (eid) userRegIds.add(eid);
+        }
+      }
+
+      if (sbEvents && sbEvents.length > 0) {
+        const mapped = sbEvents.map((e: any) => ({
+          id: e.id,
+          title: e.title,
+          type: e.type,
+          description: e.description,
+          venue: e.venue,
+          startsAt: e.starts_at || e.startsAt,
+          endsAt: e.ends_at || e.endsAt,
+          capacity: e.capacity,
+          status: e.status || 'SCHEDULED',
+        }));
+        const evMap = new Map();
+        for (const e of allEvents) evMap.set(e.id, e);
+        for (const e of mapped) evMap.set(e.id, e);
+        allEvents = Array.from(evMap.values());
+      }
+    }
+  } catch (e) {
+    console.warn('Supabase query error in /api/me/schedule:', e);
+  }
+
+  const registeredEvents = allEvents
+    .filter((e) => userRegIds.has(e.id))
     .sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime());
 
   // Check for time conflicts between registered events
