@@ -54,7 +54,7 @@
       "avatarUrl": "data:image/svg+xml;base64,PHN2Zz48L3N2Zz4=",
       "isProfileComplete": true,
       "gender": "MALE",
-      "role": "STUDENT",
+      "role": "ADMIN",
       "emailVerified": true,
       "password": "unifest_google_oauth",
       "verificationCode": null
@@ -84,26 +84,18 @@
   ],
   "events": [
     {
-      "id": "evt-1793046766550",
+      "id": "evt-1793080961015",
       "title": "Kabaddi",
       "type": "SPORTS",
       "description": null,
       "venue": "Milkha Singh Arena",
-      "startsAt": "2026-10-31T05:00:00+00:00",
-      "endsAt": "2026-10-31T07:00:00+00:00",
+      "startsAt": "2026-10-31T05:00:00.000Z",
+      "endsAt": "2026-10-31T07:00:00.000Z",
       "capacity": 24,
       "status": "SCHEDULED"
     }
   ],
-  "registrations": [
-    {
-      "id": "reg-1793077461329-8777",
-      "userId": "usr-mvpbtfrm-8777",
-      "eventId": "evt-1793046766550",
-      "status": "CONFIRMED",
-      "createdAt": "2026-10-27T05:04:21.329Z"
-    }
-  ],
+  "registrations": [],
   "hostels": [
     {
       "id": "hostel-1793036398955",
@@ -1039,6 +1031,58 @@
   ],
   "notificationLogs": [
     {
+      "id": "notif-mgr-1793080947559-usr-mvpbtfrm-8777",
+      "userId": "usr-mvpbtfrm-8777",
+      "userEmail": "armaankapoor2609@gmail.com",
+      "userName": "Armaan",
+      "type": "EVENT_CANCELLED",
+      "subject": "[Manager Alert] [Event Cancelled] RoboWars Championship",
+      "body": "Alert triggered by Armaan:\nThe competition \"RoboWars Championship\" has been cancelled and removed from the festival schedule.",
+      "status": "SENT",
+      "eventId": "evt-1793080788370",
+      "attempts": 1,
+      "createdAt": "2026-10-27T06:02:27.559Z"
+    },
+    {
+      "id": "notif-mgr-1793080947559-usr-g-1793019998926",
+      "userId": "usr-g-1793019998926",
+      "userEmail": "armaan002609@gmail.com",
+      "userName": "Armaan",
+      "type": "EVENT_CANCELLED",
+      "subject": "[Manager Alert] [Event Cancelled] RoboWars Championship",
+      "body": "Alert triggered by Armaan:\nThe competition \"RoboWars Championship\" has been cancelled and removed from the festival schedule.",
+      "status": "SENT",
+      "eventId": "evt-1793080788370",
+      "attempts": 1,
+      "createdAt": "2026-10-27T06:02:27.559Z"
+    },
+    {
+      "id": "notif-mgr-1793080222698-usr-mvpbtfrm-8777",
+      "userId": "usr-mvpbtfrm-8777",
+      "userEmail": "armaankapoor2609@gmail.com",
+      "userName": "Armaan",
+      "type": "EVENT_CANCELLED",
+      "subject": "[Manager Alert] [Event Cancelled] Kabaddi",
+      "body": "Alert triggered by Armaan:\nThe competition \"Kabaddi\" has been cancelled and removed from the festival schedule.",
+      "status": "SENT",
+      "eventId": "evt-1793046766550",
+      "attempts": 1,
+      "createdAt": "2026-10-27T05:50:22.698Z"
+    },
+    {
+      "id": "notif-mgr-1793080222698-usr-g-1793019998926",
+      "userId": "usr-g-1793019998926",
+      "userEmail": "armaan002609@gmail.com",
+      "userName": "Armaan",
+      "type": "EVENT_CANCELLED",
+      "subject": "[Manager Alert] [Event Cancelled] Kabaddi",
+      "body": "Alert triggered by Armaan:\nThe competition \"Kabaddi\" has been cancelled and removed from the festival schedule.",
+      "status": "SENT",
+      "eventId": "evt-1793046766550",
+      "attempts": 1,
+      "createdAt": "2026-10-27T05:50:22.698Z"
+    },
+    {
       "id": "notif-mgr-1793078311199-usr-g-1793019998926",
       "userId": "usr-g-1793019998926",
       "userEmail": "armaan002609@gmail.com",
@@ -1105,6 +1149,94 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "audit-1793080961015",
+      "actorId": "usr-mvpbtfrm-8777",
+      "actorName": "Armaan",
+      "action": "EVENT_CREATE",
+      "entity": "Event",
+      "entityId": "evt-1793080961015",
+      "reason": "Created new event: Kabaddi",
+      "before": null,
+      "after": {
+        "id": "evt-1793080961015",
+        "title": "Kabaddi",
+        "type": "SPORTS",
+        "description": null,
+        "venue": "Milkha Singh Arena",
+        "startsAt": "2026-10-31T05:00:00.000Z",
+        "endsAt": "2026-10-31T07:00:00.000Z",
+        "capacity": 24,
+        "status": "SCHEDULED"
+      },
+      "at": "2026-10-27T06:02:41.015Z"
+    },
+    {
+      "id": "audit-1793080947556",
+      "actorId": "usr-mvpbtfrm-8777",
+      "actorName": "Armaan",
+      "action": "EVENT_DELETE",
+      "entity": "Event",
+      "entityId": "evt-1793080788370",
+      "reason": "Event \"RoboWars Championship\" permanently deleted by ADMIN Armaan",
+      "before": {
+        "id": "evt-1793080788370",
+        "title": "RoboWars Championship",
+        "type": "TECHNICAL",
+        "description": "Annual inter-college robot combat tournament.",
+        "venue": "APJ Abdul Kalam Auditorium",
+        "startsAt": "2026-10-28T05:59:48.115Z",
+        "endsAt": "2026-10-28T07:59:48.116Z",
+        "capacity": 32,
+        "status": "SCHEDULED"
+      },
+      "after": null,
+      "at": "2026-10-27T06:02:27.556Z"
+    },
+    {
+      "id": "audit-1793080788370",
+      "actorId": "usr-mvpbtfrm-8777",
+      "actorName": "Armaan",
+      "action": "EVENT_CREATE",
+      "entity": "Event",
+      "entityId": "evt-1793080788370",
+      "reason": "Created new event: RoboWars Championship",
+      "before": null,
+      "after": {
+        "id": "evt-1793080788370",
+        "title": "RoboWars Championship",
+        "type": "TECHNICAL",
+        "description": "Annual inter-college robot combat tournament.",
+        "venue": "APJ Abdul Kalam Auditorium",
+        "startsAt": "2026-10-28T05:59:48.115Z",
+        "endsAt": "2026-10-28T07:59:48.116Z",
+        "capacity": 32,
+        "status": "SCHEDULED"
+      },
+      "at": "2026-10-27T05:59:48.370Z"
+    },
+    {
+      "id": "audit-1793080222695",
+      "actorId": "usr-mvpbtfrm-8777",
+      "actorName": "Armaan",
+      "action": "EVENT_DELETE",
+      "entity": "Event",
+      "entityId": "evt-1793046766550",
+      "reason": "Event \"Kabaddi\" permanently deleted by ADMIN Armaan",
+      "before": {
+        "id": "evt-1793046766550",
+        "title": "Kabaddi",
+        "type": "SPORTS",
+        "description": null,
+        "venue": "Milkha Singh Arena",
+        "startsAt": "2026-10-31T05:00:00+00:00",
+        "endsAt": "2026-10-31T07:00:00+00:00",
+        "capacity": 24,
+        "status": "SCHEDULED"
+      },
+      "after": null,
+      "at": "2026-10-27T05:50:22.695Z"
+    },
     {
       "id": "audit-1793078311197",
       "actorId": "usr-g-1793019998926",

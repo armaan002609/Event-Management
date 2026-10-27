@@ -142,6 +142,8 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
   const [showEventRosterModal, setShowEventRosterModal] = useState(false);
   const [selectedEventIdForRoster, setSelectedEventIdForRoster] = useState<string>('ALL');
   const [eventRosterSearch, setEventRosterSearch] = useState('');
+  const [eventToDeleteAdmin, setEventToDeleteAdmin] = useState<{ id: string; title: string; count?: number } | null>(null);
+  const [isDeletingEventAdmin, setIsDeletingEventAdmin] = useState(false);
 
   useEffect(() => {
     loadAllAdminData();
@@ -234,12 +236,19 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
     toast.success('Roster Exported', 'Event attendees CSV spreadsheet exported successfully.');
   };
 
-  const handleDeleteEventAdmin = async (eventId: string) => {
+  const handleDeleteEventAdmin = (eventId: string) => {
+    const targetEvent = eventRegistrationsData?.events?.find((e: any) => e.id === eventId);
+    setEventToDeleteAdmin({
+      id: eventId,
+      title: targetEvent?.title || eventId,
+      count: targetEvent?.participants?.length || 0,
+    });
+  };
+
+  const executeDeleteEventAdmin = async (eventId: string) => {
+    setIsDeletingEventAdmin(true);
     const targetEvent = eventRegistrationsData?.events?.find((e: any) => e.id === eventId);
     const eventName = targetEvent?.title || eventId;
-    if (!confirm(`Are you sure you want to permanently delete "${eventName}"? All student registrations for this competition will be cancelled.`)) {
-      return;
-    }
     try {
       const res = await fetch(`/api/events/${eventId}`, {
         method: 'DELETE',
@@ -248,6 +257,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       if (res.ok) {
         toast.success('Event Deleted', `"${eventName}" was permanently deleted.`);
         setSelectedEventIdForRoster('ALL');
+        setEventToDeleteAdmin(null);
         const evRegRes = await fetch('/api/admin/events/registrations').then((r) => r.json()).catch(() => null);
         if (evRegRes?.events) setEventRegistrationsData(evRegRes);
         if (typeof window !== 'undefined') {
@@ -259,6 +269,8 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       }
     } catch {
       toast.error('Network Error', 'Failed to delete event');
+    } finally {
+      setIsDeletingEventAdmin(false);
     }
   };
 
@@ -3418,6 +3430,43 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
               </button>
             </div>
 
+            {/* Competitions Quick Badges */}
+            {(eventRegistrationsData?.events || []).length > 0 && (
+              <div className="flex items-center gap-1.5 flex-wrap p-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mr-1">Competitions:</span>
+                {(eventRegistrationsData?.events || []).map((ev: any) => (
+                  <div
+                    key={ev.id}
+                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-xs font-semibold border transition-all ${
+                      selectedEventIdForRoster === ev.id
+                        ? 'bg-purple-100 dark:bg-purple-950/70 border-purple-300 dark:border-purple-700 text-purple-900 dark:text-purple-200'
+                        : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-purple-300'
+                    }`}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setSelectedEventIdForRoster(selectedEventIdForRoster === ev.id ? 'ALL' : ev.id)}
+                      className="hover:underline cursor-pointer flex items-center gap-1"
+                    >
+                      <span>{ev.title}</span>
+                      <span className="text-[10px] opacity-70">({ev.participants?.length || 0})</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteEventAdmin(ev.id);
+                      }}
+                      className="p-1 rounded-lg text-rose-500 hover:bg-rose-100 dark:hover:bg-rose-950/60 hover:text-rose-700 transition-colors ml-0.5 cursor-pointer"
+                      title={`Permanently delete "${ev.title}"`}
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
             {/* Filter & Actions Bar */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
               <div className="flex flex-wrap items-center gap-2 flex-1">
@@ -3581,6 +3630,59 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 className="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-800 text-white text-xs font-bold hover:bg-slate-800 dark:hover:bg-slate-700 transition-all"
               >
                 Close Roster
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Event Confirmation Modal for Admin */}
+      {eventToDeleteAdmin && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-rose-100 dark:border-rose-900/50">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+                <Trash2 className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white">
+                  Delete Competition?
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Permanent administrator event removal.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 text-xs space-y-1.5">
+              <div className="flex items-center justify-between font-bold text-slate-800 dark:text-slate-200">
+                <span>{eventToDeleteAdmin.title}</span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300">
+                  {eventToDeleteAdmin.count ?? 0} registered
+                </span>
+              </div>
+              <p className="text-[11px] text-rose-600 dark:text-rose-400 font-semibold">
+                ⚠️ All student registrations for &quot;{eventToDeleteAdmin.title}&quot; will be permanently deleted from the database and attendees will be notified of cancellation.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5 pt-2">
+              <button
+                type="button"
+                onClick={() => setEventToDeleteAdmin(null)}
+                disabled={isDeletingEventAdmin}
+                className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => executeDeleteEventAdmin(eventToDeleteAdmin.id)}
+                disabled={isDeletingEventAdmin}
+                className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-md shadow-rose-600/20 transition-all inline-flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                {isDeletingEventAdmin ? 'Deleting...' : 'Yes, Delete Competition'}
               </button>
             </div>
           </div>

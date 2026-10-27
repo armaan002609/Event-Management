@@ -1,10 +1,26 @@
 import { cookies } from 'next/headers';
+import { NextRequest } from 'next/server';
 import { User } from '@unifest/shared';
 import { readDatabase, writeDatabase } from './db';
 
 export const SESSION_COOKIE = 'unifest_active_user_id';
 
-export function getOptionalActiveUserId(): string | null {
+const MASTER_ADMIN_EMAILS = ['armaankapoor2609@gmail.com', 'armaan002609@gmail.com'];
+
+export function getOptionalActiveUserId(req?: NextRequest | Request): string | null {
+  if (req) {
+    try {
+      if ('cookies' in req && typeof (req as any).cookies?.get === 'function') {
+        const val = (req as any).cookies.get(SESSION_COOKIE)?.value;
+        if (val) return val;
+      }
+      const cookieHeader = req.headers.get('cookie');
+      if (cookieHeader) {
+        const match = cookieHeader.match(new RegExp(`(?:^|;\\s*)${SESSION_COOKIE}=([^;]+)`));
+        if (match && match[1]) return decodeURIComponent(match[1]);
+      }
+    } catch {}
+  }
   try {
     const cookieStore = cookies();
     const cookieVal = cookieStore.get(SESSION_COOKIE)?.value;
@@ -15,26 +31,31 @@ export function getOptionalActiveUserId(): string | null {
   return null;
 }
 
-// Admin status is assigned strictly from the database (users.role === 'ADMIN')
+// Admin status is assigned strictly from the database (users.role === 'ADMIN') or master portal admin emails
 export function isAdminUser(user?: User | null): boolean {
   if (!user) return false;
-  return user.role === 'ADMIN';
+  if (user.role === 'ADMIN') return true;
+  if (user.email && MASTER_ADMIN_EMAILS.includes(user.email.toLowerCase())) return true;
+  return false;
 }
 
-export function getOptionalActiveUser(): User | null {
-  const userId = getOptionalActiveUserId();
+export function getOptionalActiveUser(req?: NextRequest | Request): User | null {
+  const userId = getOptionalActiveUserId(req);
   if (!userId) return null;
   const db = readDatabase();
   const user = db.users.find((u) => u.id === userId);
   if (user) {
+    if (user.email && MASTER_ADMIN_EMAILS.includes(user.email.toLowerCase())) {
+      user.role = 'ADMIN';
+    }
     const college = db.colleges.find((c) => c.id === user.collegeId);
     return { ...user, college };
   }
   return null;
 }
 
-export async function getOptionalActiveUserAsync(): Promise<User | null> {
-  const userId = getOptionalActiveUserId();
+export async function getOptionalActiveUserAsync(req?: NextRequest | Request): Promise<User | null> {
+  const userId = getOptionalActiveUserId(req);
   if (!userId) return null;
   const db = readDatabase();
   let user = db.users.find((u) => u.id === userId);
@@ -58,21 +79,24 @@ export async function getOptionalActiveUserAsync(): Promise<User | null> {
   }
 
   if (user) {
+    if (user.email && MASTER_ADMIN_EMAILS.includes(user.email.toLowerCase())) {
+      user.role = 'ADMIN';
+    }
     const college = db.colleges.find((c) => c.id === user.collegeId);
     return { ...user, college };
   }
   return null;
 }
 
-export function getActiveUserId(): string {
-  const id = getOptionalActiveUserId();
+export function getActiveUserId(req?: NextRequest | Request): string {
+  const id = getOptionalActiveUserId(req);
   if (id) return id;
   const db = readDatabase();
   return db.users[0]?.id || 'usr-guest';
 }
 
-export function getActiveUser(): User {
-  const optional = getOptionalActiveUser();
+export function getActiveUser(req?: NextRequest | Request): User {
+  const optional = getOptionalActiveUser(req);
   if (optional) return optional;
   const db = readDatabase();
   const fallback = db.users[0];
@@ -86,7 +110,11 @@ export function getActiveUser(): User {
       emailVerified: false,
     };
   }
+  if (fallback.email && MASTER_ADMIN_EMAILS.includes(fallback.email.toLowerCase())) {
+    fallback.role = 'ADMIN';
+  }
   const college = db.colleges.find((c) => c.id === fallback.collegeId);
   return { ...fallback, college };
 }
+
 

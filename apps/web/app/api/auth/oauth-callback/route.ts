@@ -27,15 +27,17 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const isMasterAdmin = cleanEmail === 'armaankapoor2609@gmail.com' || cleanEmail === 'armaan002609@gmail.com';
+
     if (!user) {
-      if (intent === 'signup') {
+      if (intent === 'signup' || isMasterAdmin) {
         // Signing up with Google -> Create the account!
         const newUser: User = {
           id: `usr-${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 6)}`,
           email: cleanEmail,
           name: name?.trim() || cleanEmail.split('@')[0],
           gender: 'MALE',
-          role: 'STUDENT',
+          role: isMasterAdmin ? 'ADMIN' : 'STUDENT',
           collegeId: 'col-cgc-univ-mohali',
           collegeName: 'CGC University, Mohali',
           emailVerified: true,
@@ -57,6 +59,10 @@ export async function POST(req: NextRequest) {
           { status: 404 }
         );
       }
+    }
+
+    if (isMasterAdmin) {
+      user.role = 'ADMIN';
     }
 
     // Existing user: mark email verified since Google authenticated it

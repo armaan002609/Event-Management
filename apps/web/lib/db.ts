@@ -233,6 +233,14 @@ export function writeDatabase(data: DatabaseSchema): void {
   globalThis.__UNIFEST_IN_MEMORY_DB__ = data;
   const writablePath = getWritableDbFilePath();
   safeWriteToDisk(writablePath, JSON.stringify(data, null, 2));
+
+  // Keep root workspace db.json in sync when running monorepo
+  try {
+    const rootDbFile = path.resolve(process.cwd(), '..', '..', 'data', 'db.json');
+    if (fs.existsSync(path.dirname(rootDbFile))) {
+      safeWriteToDisk(rootDbFile, JSON.stringify(data, null, 2));
+    }
+  } catch {}
 }
 
 export function resetDatabase(): DatabaseSchema {

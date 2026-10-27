@@ -5,10 +5,10 @@ import { emitDomainNotification } from '@/lib/notification-service';
 import { isUserProfileComplete, Event } from '@unifest/shared';
 
 export async function POST(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const activeUser = getActiveUser();
+  const activeUser = getActiveUser(req);
   if (activeUser.role !== 'STUDENT') {
     return NextResponse.json({ error: 'Only students can register for events' }, { status: 403 });
   }
@@ -185,10 +185,10 @@ export async function POST(
 }
 
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const activeUser = getActiveUser();
+  const activeUser = getActiveUser(req);
   const db = readDatabase();
   const event = db.events.find((e) => e.id === params.id);
 
