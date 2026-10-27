@@ -984,13 +984,13 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       </div>
 
       {/* ── 2. SEGMENTED NAVIGATION TABS ── */}
-      <div className="bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-1.5 overflow-x-auto text-xs font-bold">
+      <div className="bg-white dark:bg-slate-900 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex items-center gap-1.5 overflow-x-auto text-xs font-bold transition-colors">
         <button
           onClick={() => setAdminTab('overview')}
           className={`flex-1 min-w-[140px] py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-2 ${
             adminTab === 'overview'
-              ? 'bg-slate-900 text-white shadow-md'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              ? 'bg-slate-900 dark:bg-primary text-white shadow-md'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
           <Activity className="w-4 h-4 text-rose-500" />
@@ -1001,13 +1001,13 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
           onClick={() => setAdminTab('users')}
           className={`flex-1 min-w-[160px] py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-2 ${
             adminTab === 'users'
-              ? 'bg-slate-900 text-white shadow-md'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              ? 'bg-slate-900 dark:bg-primary text-white shadow-md'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
           <Users className="w-4 h-4 text-indigo-500" />
           <span>Users & Roles</span>
-          <span className={`px-2 py-0.5 rounded-full text-[10px] ${adminTab === 'users' ? 'bg-indigo-500/30 text-indigo-200' : 'bg-slate-100 text-slate-700'}`}>
+          <span className={`px-2 py-0.5 rounded-full text-[10px] ${adminTab === 'users' ? 'bg-indigo-500/30 text-indigo-200' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'}`}>
             {usersList.length}
           </span>
         </button>
@@ -1016,13 +1016,13 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
           onClick={() => setAdminTab('colleges')}
           className={`flex-1 min-w-[150px] py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-2 ${
             adminTab === 'colleges'
-              ? 'bg-slate-900 text-white shadow-md'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              ? 'bg-slate-900 dark:bg-primary text-white shadow-md'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
           <Building2 className="w-4 h-4 text-blue-500" />
           <span>Institutions</span>
-          <span className={`px-2 py-0.5 rounded-full text-[10px] ${adminTab === 'colleges' ? 'bg-blue-500/30 text-blue-200' : 'bg-slate-100 text-slate-700'}`}>
+          <span className={`px-2 py-0.5 rounded-full text-[10px] ${adminTab === 'colleges' ? 'bg-blue-500/30 text-blue-200' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'}`}>
             {collegesList.length}
           </span>
         </button>
@@ -1031,13 +1031,13 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
           onClick={() => setAdminTab('hostels')}
           className={`flex-1 min-w-[160px] py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-2 ${
             adminTab === 'hostels'
-              ? 'bg-slate-900 text-white shadow-md'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              ? 'bg-slate-900 dark:bg-primary text-white shadow-md'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
           <Home className="w-4 h-4 text-emerald-500" />
           <span>Hostels & Beds</span>
-          <span className={`px-2 py-0.5 rounded-full text-[10px] ${adminTab === 'hostels' ? 'bg-emerald-500/30 text-emerald-200' : 'bg-slate-100 text-slate-700'}`}>
+          <span className={`px-2 py-0.5 rounded-full text-[10px] ${adminTab === 'hostels' ? 'bg-emerald-500/30 text-emerald-200' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'}`}>
             {hostelsList.length}
           </span>
         </button>
@@ -1046,8 +1046,8 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
           onClick={() => setAdminTab('config')}
           className={`flex-1 min-w-[160px] py-2.5 px-3 rounded-xl transition-all flex items-center justify-center gap-2 ${
             adminTab === 'config'
-              ? 'bg-slate-900 text-white shadow-md'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              ? 'bg-slate-900 dark:bg-primary text-white shadow-md'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
           <Settings className="w-4 h-4 text-amber-500" />
@@ -1063,10 +1063,10 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
             {/* Tile 1: User Accounts */}
             <div 
               onClick={() => setAdminTab('users')}
-              className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-slate-300 transition-all cursor-pointer group"
+              className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-3">
-                <span className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center">
+                <span className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-800/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                   <Users className="w-5 h-5" />
                 </span>
                 <span className="text-[11px] font-bold text-slate-400 group-hover:text-primary transition-colors flex items-center gap-0.5">
@@ -1074,25 +1074,25 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 </span>
               </div>
               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">User Directory</span>
-              <p className="font-heading font-black text-3xl text-slate-900 mt-1">
+              <p className="font-heading font-black text-3xl text-slate-900 dark:text-white mt-1">
                 {configData?.stats?.usersCount ?? usersList.length}
               </p>
-              <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-100 text-[10px] text-slate-500 font-semibold">
-                <span className="text-indigo-600">Students: {studentCount}</span>
+              <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400 font-semibold">
+                <span className="text-indigo-600 dark:text-indigo-400">Students: {studentCount}</span>
                 <span>·</span>
-                <span className="text-amber-600">Staff: {managerCount + scannerCount}</span>
+                <span className="text-amber-600 dark:text-amber-400">Staff: {managerCount + scannerCount}</span>
                 <span>·</span>
-                <span className="text-rose-600">Admins: {adminCount}</span>
+                <span className="text-rose-600 dark:text-rose-400">Admins: {adminCount}</span>
               </div>
             </div>
 
             {/* Tile 2: Colleges */}
             <div 
               onClick={() => setAdminTab('colleges')}
-              className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-slate-300 transition-all cursor-pointer group"
+              className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-3">
-                <span className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center">
+                <span className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 border border-blue-100 dark:border-blue-800/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                   <Building2 className="w-5 h-5" />
                 </span>
                 <span className="text-[11px] font-bold text-slate-400 group-hover:text-primary transition-colors flex items-center gap-0.5">
@@ -1100,10 +1100,10 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 </span>
               </div>
               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Participating Colleges</span>
-              <p className="font-heading font-black text-3xl text-primary mt-1">
+              <p className="font-heading font-black text-3xl text-primary dark:text-primary-400 mt-1">
                 {collegesList.length}
               </p>
-              <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-100 text-[10px] text-slate-500 font-semibold">
+              <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400 font-semibold">
                 <span>Multi-Campus Identity Partitioned</span>
               </div>
             </div>
@@ -1111,23 +1111,23 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
             {/* Tile 3: Bed Inventory Fleet */}
             <div 
               onClick={() => setAdminTab('hostels')}
-              className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-slate-300 transition-all cursor-pointer group"
+              className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-3">
-                <span className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center">
+                <span className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-100 dark:border-emerald-800/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                   <Home className="w-5 h-5" />
                 </span>
-                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
                   {fleetOccupancyPct}% Occupied
                 </span>
               </div>
               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Bed Inventory</span>
-              <p className="font-heading font-black text-3xl text-slate-900 mt-1">
+              <p className="font-heading font-black text-3xl text-slate-900 dark:text-white mt-1">
                 {totalFleetCapacity} <span className="text-xs font-bold text-slate-400">Total Beds</span>
               </p>
-              <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 text-[10px] text-slate-500 font-semibold">
-                <span className="text-blue-600">Occupied: {totalFleetOccupied}</span>
-                <span className="text-emerald-600">Vacant: {totalFleetFree}</span>
+              <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400 font-semibold">
+                <span className="text-blue-600 dark:text-blue-400">Occupied: {totalFleetOccupied}</span>
+                <span className="text-emerald-600 dark:text-emerald-400">Vacant: {totalFleetFree}</span>
                 <span>{hostelsList.length} Facilities</span>
               </div>
             </div>
@@ -1135,10 +1135,10 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
             {/* Tile 4: Security Audit Ledger */}
             <div 
               onClick={() => onNavigateTab('audit')}
-              className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-slate-300 transition-all cursor-pointer group"
+              className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-3">
-                <span className="w-10 h-10 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 flex items-center justify-center">
+                <span className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950/50 border border-rose-100 dark:border-rose-800/60 text-rose-600 dark:text-rose-400 flex items-center justify-center">
                   <Lock className="w-5 h-5" />
                 </span>
                 <span className="text-[11px] font-bold text-slate-400 group-hover:text-primary transition-colors flex items-center gap-0.5">
@@ -1146,20 +1146,20 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 </span>
               </div>
               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Audit Trail Depth</span>
-              <p className="font-heading font-black text-3xl text-rose-600 mt-1">
+              <p className="font-heading font-black text-3xl text-rose-600 dark:text-rose-400 mt-1">
                 {configData?.stats?.auditLogsCount ?? 0}
               </p>
-              <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-100 text-[10px] text-slate-500 font-semibold">
-                <span className="text-emerald-600">✓ Immutable & Timestamped</span>
+              <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400 font-semibold">
+                <span className="text-emerald-600 dark:text-emerald-400">✓ Immutable & Timestamped</span>
               </div>
             </div>
           </div>
 
           {/* Quick Control Launchpad */}
-          <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-heading font-black text-base text-slate-900">Administrator Launchpad</h3>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white">Administrator Launchpad</h3>
                 <p className="text-xs text-slate-400 mt-0.5">Direct shortcuts to add entities and trigger automated operations.</p>
               </div>
             </div>
@@ -1167,95 +1167,95 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <button
                 onClick={() => setShowAddCollegeModal(true)}
-                className="p-4 rounded-2xl border border-slate-200 hover:border-primary hover:bg-slate-50/80 transition-all text-left space-y-2 group"
+                className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-primary dark:hover:border-primary-400 hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-all text-left space-y-2 group"
               >
-                <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-105 transition-transform">
                   <Plus className="w-4 h-4" />
                 </div>
-                <h4 className="font-heading font-bold text-xs text-slate-900">Register College</h4>
+                <h4 className="font-heading font-bold text-xs text-slate-900 dark:text-slate-100">Register College</h4>
                 <p className="text-[11px] text-slate-400 leading-snug">Add institution from profile directory or custom.</p>
               </button>
 
               <button
                 onClick={() => setShowAddHostelModal(true)}
-                className="p-4 rounded-2xl border border-slate-200 hover:border-primary hover:bg-slate-50/80 transition-all text-left space-y-2 group"
+                className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-primary dark:hover:border-primary-400 hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-all text-left space-y-2 group"
               >
-                <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center group-hover:scale-105 transition-transform">
                   <Home className="w-4 h-4" />
                 </div>
-                <h4 className="font-heading font-bold text-xs text-slate-900">Add Hostel Facility</h4>
+                <h4 className="font-heading font-bold text-xs text-slate-900 dark:text-slate-100">Add Hostel Facility</h4>
                 <p className="text-[11px] text-slate-400 leading-snug">Create facility with campus & gender designation.</p>
               </button>
 
               <button
                 onClick={() => setShowAddUserModal(true)}
-                className="p-4 rounded-2xl border border-slate-200 hover:border-primary hover:bg-slate-50/80 transition-all text-left space-y-2 group"
+                className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-primary dark:hover:border-primary-400 hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-all text-left space-y-2 group"
               >
-                <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center group-hover:scale-105 transition-transform">
                   <UserPlus className="w-4 h-4" />
                 </div>
-                <h4 className="font-heading font-bold text-xs text-slate-900">Add Staff Account</h4>
+                <h4 className="font-heading font-bold text-xs text-slate-900 dark:text-slate-100">Add Staff Account</h4>
                 <p className="text-[11px] text-slate-400 leading-snug">Provision Manager, Scanner, or Admin privileges.</p>
               </button>
 
               <button
                 onClick={() => onNavigateTab('allocation-matrix')}
-                className="p-4 rounded-2xl border border-slate-200 hover:border-primary hover:bg-slate-50/80 transition-all text-left space-y-2 group"
+                className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-primary dark:hover:border-primary-400 hover:bg-slate-50/80 dark:hover:bg-slate-800/60 transition-all text-left space-y-2 group"
               >
-                <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center group-hover:scale-105 transition-transform">
                   <Layers className="w-4 h-4" />
                 </div>
-                <h4 className="font-heading font-bold text-xs text-slate-900">Run Room Allocation</h4>
+                <h4 className="font-heading font-bold text-xs text-slate-900 dark:text-slate-100">Run Room Allocation</h4>
                 <p className="text-[11px] text-slate-400 leading-snug">Inspect allocation matrix and lock status.</p>
               </button>
             </div>
           </div>
 
           {/* Hard Constraints Safety Invariants */}
-          <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-2.5">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                 <div>
-                  <h3 className="font-heading font-black text-sm text-slate-900">System Safety Invariants Health</h3>
+                  <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white">System Safety Invariants Health</h3>
                   <p className="text-xs text-slate-400">Database constraints strictly verified on every operation.</p>
                 </div>
               </div>
-              <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800">
+              <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300">
                 100% Operational
               </span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-start gap-3">
+              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-start gap-3">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 mt-1 shrink-0" />
                 <div>
-                  <strong className="text-slate-800 text-xs">BR-1: Strict Gender Segregation</strong>
-                  <p className="text-slate-500 text-[11px] mt-0.5">Male and female participants never share a room under any circumstance. Inherited strictly at hostel level.</p>
+                  <strong className="text-slate-800 dark:text-slate-200 text-xs">BR-1: Strict Gender Segregation</strong>
+                  <p className="text-slate-500 dark:text-slate-400 text-[11px] mt-0.5">Male and female participants never share a room under any circumstance. Inherited strictly at hostel level.</p>
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-start gap-3">
+              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-start gap-3">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 mt-1 shrink-0" />
                 <div>
-                  <strong className="text-slate-800 text-xs">BR-2: Single College Room Lock</strong>
-                  <p className="text-slate-500 text-[11px] mt-0.5">Rooms lock to the first occupant's institution; zero mixed colleges allowed in student rooms.</p>
+                  <strong className="text-slate-800 dark:text-slate-200 text-xs">BR-2: Single College Room Lock</strong>
+                  <p className="text-slate-500 dark:text-slate-400 text-[11px] mt-0.5">Rooms lock to the first occupant's institution; zero mixed colleges allowed in student rooms.</p>
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-start gap-3">
+              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-start gap-3">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 mt-1 shrink-0" />
                 <div>
-                  <strong className="text-slate-800 text-xs">BR-6: Minimal Identity-Only QR Tokens</strong>
-                  <p className="text-slate-500 text-[11px] mt-0.5">Tokens store userId & token version only. No room, meal or PII is exposed on printed or digital QR badges.</p>
+                  <strong className="text-slate-800 dark:text-slate-200 text-xs">BR-6: Minimal Identity-Only QR Tokens</strong>
+                  <p className="text-slate-500 dark:text-slate-400 text-[11px] mt-0.5">Tokens store userId & token version only. No room, meal or PII is exposed on printed or digital QR badges.</p>
                 </div>
               </div>
 
-              <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-start gap-3">
+              <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 flex items-start gap-3">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 mt-1 shrink-0" />
                 <div>
-                  <strong className="text-slate-800 text-xs">BR-7 & BR-8: Meal Slot Idempotency</strong>
-                  <p className="text-slate-500 text-[11px] mt-0.5">Enforces single redemption per meal slot, verified strictly against the assigned college batch window.</p>
+                  <strong className="text-slate-800 dark:text-slate-200 text-xs">BR-7 & BR-8: Meal Slot Idempotency</strong>
+                  <p className="text-slate-500 dark:text-slate-400 text-[11px] mt-0.5">Enforces single redemption per meal slot, verified strictly against the assigned college batch window.</p>
                 </div>
               </div>
             </div>
@@ -1267,7 +1267,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       {adminTab === 'users' && (
         <div className="space-y-4">
           {/* Filters & Action Bar */}
-          <div className="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+          <div className="bg-white dark:bg-slate-900 p-4 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="relative flex-1 max-w-md">
                 <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
@@ -1276,12 +1276,12 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   value={userSearch}
                   onChange={(e) => setUserSearch(e.target.value)}
                   placeholder="Search by name, email, phone, or college..."
-                  className="w-full pl-9 pr-8 py-2 rounded-xl border border-slate-200 text-xs bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all"
+                  className="w-full pl-9 pr-8 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs bg-slate-50/50 dark:bg-slate-800/50 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-primary focus:outline-none transition-all text-slate-900 dark:text-white placeholder:text-slate-400"
                 />
                 {userSearch && (
                   <button
                     onClick={() => setUserSearch('')}
-                    className="absolute right-3 top-2.5 text-xs text-slate-400 hover:text-slate-600"
+                    className="absolute right-3 top-2.5 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                   >
                     ✕
                   </button>
@@ -1291,10 +1291,10 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
               <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
                 <button
                   onClick={handleExportCSV}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all shadow-sm"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold transition-all shadow-sm"
                   title="Export filtered users to CSV spreadsheet"
                 >
-                  <Download className="w-3.5 h-3.5 text-slate-600" />
+                  <Download className="w-3.5 h-3.5 text-slate-600 dark:text-slate-400" />
                   <span className="hidden sm:inline">Export CSV</span>
                 </button>
                 <button
@@ -1307,14 +1307,14 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
             </div>
 
             {/* Role & Verification Filter Chips */}
-            <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100 text-xs font-bold">
+            <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-xs font-bold">
               <span className="text-[11px] text-slate-400 mr-1">Filter Role:</span>
               <button
                 onClick={() => setUserRoleFilter('ALL')}
                 className={`px-3 py-1 rounded-lg text-xs transition-all ${
                   userRoleFilter === 'ALL'
-                    ? 'bg-slate-900 text-white'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    ? 'bg-slate-900 dark:bg-primary text-white'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
                 }`}
               >
                 All ({usersList.length})
@@ -1324,7 +1324,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 className={`px-3 py-1 rounded-lg text-xs transition-all ${
                   userRoleFilter === 'STUDENT'
                     ? 'bg-indigo-600 text-white'
-                    : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'
+                    : 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/40'
                 }`}
               >
                 Students ({studentCount})
@@ -1334,7 +1334,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 className={`px-3 py-1 rounded-lg text-xs transition-all ${
                   userRoleFilter === 'MANAGER'
                     ? 'bg-amber-600 text-white'
-                    : 'bg-amber-50 text-amber-700 hover:bg-amber-100'
+                    : 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/40'
                 }`}
               >
                 Managers ({managerCount})
@@ -1344,7 +1344,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 className={`px-3 py-1 rounded-lg text-xs transition-all ${
                   userRoleFilter === 'SCANNER'
                     ? 'bg-emerald-600 text-white'
-                    : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                    : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/40'
                 }`}
               >
                 Scanners ({scannerCount})
@@ -1354,19 +1354,19 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 className={`px-3 py-1 rounded-lg text-xs transition-all ${
                   userRoleFilter === 'ADMIN'
                     ? 'bg-rose-600 text-white'
-                    : 'bg-rose-50 text-rose-700 hover:bg-rose-100'
+                    : 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/40'
                 }`}
               >
                 Admins ({adminCount})
               </button>
 
-              <div className="h-4 w-px bg-slate-200 mx-1 hidden sm:block" />
+              <div className="h-4 w-px bg-slate-200 dark:bg-slate-800 mx-1 hidden sm:block" />
 
               <span className="text-[11px] text-slate-400 mr-1 hidden sm:inline">College:</span>
               <select
                 value={userCollegeFilter}
                 onChange={(e) => setUserCollegeFilter(e.target.value)}
-                className="px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer max-w-[180px] truncate"
+                className="px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 focus:outline-none focus:ring-1 focus:ring-primary cursor-pointer max-w-[180px] truncate"
               >
                 <option value="ALL">All Colleges ({collegesList.length})</option>
                 {collegesList.map((col) => (
@@ -1376,7 +1376,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 ))}
               </select>
 
-              <div className="h-4 w-px bg-slate-200 mx-1 hidden sm:block" />
+              <div className="h-4 w-px bg-slate-200 dark:bg-slate-800 mx-1 hidden sm:block" />
 
               <span className="text-[11px] text-slate-400 mr-1 hidden sm:inline">Verification:</span>
               <button
@@ -1384,7 +1384,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 className={`px-2.5 py-1 rounded-lg text-xs transition-all ${
                   userStatusFilter === 'VERIFIED'
                     ? 'bg-emerald-600 text-white'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
                 }`}
               >
                 ✓ Verified
@@ -1394,7 +1394,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 className={`px-2.5 py-1 rounded-lg text-xs transition-all ${
                   userStatusFilter === 'UNVERIFIED'
                     ? 'bg-amber-600 text-white'
-                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
                 }`}
               >
                 ⚠ Unverified
@@ -1404,8 +1404,8 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
             {/* Results Status Line */}
             <div className="flex items-center justify-between pt-1 text-[11px] text-slate-400 font-medium">
               <span>
-                Showing <strong className="text-slate-700">{filteredUsers.length}</strong> of{' '}
-                <strong className="text-slate-700">{usersList.length}</strong> registered accounts
+                Showing <strong className="text-slate-700 dark:text-slate-200">{filteredUsers.length}</strong> of{' '}
+                <strong className="text-slate-700 dark:text-slate-200">{usersList.length}</strong> registered accounts
               </span>
               {(userSearch || userRoleFilter !== 'ALL' || userStatusFilter !== 'ALL' || userCollegeFilter !== 'ALL') && (
                 <button
@@ -1424,10 +1424,10 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
           </div>
 
           {/* User Table */}
-          <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+                <thead className="bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px]">
                   <tr>
                     <th className="py-3 px-4">User</th>
                     <th className="py-3 px-4">College / Institution</th>
@@ -1437,12 +1437,12 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                     <th className="py-3 px-4 text-right">Identifier</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                   {filteredUsers.length === 0 ? (
                     <tr>
                       <td colSpan={6} className="py-16 text-center text-slate-400">
-                        <Users className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-                        <p className="font-heading font-bold text-sm text-slate-700">No matching users found</p>
+                        <Users className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+                        <p className="font-heading font-bold text-sm text-slate-700 dark:text-slate-200">No matching users found</p>
                         <p className="text-xs text-slate-400 mt-1">Try adjusting your search terms or filters.</p>
                         <button
                           onClick={() => {
@@ -1451,7 +1451,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                             setUserStatusFilter('ALL');
                             setUserCollegeFilter('ALL');
                           }}
-                          className="mt-3 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 transition-colors"
+                          className="mt-3 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors"
                         >
                           Reset Filters
                         </button>
@@ -1461,14 +1461,14 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                     filteredUsers.map((user) => {
                       const initials = (user.name || 'U').split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase();
                       return (
-                        <tr key={user.id} className="hover:bg-slate-50/70 transition-colors">
+                        <tr key={user.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
                           <td className="py-3.5 px-4">
                             <div className="flex items-center gap-3">
                               <span className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-primary text-white font-black text-xs flex items-center justify-center shrink-0 shadow-sm">
                                 {initials}
                               </span>
                               <div>
-                                <p className="font-bold text-slate-900 leading-snug">{user.name}</p>
+                                <p className="font-bold text-slate-900 dark:text-white leading-snug">{user.name}</p>
                                 <p className="text-[11px] text-slate-400 flex items-center gap-1.5 mt-0.5">
                                   <span>{user.email}</span>
                                   {user.phone && (
@@ -1484,7 +1484,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                           <td className="py-3.5 px-4">
                             {user.collegeName || user.college?.name ? (
                               <div>
-                                <span className="font-bold text-slate-800 text-xs block">
+                                <span className="font-bold text-slate-800 dark:text-slate-200 text-xs block">
                                   {user.college?.code || 'INST'}
                                 </span>
                                 <span className="text-[11px] text-slate-400 truncate max-w-[200px] block">
@@ -1497,7 +1497,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                               </span>
                             )}
                           </td>
-                          <td className="py-3.5 px-4 font-semibold text-slate-600">
+                          <td className="py-3.5 px-4 font-semibold text-slate-600 dark:text-slate-300">
                             <span>{user.gender === 'MALE' ? '♂ Male' : '♀ Female'}</span>
                           </td>
                           <td className="py-3.5 px-4">
@@ -1506,12 +1506,12 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                               onChange={(e) => handleRoleChange(user.id, e.target.value as Role)}
                               className={`text-xs font-bold py-1 px-2.5 rounded-xl border transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary ${
                                 user.role === 'ADMIN'
-                                  ? 'bg-rose-50 text-rose-700 border-rose-200'
+                                  ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-800'
                                   : user.role === 'MANAGER'
-                                  ? 'bg-amber-50 text-amber-700 border-amber-200'
+                                  ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800'
                                   : user.role === 'SCANNER'
-                                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                  : 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                                  ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
+                                  : 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 border-indigo-200 dark:border-indigo-800'
                               }`}
                             >
                               <option value="STUDENT">STUDENT</option>
@@ -1525,8 +1525,8 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                               onClick={() => handleToggleVerification(user.id, user.emailVerified)}
                               className={`text-[10px] font-bold px-2.5 py-1 rounded-full transition-all ${
                                 user.emailVerified
-                                  ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
-                                  : 'bg-amber-100 text-amber-800 hover:bg-amber-200'
+                                  ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/60'
+                                  : 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/60'
                               }`}
                             >
                               {user.emailVerified ? '✓ Verified' : '⚠ Unverified'}
@@ -1535,11 +1535,11 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                           <td className="py-3.5 px-4 text-right">
                             <button
                               onClick={() => handleCopyUserId(user.id)}
-                              className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-mono text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                              className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-mono text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                               title="Click to copy full user ID"
                             >
                               {copiedUserId === user.id ? (
-                                <Check className="w-3 h-3 text-emerald-600" />
+                                <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                               ) : (
                                 <Copy className="w-3 h-3" />
                               )}
@@ -1560,7 +1560,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       {/* ── TAB 3: COLLEGES / INSTITUTIONS ── */}
       {adminTab === 'colleges' && (
         <div className="space-y-4">
-          <div className="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="bg-white dark:bg-slate-900 p-4 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="relative flex-1 max-w-md">
               <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
               <input
@@ -1568,12 +1568,12 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 value={collegeSearch}
                 onChange={(e) => setCollegeSearch(e.target.value)}
                 placeholder="Search college by name or code..."
-                className="w-full pl-9 pr-8 py-2 rounded-xl border border-slate-200 text-xs bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all"
+                className="w-full pl-9 pr-8 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs bg-slate-50/50 dark:bg-slate-800/50 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-primary focus:outline-none transition-all text-slate-900 dark:text-white placeholder:text-slate-400"
               />
               {collegeSearch && (
                 <button
                   onClick={() => setCollegeSearch('')}
-                  className="absolute right-3 top-2.5 text-xs text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-2.5 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                 >
                   ✕
                 </button>
@@ -1589,9 +1589,9 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
           </div>
 
           {filteredColleges.length === 0 ? (
-            <div className="bg-white rounded-3xl p-12 border border-slate-200 text-center space-y-3 shadow-sm">
-              <Building2 className="w-12 h-12 text-slate-300 mx-auto" />
-              <h4 className="font-heading font-black text-slate-800 text-base">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-12 border border-slate-200 dark:border-slate-800 text-center space-y-3 shadow-sm">
+              <Building2 className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto" />
+              <h4 className="font-heading font-black text-slate-800 dark:text-slate-200 text-base">
                 {collegesList.length === 0 ? 'No Colleges Registered Yet' : 'No Colleges Match Your Search'}
               </h4>
               <p className="text-xs text-slate-400 max-w-sm mx-auto">
@@ -1609,7 +1609,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
               ) : (
                 <button
                   onClick={() => setCollegeSearch('')}
-                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 transition-colors"
+                  className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors"
                 >
                   Reset Search
                 </button>
@@ -1626,7 +1626,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 return (
                   <div
                     key={col.id}
-                    className="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-all space-y-3 relative overflow-hidden group"
+                    className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md dark:hover:border-slate-700 transition-all space-y-3 relative overflow-hidden group"
                   >
                     {/* Brand Top Stripe */}
                     <div
@@ -1642,13 +1642,13 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                         {col.code}
                       </span>
                       <div className="flex items-center gap-2">
-                        <span className="text-[11px] font-bold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                        <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 rounded-full flex items-center gap-1">
                           <Lock className="w-3 h-3 text-slate-400" /> {col.lockedRooms || 0} Locked Rooms
                         </span>
                         <button
                           onClick={() => handleDeleteCollege(col.id, col.name)}
                           title="Delete College"
-                          className="p-1.5 rounded-xl text-slate-300 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                          className="p-1.5 rounded-xl text-slate-300 dark:text-slate-600 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -1656,17 +1656,17 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                     </div>
 
                     <div>
-                      <h4 className="font-heading font-black text-sm text-slate-900 leading-snug">{col.name}</h4>
+                      <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white leading-snug">{col.name}</h4>
                       <p className="text-[11px] text-slate-400 font-mono mt-0.5">ID: {col.id}</p>
                     </div>
 
                     {/* Student Gender Bar & Quick Action */}
-                    <div className="space-y-2 pt-2 border-t border-slate-100">
-                      <div className="flex items-center justify-between text-[11px] text-slate-500 font-semibold">
-                        <span>Students Enrolled: <strong>{totalStudents}</strong></span>
+                    <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                      <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-semibold">
+                        <span>Students Enrolled: <strong className="text-slate-800 dark:text-slate-200">{totalStudents}</strong></span>
                         <span>♂ {maleStudents} · ♀ {femaleStudents}</span>
                       </div>
-                      <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden flex">
+                      <div className="w-full h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden flex">
                         <div 
                           className="h-full bg-blue-500" 
                           style={{ width: `${totalStudents > 0 ? malePct : 50}%` }}
@@ -1685,12 +1685,12 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                             setUserCollegeFilter(col.id);
                             setAdminTab('users');
                           }}
-                          className="font-bold text-primary hover:text-primary-dark hover:underline flex items-center gap-1 transition-colors"
+                          className="font-bold text-primary dark:text-primary-400 hover:text-primary-dark hover:underline flex items-center gap-1 transition-colors"
                         >
                           View Students ({totalStudents}) →
                         </button>
                         {hostelsList.filter((h) => h.collegeId === col.id || h.collegeName === col.name).length > 0 && (
-                          <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+                          <span className="text-[10px] font-bold text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-800 px-2 py-0.5 rounded-full flex items-center gap-1">
                             <Home className="w-2.5 h-2.5" />
                             {hostelsList.filter((h) => h.collegeId === col.id || h.collegeName === col.name).length} Facilities
                           </span>
@@ -1709,7 +1709,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       {adminTab === 'hostels' && (
         <div className="space-y-4">
           {/* Controls Bar */}
-          <div className="bg-white p-4 rounded-3xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="bg-white dark:bg-slate-900 p-4 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2 flex-1 max-w-md">
               <div className="relative flex-1">
                 <Search className="w-4 h-4 absolute left-3.5 top-3 text-slate-400" />
@@ -1718,12 +1718,12 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   value={hostelSearch}
                   onChange={(e) => setHostelSearch(e.target.value)}
                   placeholder="Search hostel by name or campus..."
-                  className="w-full pl-9 pr-8 py-2 rounded-xl border border-slate-200 text-xs bg-slate-50/50 focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all"
+                  className="w-full pl-9 pr-8 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs bg-slate-50/50 dark:bg-slate-800/50 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-primary focus:outline-none transition-all text-slate-900 dark:text-white placeholder:text-slate-400"
                 />
                 {hostelSearch && (
                   <button
                     onClick={() => setHostelSearch('')}
-                    className="absolute right-3 top-2.5 text-xs text-slate-400 hover:text-slate-600"
+                    className="absolute right-3 top-2.5 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                   >
                     ✕
                   </button>
@@ -1731,11 +1731,11 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
               </div>
 
               {/* Gender Filter */}
-              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl text-xs font-bold">
+              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs font-bold">
                 <button
                   onClick={() => setHostelGenderFilter('ALL')}
                   className={`px-2.5 py-1 rounded-lg transition-all ${
-                    hostelGenderFilter === 'ALL' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500'
+                    hostelGenderFilter === 'ALL' ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'
                   }`}
                 >
                   All
@@ -1743,7 +1743,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 <button
                   onClick={() => setHostelGenderFilter('MALE')}
                   className={`px-2.5 py-1 rounded-lg transition-all ${
-                    hostelGenderFilter === 'MALE' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-500'
+                    hostelGenderFilter === 'MALE' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'
                   }`}
                 >
                   ♂ Boys
@@ -1751,7 +1751,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 <button
                   onClick={() => setHostelGenderFilter('FEMALE')}
                   className={`px-2.5 py-1 rounded-lg transition-all ${
-                    hostelGenderFilter === 'FEMALE' ? 'bg-rose-600 text-white shadow-sm' : 'text-slate-500'
+                    hostelGenderFilter === 'FEMALE' ? 'bg-rose-600 text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'
                   }`}
                 >
                   ♀ Girls
@@ -1764,10 +1764,10 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 type="button"
                 onClick={handleCheckoutAllFleet}
                 disabled={totalFleetOccupied === 0}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-amber-50 hover:bg-amber-100 disabled:opacity-40 disabled:hover:bg-amber-50 text-amber-800 border border-amber-200/80 rounded-xl text-xs font-bold transition-all shadow-sm disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/50 disabled:opacity-40 disabled:hover:bg-amber-50 dark:disabled:hover:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800 rounded-xl text-xs font-bold transition-all shadow-sm disabled:cursor-not-allowed"
                 title={totalFleetOccupied === 0 ? 'All rooms are already vacant' : `Checkout all ${totalFleetOccupied} occupants across all rooms`}
               >
-                <LogOut className="w-3.5 h-3.5 text-amber-700" />
+                <LogOut className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400" />
                 <span>Checkout All Rooms ({totalFleetOccupied})</span>
               </button>
               <button
@@ -1786,10 +1786,10 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   setRosterSearch('');
                   setShowRosterModal(true);
                 }}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all shadow-sm"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold transition-all shadow-sm"
                 title="View full occupant roster across all hostels"
               >
-                <Users className="w-3.5 h-3.5 text-slate-600" /> All Roster
+                <Users className="w-3.5 h-3.5 text-slate-600 dark:text-slate-400" /> All Roster
               </button>
               <button
                 onClick={() => {
@@ -1797,7 +1797,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   setShowAddRoomModal(true);
                 }}
                 disabled={hostelsList.length === 0}
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white border border-slate-200 text-slate-700 rounded-xl text-xs font-bold hover:bg-slate-50 shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-750 shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Plus className="w-3.5 h-3.5" /> Add Room
               </button>
@@ -1811,9 +1811,9 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
           </div>
 
           {filteredHostels.length === 0 ? (
-            <div className="bg-white rounded-3xl p-12 border border-slate-200 text-center space-y-3 shadow-sm">
-              <Home className="w-12 h-12 text-slate-300 mx-auto" />
-              <h4 className="font-heading font-black text-slate-800 text-base">
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-12 border border-slate-200 dark:border-slate-800 text-center space-y-3 shadow-sm">
+              <Home className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto" />
+              <h4 className="font-heading font-black text-slate-800 dark:text-slate-200 text-base">
                 {hostelsList.length === 0 ? 'No Hostels Configured Yet' : 'No Hostels Match Your Filter'}
               </h4>
               <p className="text-xs text-slate-400 max-w-sm mx-auto">
@@ -1834,7 +1834,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                     setHostelSearch('');
                     setHostelGenderFilter('ALL');
                   }}
-                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 transition-colors"
+                  className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors"
                 >
                   Reset Filters
                 </button>
@@ -1849,29 +1849,29 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 const occPct = totalCap > 0 ? Math.round((totalOcc / totalCap) * 100) : 0;
 
                 return (
-                  <div key={h.id} className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-3">
+                  <div key={h.id} className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 gap-3">
                       <div className="flex items-center gap-3">
                         <span className={`w-10 h-10 rounded-2xl font-black flex items-center justify-center text-sm shadow-sm ${
-                          h.gender === 'MALE' ? 'bg-blue-50 text-blue-600 border border-blue-100' : 'bg-rose-50 text-rose-600 border border-rose-100'
+                          h.gender === 'MALE' ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800/60' : 'bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-800/60'
                         }`}>
                           {h.gender === 'MALE' ? '♂' : '♀'}
                         </span>
                         <div>
                           <div className="flex flex-wrap items-center gap-2">
-                            <h3 className="font-heading font-black text-base text-slate-900">{h.name}</h3>
+                            <h3 className="font-heading font-black text-base text-slate-900 dark:text-white">{h.name}</h3>
                             {h.collegeName ? (
-                              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100 flex items-center gap-1">
+                              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800 flex items-center gap-1">
                                 <Building2 className="w-2.5 h-2.5" /> {h.collegeName}
                               </span>
                             ) : (
-                              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                                 Shared Campus
                               </span>
                             )}
                           </div>
                           <p className="text-xs text-slate-400 mt-0.5">
-                            Gender Rule: <strong className="text-slate-600">{h.gender === 'MALE' ? 'Boys Only' : 'Girls Only'}</strong>
+                            Gender Rule: <strong className="text-slate-600 dark:text-slate-300">{h.gender === 'MALE' ? 'Boys Only' : 'Girls Only'}</strong>
                           </p>
                         </div>
                       </div>
@@ -1879,15 +1879,15 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                       <div className="flex items-center gap-4 text-xs">
                         <div>
                           <span className="text-slate-400 text-[10px] uppercase font-bold">Capacity</span>
-                          <p className="font-heading font-black text-slate-800 text-sm">{totalCap} beds</p>
+                          <p className="font-heading font-black text-slate-800 dark:text-slate-200 text-sm">{totalCap} beds</p>
                         </div>
                         <div>
                           <span className="text-slate-400 text-[10px] uppercase font-bold">Occupied</span>
-                          <p className="font-heading font-black text-blue-600 text-sm">{totalOcc} beds</p>
+                          <p className="font-heading font-black text-blue-600 dark:text-blue-400 text-sm">{totalOcc} beds</p>
                         </div>
                         <div>
                           <span className="text-slate-400 text-[10px] uppercase font-bold">Free Beds</span>
-                          <p className="font-heading font-black text-emerald-600 text-sm">{freeBeds} beds</p>
+                          <p className="font-heading font-black text-emerald-600 dark:text-emerald-400 text-sm">{freeBeds} beds</p>
                         </div>
 
                         <div className="flex items-center gap-1 ml-2">
@@ -1898,7 +1898,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                               setShowRosterModal(true);
                             }}
                             title={`View Occupants Roster for ${h.name}`}
-                            className="p-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 transition-colors flex items-center gap-1 text-xs font-bold"
+                            className="p-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-indigo-700 dark:text-indigo-400 transition-colors flex items-center gap-1 text-xs font-bold"
                           >
                             <Users className="w-3.5 h-3.5" />
                             <span className="hidden md:inline">Roster</span>
@@ -1906,7 +1906,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                           <button
                             onClick={() => handleExportHostelRoster(h.id, h.name)}
                             title={`Export Roster CSV for ${h.name}`}
-                            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
+                            className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors"
                           >
                             <Download className="w-3.5 h-3.5" />
                           </button>
@@ -1914,9 +1914,9 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                             onClick={() => handleCheckoutHostel(h.id, h.name, totalOcc)}
                             disabled={totalOcc === 0}
                             title={totalOcc === 0 ? `${h.name} is completely vacant` : `Checkout all ${totalOcc} occupants in ${h.name}`}
-                            className="p-2 rounded-xl bg-amber-50 hover:bg-amber-100 disabled:opacity-30 disabled:hover:bg-amber-50 text-amber-800 transition-colors flex items-center gap-1 text-xs font-bold border border-amber-200/60 disabled:cursor-not-allowed"
+                            className="p-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/50 disabled:opacity-30 disabled:hover:bg-amber-50 dark:disabled:hover:bg-amber-950/40 text-amber-800 dark:text-amber-300 transition-colors flex items-center gap-1 text-xs font-bold border border-amber-200/60 dark:border-amber-800 disabled:cursor-not-allowed"
                           >
-                            <LogOut className="w-3.5 h-3.5 text-amber-700" />
+                            <LogOut className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400" />
                             <span className="hidden xl:inline">Checkout All</span>
                           </button>
                           <button
@@ -1925,14 +1925,14 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                               setShowAddRoomModal(true);
                             }}
                             title="Add Room to this Hostel"
-                            className="p-2 rounded-xl bg-slate-100 hover:bg-primary hover:text-white text-slate-600 transition-colors"
+                            className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white text-slate-600 dark:text-slate-300 transition-colors"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>
                           <button
                             onClick={() => handleDeleteHostel(h.id, h.name)}
                             title="Delete Hostel Facility"
-                            className="p-2 rounded-xl text-slate-300 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                            className="p-2 rounded-xl text-slate-300 dark:text-slate-600 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
@@ -1942,13 +1942,13 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
 
                     {/* Occupancy Rate Bar */}
                     <div className="space-y-1">
-                      <div className="flex items-center justify-between text-[11px] font-bold text-slate-500">
+                      <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
                         <span>Facility Utilization</span>
-                        <span className={occPct >= 90 ? 'text-rose-600' : occPct >= 70 ? 'text-amber-600' : 'text-emerald-600'}>
+                        <span className={occPct >= 90 ? 'text-rose-600 dark:text-rose-400' : occPct >= 70 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}>
                           {occPct}% Full
                         </span>
                       </div>
-                      <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+                      <div className="w-full h-2 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                         <div 
                           className={`h-full transition-all duration-300 ${
                             occPct >= 90 ? 'bg-rose-500' : occPct >= 70 ? 'bg-amber-500' : 'bg-emerald-500'
@@ -1969,12 +1969,12 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                               setSelectedRoomHostel(h);
                               setShowRoomDetailsModal(true);
                             }}
-                            className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 hover:border-primary/60 hover:bg-white hover:shadow-md text-xs space-y-1.5 relative group transition-all cursor-pointer"
+                            className="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 hover:border-primary/60 dark:hover:border-primary/60 hover:bg-white dark:hover:bg-slate-800 hover:shadow-md text-xs space-y-1.5 relative group transition-all cursor-pointer"
                           >
                             <div className="flex items-center justify-between">
-                              <span className="font-heading font-black text-slate-800">Room {r.number}</span>
+                              <span className="font-heading font-black text-slate-800 dark:text-slate-200">Room {r.number}</span>
                               <div className="flex items-center gap-1">
-                                <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-slate-200/60 text-slate-600">
+                                <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-slate-200/60 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
                                   F{r.floor}
                                 </span>
                                 <button
@@ -1983,17 +1983,17 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                                     handleDeleteRoom(r.id, r.number);
                                   }}
                                   title="Delete Room"
-                                  className="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-rose-600 transition-opacity"
+                                  className="opacity-0 group-hover:opacity-100 text-slate-300 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 transition-opacity"
                                 >
                                   <Trash2 className="w-2.5 h-2.5" />
                                 </button>
                               </div>
                             </div>
 
-                            <p className="text-[11px] text-slate-500 font-semibold flex items-center justify-between">
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold flex items-center justify-between">
                               <span>{r.occupiedCount || 0}/{r.capacity} beds</span>
                               {r.occupants && r.occupants.length > 0 && (
-                                <span className="text-[10px] text-indigo-600 font-bold group-hover:underline flex items-center gap-0.5">
+                                <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-bold group-hover:underline flex items-center gap-0.5">
                                   <Eye className="w-2.5 h-2.5" /> Details
                                 </span>
                               )}
@@ -2007,7 +2007,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                                   className={`w-2 h-2 rounded-full ${
                                     i < (r.occupiedCount || 0)
                                       ? 'bg-blue-600'
-                                      : 'border border-slate-300 bg-white'
+                                      : 'border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900'
                                   }`}
                                   title={i < (r.occupiedCount || 0) ? 'Occupied' : 'Vacant'}
                                 />
@@ -2024,11 +2024,11 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                                   {r.lockedCollege.code}
                                 </span>
                               ) : (
-                                <span className="text-[9px] text-slate-400 font-semibold">Unlocked</span>
+                                <span className="text-[9px] text-slate-400 dark:text-slate-500 font-semibold">Unlocked</span>
                               )}
 
                               {r.occupants && r.occupants.length > 0 && (
-                                <span className="text-[9px] font-semibold text-slate-500 truncate max-w-[80px]" title={r.occupants[0].userName}>
+                                <span className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 truncate max-w-[80px]" title={r.occupants[0].userName}>
                                   {r.occupants[0].userName.split(' ')[0]}
                                   {r.occupants.length > 1 ? ` +${r.occupants.length - 1}` : ''}
                                 </span>
@@ -2038,15 +2038,15 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                         ))}
                       </div>
                     ) : (
-                      <div className="p-6 rounded-2xl bg-slate-50 border border-dashed border-slate-200 text-center space-y-1.5">
-                        <p className="text-xs font-semibold text-slate-500">No rooms added to this hostel yet.</p>
-                        <p className="text-[11px] text-slate-400">Add rooms to generate bed inventory and activate allocation.</p>
+                      <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-dashed border-slate-200 dark:border-slate-800 text-center space-y-1.5">
+                        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">No rooms added to this hostel yet.</p>
+                        <p className="text-[11px] text-slate-400 dark:text-slate-500">Add rooms to generate bed inventory and activate allocation.</p>
                         <button
                           onClick={() => {
                             setRoomHostelId(h.id);
                             setShowAddRoomModal(true);
                           }}
-                          className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline mt-1"
+                          className="inline-flex items-center gap-1 text-xs font-bold text-primary dark:text-primary-400 hover:underline mt-1"
                         >
                           <Plus className="w-3.5 h-3.5" /> Add First Room
                         </button>
@@ -2063,26 +2063,26 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       {/* ── TAB 5: GLOBAL CONFIGURATION ── */}
       {adminTab === 'config' && (
         <div className="max-w-3xl space-y-6">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
               <div>
-                <h3 className="font-heading font-black text-base text-slate-900">Festival Global Operational Parameters</h3>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white">Festival Global Operational Parameters</h3>
                 <p className="text-xs text-slate-400 mt-0.5">Parameters apply across all participating colleges, meal halls, and sports venues.</p>
               </div>
               {configSaved && (
-                <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 animate-in fade-in flex items-center gap-1">
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-3 py-1 rounded-full border border-emerald-200 dark:border-emerald-800 animate-in fade-in flex items-center gap-1">
                   <Check className="w-3.5 h-3.5" /> Parameters Saved!
                 </span>
               )}
             </div>
 
             <form onSubmit={handleSaveConfig} className="space-y-6 text-xs">
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="font-heading font-black text-slate-900 text-xs">
+                  <label className="font-heading font-black text-slate-900 dark:text-slate-100 text-xs">
                     Meal Grace Period (Minutes)
                   </label>
-                  <span className="px-2 py-0.5 rounded-lg bg-white border border-slate-200 font-mono font-bold text-primary">
+                  <span className="px-2 py-0.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-mono font-bold text-primary dark:text-primary-400">
                     {gracePeriod} min
                   </span>
                 </div>
@@ -2095,17 +2095,17 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   onChange={(e) => setGracePeriod(e.target.value)}
                   className="w-full accent-primary cursor-pointer"
                 />
-                <p className="text-[11px] text-slate-500 leading-relaxed">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
                   Time tolerance granted by scanners before and after a student's assigned college meal batch window.
                 </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-800 space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="font-heading font-black text-slate-900 text-xs">
+                  <label className="font-heading font-black text-slate-900 dark:text-slate-100 text-xs">
                     Event Registration Cutoff Window (Hours Before Event)
                   </label>
-                  <span className="px-2 py-0.5 rounded-lg bg-white border border-slate-200 font-mono font-bold text-primary">
+                  <span className="px-2 py-0.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 font-mono font-bold text-primary dark:text-primary-400">
                     {cutoffHours} hrs
                   </span>
                 </div>
@@ -2118,7 +2118,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   onChange={(e) => setCutoffHours(e.target.value)}
                   className="w-full accent-primary cursor-pointer"
                 />
-                <p className="text-[11px] text-slate-500 leading-relaxed">
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
                   Cutoff threshold after which participants can no longer register or withdraw from scheduled sports and folk competitions.
                 </p>
               </div>
@@ -2143,61 +2143,61 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md animate-in fade-in">
           <form
             onSubmit={handleCreateUser}
-            className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-100 max-h-[90vh] overflow-y-auto"
+            className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-100 dark:border-slate-800 max-h-[90vh] overflow-y-auto"
           >
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="font-heading font-black text-base text-slate-900">Add Account / Staff Member</h3>
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <h3 className="font-heading font-black text-base text-slate-900 dark:text-white">Add Account / Staff Member</h3>
               <button 
                 type="button" 
                 onClick={() => setShowAddUserModal(false)} 
-                className="text-slate-400 hover:text-slate-600"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 ✕
               </button>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Full Name *</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Full Name *</label>
               <input
                 type="text"
                 value={newUserName}
                 onChange={(e) => setNewUserName(e.target.value)}
                 placeholder="e.g. Vikram Malhotra"
-                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none placeholder:text-slate-400"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Email Address *</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Email Address *</label>
               <input
                 type="email"
                 value={newUserEmail}
                 onChange={(e) => setNewUserEmail(e.target.value)}
                 placeholder="e.g. manager@unifest.org"
-                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none placeholder:text-slate-400"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Phone Number (Optional)</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Phone Number (Optional)</label>
               <input
                 type="tel"
                 value={newUserPhone}
                 onChange={(e) => setNewUserPhone(e.target.value)}
                 placeholder="+91 98765 43210"
-                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none placeholder:text-slate-400"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Role (RBAC) *</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Role (RBAC) *</label>
                 <select
                   value={newUserRole}
                   onChange={(e) => setNewUserRole(e.target.value as Role)}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                 >
                   <option value="MANAGER">MANAGER</option>
                   <option value="SCANNER">SCANNER</option>
@@ -2207,11 +2207,11 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Gender *</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Gender *</label>
                 <select
                   value={newUserGender}
                   onChange={(e) => setNewUserGender(e.target.value as any)}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                 >
                   <option value="MALE">Male (♂)</option>
                   <option value="FEMALE">Female (♀)</option>
@@ -2221,11 +2221,11 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
 
             {newUserRole === 'STUDENT' && (
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Enrolled College *</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Enrolled College *</label>
                 <select
                   value={newUserCollegeId}
                   onChange={(e) => setNewUserCollegeId(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                   required
                 >
                   <option value="">-- Select Institution --</option>
@@ -2240,7 +2240,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
               <button
                 type="button"
                 onClick={() => setShowAddUserModal(false)}
-                className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100"
+                className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 Cancel
               </button>
@@ -2260,17 +2260,17 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md animate-in fade-in">
           <form
             onSubmit={handleCreateCollege}
-            className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-3.5 border border-slate-100 max-h-[90vh] overflow-y-auto"
+            className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-3.5 border border-slate-100 dark:border-slate-800 max-h-[90vh] overflow-y-auto"
           >
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <h3 className="font-heading font-black text-base text-slate-900">Register Participating College</h3>
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+              <h3 className="font-heading font-black text-base text-slate-900 dark:text-white">Register Participating College</h3>
               <button
                 type="button"
                 onClick={() => {
                   setShowAddCollegeModal(false);
                   setSelectedDirectoryCollegeId('');
                 }}
-                className="text-slate-400 hover:text-slate-600"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 ✕
               </button>
@@ -2278,13 +2278,13 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
 
             {/* Dropdown for colleges from User Profile Directory */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                 Select from User Profile Colleges Directory
               </label>
               <select
                 value={selectedDirectoryCollegeId}
                 onChange={(e) => handleDirectoryCollegeSelect(e.target.value)}
-                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs bg-slate-50 focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all"
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-primary focus:outline-none transition-all"
               >
                 <option value="">-- Choose from Directory or Enter Custom Below --</option>
                 {COLLEGE_REGIONS.map((region) => {
@@ -2313,37 +2313,37 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Institution Name *</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Institution Name *</label>
               <input
                 type="text"
                 value={newColName}
                 onChange={(e) => setNewColName(e.target.value)}
                 placeholder="e.g., CGC University, Mohali"
-                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none placeholder:text-slate-400"
                 required
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">College Code *</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">College Code *</label>
                 <input
                   type="text"
                   value={newColCode}
                   onChange={(e) => setNewColCode(e.target.value)}
                   placeholder="e.g., CGC-M"
-                  className="w-full p-2.5 rounded-xl border border-slate-200 text-xs uppercase focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs uppercase focus:ring-2 focus:ring-primary focus:outline-none placeholder:text-slate-400"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Brand Color</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Brand Color</label>
                 <input
                   type="color"
                   value={newColColor}
                   onChange={(e) => setNewColColor(e.target.value)}
-                  className="w-full h-9 rounded-xl border border-slate-200 cursor-pointer"
+                  className="w-full h-9 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer bg-white dark:bg-slate-800"
                 />
               </div>
             </div>
@@ -2355,7 +2355,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   setShowAddCollegeModal(false);
                   setSelectedDirectoryCollegeId('');
                 }}
-                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100"
+                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 Cancel
               </button>
@@ -2375,10 +2375,10 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md animate-in fade-in">
           <form
             onSubmit={handleCreateHostel}
-            className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-3.5 border border-slate-100 max-h-[90vh] overflow-y-auto"
+            className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-3.5 border border-slate-100 dark:border-slate-800 max-h-[90vh] overflow-y-auto"
           >
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <h3 className="font-heading font-black text-base text-slate-900">Add Hostel Facility</h3>
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+              <h3 className="font-heading font-black text-base text-slate-900 dark:text-white">Add Hostel Facility</h3>
               <button
                 type="button"
                 onClick={() => {
@@ -2386,33 +2386,33 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   setNewHostelCollegeId('');
                   setNewHostelCustomCollege('');
                 }}
-                className="text-slate-400 hover:text-slate-600"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 ✕
               </button>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Hostel Name *</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Hostel Name *</label>
               <input
                 type="text"
                 value={newHostelName}
                 onChange={(e) => setNewHostelName(e.target.value)}
                 placeholder="e.g., Tagore International Boys Hostel"
-                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none placeholder:text-slate-400"
                 required
               />
             </div>
 
             {/* College / University Designation */}
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                 College / University (Campus Designation)
               </label>
               <select
                 value={newHostelCollegeId}
                 onChange={(e) => setNewHostelCollegeId(e.target.value)}
-                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs bg-slate-50 focus:bg-white focus:ring-2 focus:ring-primary focus:outline-none transition-all"
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-primary focus:outline-none transition-all"
               >
                 <option value="">-- Central Campus / All Colleges (General) --</option>
                 {collegesList.length > 0 && (
@@ -2446,7 +2446,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
 
             {newHostelCollegeId === 'custom' && (
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                   Custom College / University Name *
                 </label>
                 <input
@@ -2454,18 +2454,18 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   value={newHostelCustomCollege}
                   onChange={(e) => setNewHostelCustomCollege(e.target.value)}
                   placeholder="e.g., CGC University, Mohali"
-                  className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none placeholder:text-slate-400"
                   required
                 />
               </div>
             )}
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Gender Designation (Strict) *</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Gender Designation (Strict) *</label>
               <select
                 value={newHostelGender}
                 onChange={(e) => setNewHostelGender(e.target.value as any)}
-                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
               >
                 <option value="MALE">Male (Boys Hostel)</option>
                 <option value="FEMALE">Female (Girls Hostel)</option>
@@ -2480,7 +2480,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   setNewHostelCollegeId('');
                   setNewHostelCustomCollege('');
                 }}
-                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100"
+                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 Cancel
               </button>
@@ -2500,25 +2500,25 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md animate-in fade-in">
           <form
             onSubmit={handleCreateRoom}
-            className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-3.5 border border-slate-100"
+            className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-3.5 border border-slate-100 dark:border-slate-800"
           >
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-              <h3 className="font-heading font-black text-base text-slate-900">Add Room to Hostel</h3>
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+              <h3 className="font-heading font-black text-base text-slate-900 dark:text-white">Add Room to Hostel</h3>
               <button 
                 type="button" 
                 onClick={() => setShowAddRoomModal(false)} 
-                className="text-slate-400 hover:text-slate-600"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 ✕
               </button>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Select Hostel Facility *</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Select Hostel Facility *</label>
               <select
                 value={roomHostelId}
                 onChange={(e) => setRoomHostelId(e.target.value)}
-                className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                 required
               >
                 {hostelsList.map((h) => (
@@ -2531,37 +2531,37 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
 
             <div className="grid grid-cols-3 gap-2">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Room No. *</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Room No. *</label>
                 <input
                   type="text"
                   value={roomNumber}
                   onChange={(e) => setRoomNumber(e.target.value)}
                   placeholder="e.g. 101"
-                  className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none placeholder:text-slate-400"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Floor</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Floor</label>
                 <input
                   type="number"
                   value={roomFloor}
                   onChange={(e) => setRoomFloor(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Beds *</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Beds *</label>
                 <input
                   type="number"
                   value={roomCapacity}
                   onChange={(e) => setRoomCapacity(e.target.value)}
                   min="1"
                   max="8"
-                  className="w-full p-2.5 rounded-xl border border-slate-200 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                   required
                 />
               </div>
@@ -2571,7 +2571,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
               <button
                 type="button"
                 onClick={() => setShowAddRoomModal(false)}
-                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100"
+                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 Cancel
               </button>
@@ -2589,19 +2589,19 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       {/* MODAL 5: BULK STUDENT IMPORT & ROOM ALLOTMENT */}
       {showBulkAllotModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-4xl w-full p-6 sm:p-8 shadow-2xl space-y-5 border border-slate-100 my-8 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-4xl w-full p-6 sm:p-8 shadow-2xl space-y-5 border border-slate-100 dark:border-slate-800 my-8 max-h-[90vh] overflow-y-auto">
             {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                   <Upload className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-black text-base text-slate-900">
+                  <h3 className="font-heading font-black text-base text-slate-900 dark:text-white">
                     Bulk Student Import & Room Allotment
                   </h3>
                   <p className="text-xs text-slate-400">
-                    Format: <span className="font-semibold text-slate-600">Student Roll No, Name, Gender, Age, College/University, City, State/UT, Course, Year, Activity Category, Specific Activity</span>
+                    Format: <span className="font-semibold text-slate-600 dark:text-slate-300">Student Roll No, Name, Gender, Age, College/University, City, State/UT, Course, Year, Activity Category, Specific Activity</span>
                   </p>
                 </div>
               </div>
@@ -2611,24 +2611,24 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   setUploadedStudentsPreview([]);
                   setBulkAllotResult(null);
                 }}
-                className="p-1 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                className="p-1 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 ✕
               </button>
             </div>
 
             {/* Invariant Rule Callout */}
-            <div className="p-4 rounded-2xl bg-blue-50/70 border border-blue-100 text-xs space-y-2">
-              <div className="flex items-center gap-2 font-heading font-black text-blue-900">
-                <CheckCircle2 className="w-4 h-4 text-blue-600" />
+            <div className="p-4 rounded-2xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/50 text-xs space-y-2">
+              <div className="flex items-center gap-2 font-heading font-black text-blue-900 dark:text-blue-300">
+                <CheckCircle2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 <span>Strict Constraint Enforcement Active</span>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-600 text-[11px] leading-relaxed">
-                <div className="p-2.5 rounded-xl bg-white border border-blue-100">
-                  <strong className="text-slate-800">BR-2: Same College Rule:</strong> Students sharing a room must strictly belong to the same college. No mixing of institutions in any room under any circumstance.
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">
+                <div className="p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border border-blue-100 dark:border-blue-900/40">
+                  <strong className="text-slate-800 dark:text-slate-200">BR-2: Same College Rule:</strong> Students sharing a room must strictly belong to the same college. No mixing of institutions in any room under any circumstance.
                 </div>
-                <div className="p-2.5 rounded-xl bg-white border border-blue-100">
-                  <strong className="text-slate-800">BR-1: Gender Segregation:</strong> Male students are placed exclusively in Boys Hostels; Female students in Girls Hostels.
+                <div className="p-2.5 rounded-xl bg-white dark:bg-slate-800/80 border border-blue-100 dark:border-blue-900/40">
+                  <strong className="text-slate-800 dark:text-slate-200">BR-1: Gender Segregation:</strong> Male students are placed exclusively in Boys Hostels; Female students in Girls Hostels.
                 </div>
               </div>
             </div>
@@ -2636,10 +2636,10 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
             {/* Result Report (If already executed) */}
             {bulkAllotResult ? (
               <div className="space-y-4">
-                <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 space-y-2">
+                <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 text-emerald-900 dark:text-emerald-300 space-y-2">
                   <div className="flex items-center justify-between flex-wrap gap-2">
-                    <span className="font-heading font-black text-sm flex items-center gap-1.5 text-emerald-800">
-                      <CheckCircle2 className="w-5 h-5 text-emerald-600" /> Room Allotment Finished Successfully!
+                    <span className="font-heading font-black text-sm flex items-center gap-1.5 text-emerald-800 dark:text-emerald-300">
+                      <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" /> Room Allotment Finished Successfully!
                     </span>
                     <button
                       onClick={handleDownloadAllotmentReport}
@@ -2649,29 +2649,29 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                     </button>
                   </div>
                   <div className="grid grid-cols-3 gap-2 pt-2 text-center text-xs">
-                    <div className="bg-white/80 p-2 rounded-xl">
-                      <span className="text-[10px] text-slate-500 uppercase font-bold">Total In File</span>
-                      <p className="font-heading font-black text-slate-800 text-base">{bulkAllotResult.totalRowsProcessed}</p>
+                    <div className="bg-white/80 dark:bg-slate-800/80 p-2 rounded-xl">
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold">Total In File</span>
+                      <p className="font-heading font-black text-slate-800 dark:text-slate-100 text-base">{bulkAllotResult.totalRowsProcessed}</p>
                     </div>
-                    <div className="bg-white/80 p-2 rounded-xl">
-                      <span className="text-[10px] text-emerald-600 uppercase font-bold">Beds Allotted</span>
-                      <p className="font-heading font-black text-emerald-700 text-base">{bulkAllotResult.allottedCount}</p>
+                    <div className="bg-white/80 dark:bg-slate-800/80 p-2 rounded-xl">
+                      <span className="text-[10px] text-emerald-600 dark:text-emerald-400 uppercase font-bold">Beds Allotted</span>
+                      <p className="font-heading font-black text-emerald-700 dark:text-emerald-300 text-base">{bulkAllotResult.allottedCount}</p>
                     </div>
-                    <div className="bg-white/80 p-2 rounded-xl">
-                      <span className="text-[10px] text-slate-500 uppercase font-bold">Rooms Locked</span>
-                      <p className="font-heading font-black text-indigo-700 text-base">{bulkAllotResult.roomsLockedCount}</p>
+                    <div className="bg-white/80 dark:bg-slate-800/80 p-2 rounded-xl">
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold">Rooms Locked</span>
+                      <p className="font-heading font-black text-indigo-700 dark:text-indigo-400 text-base">{bulkAllotResult.roomsLockedCount}</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Shortfalls Warning if any */}
                 {bulkAllotResult.shortfalls && bulkAllotResult.shortfalls.length > 0 && (
-                  <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs space-y-1.5">
-                    <span className="font-bold flex items-center gap-1.5 text-amber-800">
-                      <AlertTriangle className="w-4 h-4 text-amber-600" /> Capacity Shortfall Notice:
+                  <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-300 text-xs space-y-1.5">
+                    <span className="font-bold flex items-center gap-1.5 text-amber-800 dark:text-amber-300">
+                      <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400" /> Capacity Shortfall Notice:
                     </span>
                     {bulkAllotResult.shortfalls.map((s: any, idx: number) => (
-                      <p key={idx} className="text-[11px] text-amber-800">
+                      <p key={idx} className="text-[11px] text-amber-800 dark:text-amber-300">
                         • <strong>{s.collegeName} ({s.gender === 'MALE' ? 'Boys' : 'Girls'}):</strong> {s.unallocatedCount} unallocated students ({s.reason})
                       </p>
                     ))}
@@ -2680,12 +2680,12 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
 
                 {/* Table of new allocations */}
                 <div className="space-y-2">
-                  <h4 className="font-heading font-black text-xs text-slate-700 uppercase tracking-wider">
+                  <h4 className="font-heading font-black text-xs text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                     Allotment Roster Summary ({bulkAllotResult.allocations?.length || 0} students)
                   </h4>
-                  <div className="border border-slate-200 rounded-2xl overflow-hidden max-h-72 overflow-y-auto">
+                  <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden max-h-72 overflow-y-auto">
                     <table className="w-full text-left text-xs">
-                      <thead className="bg-slate-50 text-slate-500 font-bold text-[10px] uppercase border-b border-slate-200 sticky top-0">
+                      <thead className="bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 font-bold text-[10px] uppercase border-b border-slate-200 dark:border-slate-800 sticky top-0">
                         <tr>
                           <th className="py-2.5 px-3">Roll No</th>
                           <th className="py-2.5 px-3">Student Name</th>
@@ -2696,33 +2696,33 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                           <th className="py-2.5 px-3">Room & Bed</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-100">
+                      <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                         {bulkAllotResult.allocations?.map((a: any, i: number) => (
-                          <tr key={i} className="hover:bg-slate-50">
-                            <td className="py-2 px-3 font-mono font-bold text-slate-600 text-[11px]">{a.rollNo || '—'}</td>
+                          <tr key={i} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                            <td className="py-2 px-3 font-mono font-bold text-slate-600 dark:text-slate-400 text-[11px]">{a.rollNo || '—'}</td>
                             <td className="py-2 px-3">
-                              <p className="font-bold text-slate-800">{a.userName}</p>
+                              <p className="font-bold text-slate-800 dark:text-slate-100">{a.userName}</p>
                               <p className="text-[10px] text-slate-400">{a.gender === 'MALE' ? '♂ Male' : '♀ Female'}{a.age ? ` · ${a.age} yrs` : ''}</p>
                             </td>
                             <td className="py-2 px-3">
-                              <p className="text-slate-800 font-semibold">{a.collegeName}</p>
+                              <p className="text-slate-800 dark:text-slate-200 font-semibold">{a.collegeName}</p>
                               {(a.city || a.state) && (
                                 <p className="text-[10px] text-slate-400">{[a.city, a.state].filter(Boolean).join(', ')}</p>
                               )}
                             </td>
-                            <td className="py-2 px-3 text-slate-600 text-[11px]">
+                            <td className="py-2 px-3 text-slate-600 dark:text-slate-300 text-[11px]">
                               {a.course ? <span>{a.course} {a.year ? `(${a.year})` : ''}</span> : '—'}
                             </td>
-                            <td className="py-2 px-3 text-slate-700 text-[11px]">
+                            <td className="py-2 px-3 text-slate-700 dark:text-slate-300 text-[11px]">
                               {a.specificActivity ? (
                                 <span className="font-medium">
                                   {a.activityCategory ? `${a.activityCategory}: ` : ''}{a.specificActivity}
                                 </span>
                               ) : (a.activityCategory || '—')}
                             </td>
-                            <td className="py-2 px-3 text-slate-600 text-[11px]">{a.hostelName}</td>
+                            <td className="py-2 px-3 text-slate-600 dark:text-slate-300 text-[11px]">{a.hostelName}</td>
                             <td className="py-2 px-3">
-                              <span className="font-mono font-bold text-indigo-600">Room {a.roomNumber}</span>
+                              <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400">Room {a.roomNumber}</span>
                               <span className="text-[10px] text-slate-400 ml-1 font-mono">({a.bedLabel})</span>
                             </td>
                           </tr>
@@ -2739,7 +2739,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                       setUploadedStudentsPreview([]);
                       setBulkAllotResult(null);
                     }}
-                    className="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold shadow-md hover:bg-slate-800 transition-all"
+                    className="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-800 text-white text-xs font-bold shadow-md hover:bg-slate-800 dark:hover:bg-slate-700 transition-all"
                   >
                     Done & Inspect Hostels
                   </button>
@@ -2749,17 +2749,17 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
               /* Upload & Preview Step */
               <div className="space-y-4">
                 {/* Upload Zone */}
-                <div className="border-2 border-dashed border-slate-200 hover:border-primary rounded-3xl p-6 text-center space-y-3 bg-slate-50/50 hover:bg-slate-50 transition-all">
-                  <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center mx-auto">
+                <div className="border-2 border-dashed border-slate-200 dark:border-slate-700 hover:border-primary dark:hover:border-primary rounded-3xl p-6 text-center space-y-3 bg-slate-50/50 dark:bg-slate-800/40 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-all">
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mx-auto">
                     <FileSpreadsheet className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="font-heading font-black text-sm text-slate-800">
+                    <p className="font-heading font-black text-sm text-slate-800 dark:text-slate-100">
                       Choose Excel or CSV file
                     </p>
                     <p className="text-xs text-slate-400 mt-1 max-w-xl mx-auto">
-                      Accepts <strong className="text-slate-600">.xlsx, .xls, .csv</strong> files with standard 11 columns:<br />
-                      <span className="font-mono text-[11px] text-indigo-600 bg-indigo-50/70 px-2 py-0.5 rounded-md mt-1 inline-block">
+                      Accepts <strong className="text-slate-600 dark:text-slate-300">.xlsx, .xls, .csv</strong> files with standard 11 columns:<br />
+                      <span className="font-mono text-[11px] text-indigo-600 dark:text-indigo-400 bg-indigo-50/70 dark:bg-indigo-950/50 px-2 py-0.5 rounded-md mt-1 inline-block">
                         Student Roll No, Name, Gender, Age, College/University, City, State/UT, Course, Year, Activity Category, Specific Activity
                       </span>
                     </p>
@@ -2780,9 +2780,9 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                     <button
                       type="button"
                       onClick={handleDownloadSampleTemplate}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 rounded-xl text-xs font-bold transition-all shadow-sm"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-xl text-xs font-bold transition-all shadow-sm"
                     >
-                      <Download className="w-3.5 h-3.5 text-slate-500" />
+                      <Download className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                       <span>Download Sample Template</span>
                     </button>
                   </div>
@@ -2793,25 +2793,25 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   <div className="space-y-3 pt-2">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="font-heading font-black text-xs text-slate-900">
+                        <span className="font-heading font-black text-xs text-slate-900 dark:text-white">
                           File Preview: {uploadedStudentsPreview.length} Students Detected
                         </span>
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300">
                           {uploadedStudentsPreview.filter((s) => s.gender === 'MALE').length} Boys · {uploadedStudentsPreview.filter((s) => s.gender === 'FEMALE').length} Girls
                         </span>
                       </div>
                       <button
                         type="button"
                         onClick={() => setUploadedStudentsPreview([])}
-                        className="text-xs text-rose-600 hover:underline font-bold"
+                        className="text-xs text-rose-600 dark:text-rose-400 hover:underline font-bold"
                       >
                         Clear File
                       </button>
                     </div>
 
-                    <div className="border border-slate-200 rounded-2xl overflow-hidden max-h-60 overflow-y-auto">
+                    <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden max-h-60 overflow-y-auto">
                       <table className="w-full text-left text-xs">
-                        <thead className="bg-slate-50 text-slate-500 font-bold text-[10px] uppercase border-b border-slate-200 sticky top-0">
+                        <thead className="bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 font-bold text-[10px] uppercase border-b border-slate-200 dark:border-slate-800 sticky top-0">
                           <tr>
                             <th className="py-2 px-3">Student Roll No</th>
                             <th className="py-2 px-3">Name</th>
@@ -2822,18 +2822,18 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                             <th className="py-2 px-3">Activity</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100">
+                        <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                           {uploadedStudentsPreview.slice(0, 8).map((s, idx) => (
-                            <tr key={idx} className="hover:bg-slate-50">
-                              <td className="py-2 px-3 font-mono font-bold text-slate-700 text-[11px]">{s.rollNo || '—'}</td>
-                              <td className="py-2 px-3 font-bold text-slate-900">{s.name}</td>
-                              <td className="py-2 px-3 text-slate-600 text-[11px]">
+                            <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                              <td className="py-2 px-3 font-mono font-bold text-slate-700 dark:text-slate-300 text-[11px]">{s.rollNo || '—'}</td>
+                              <td className="py-2 px-3 font-bold text-slate-900 dark:text-white">{s.name}</td>
+                              <td className="py-2 px-3 text-slate-600 dark:text-slate-300 text-[11px]">
                                 {s.gender === 'MALE' ? '♂ Male' : '♀ Female'}{s.age ? ` · ${s.age}y` : ''}
                               </td>
-                              <td className="py-2 px-3 text-slate-700 font-medium">{s.collegeName}</td>
-                              <td className="py-2 px-3 text-slate-500 text-[11px]">{[s.city, s.state].filter(Boolean).join(', ') || '—'}</td>
-                              <td className="py-2 px-3 text-slate-600 text-[11px]">{[s.course, s.year].filter(Boolean).join(' · ') || '—'}</td>
-                              <td className="py-2 px-3 text-slate-700 text-[11px]">
+                              <td className="py-2 px-3 text-slate-700 dark:text-slate-300 font-medium">{s.collegeName}</td>
+                              <td className="py-2 px-3 text-slate-500 dark:text-slate-400 text-[11px]">{[s.city, s.state].filter(Boolean).join(', ') || '—'}</td>
+                              <td className="py-2 px-3 text-slate-600 dark:text-slate-300 text-[11px]">{[s.course, s.year].filter(Boolean).join(' · ') || '—'}</td>
+                              <td className="py-2 px-3 text-slate-700 dark:text-slate-300 text-[11px]">
                                 {s.specificActivity ? `${s.activityCategory ? `${s.activityCategory}: ` : ''}${s.specificActivity}` : (s.activityCategory || '—')}
                               </td>
                             </tr>
@@ -2854,7 +2854,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                           setShowBulkAllotModal(false);
                           setUploadedStudentsPreview([]);
                         }}
-                        className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100"
+                        className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
                       >
                         Cancel
                       </button>
@@ -2879,14 +2879,14 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       {/* MODAL 6: ROOM OCCUPANTS & DETAILS MODAL */}
       {showRoomDetailsModal && selectedRoomDetails && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-md animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-slate-100 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 border border-slate-100 dark:border-slate-800 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="font-heading font-black text-lg text-slate-900">
+                  <h3 className="font-heading font-black text-lg text-slate-900 dark:text-white">
                     Room {selectedRoomDetails.number}
                   </h3>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                     Floor {selectedRoomDetails.floor}
                   </span>
                   {(() => {
@@ -2900,21 +2900,21 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                     return (
                       <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-md ${
                         isBoysRoom
-                          ? 'bg-blue-50 text-blue-700 border border-blue-200/60'
-                          : 'bg-rose-50 text-rose-700 border border-rose-200/60'
+                          ? 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800'
+                          : 'bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border border-rose-200/60 dark:border-rose-800'
                       }`}>
                         {isBoysRoom ? '♂ Boys Room' : '♀ Girls Room'}
                       </span>
                     );
                   })()}
                 </div>
-                <div className="flex flex-wrap items-center gap-1.5 mt-1 text-xs text-slate-500">
-                  <span>Hostel: <strong className="text-slate-800">{selectedRoomHostel?.name || 'Hostel'}</strong></span>
+                <div className="flex flex-wrap items-center gap-1.5 mt-1 text-xs text-slate-500 dark:text-slate-400">
+                  <span>Hostel: <strong className="text-slate-800 dark:text-slate-200">{selectedRoomHostel?.name || 'Hostel'}</strong></span>
                   {(selectedRoomHostel?.collegeName || selectedRoomDetails?.collegeName || selectedRoomDetails?.lockedCollege?.name) && (
                     <>
-                      <span className="text-slate-300">·</span>
-                      <span className="inline-flex items-center gap-1 font-semibold text-indigo-700 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-md text-[11px]">
-                        <Building2 className="w-3 h-3 text-indigo-600" />
+                      <span className="text-slate-300 dark:text-slate-600">·</span>
+                      <span className="inline-flex items-center gap-1 font-semibold text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-800 px-2 py-0.5 rounded-md text-[11px]">
+                        <Building2 className="w-3 h-3 text-indigo-600 dark:text-indigo-400" />
                         {selectedRoomHostel?.collegeName || selectedRoomDetails?.collegeName || selectedRoomDetails?.lockedCollege?.name}
                       </span>
                     </>
@@ -2923,14 +2923,14 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
               </div>
               <button
                 onClick={() => setShowRoomDetailsModal(false)}
-                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 ✕
               </button>
             </div>
 
             {/* Room Invariant Status */}
-            <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between text-xs">
+            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
               <div>
                 <span className="text-slate-400 text-[10px] uppercase font-bold block">Locked College Status</span>
                 {selectedRoomDetails.lockedCollege ? (
@@ -2941,12 +2941,12 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                     {selectedRoomDetails.lockedCollege.name} ({selectedRoomDetails.lockedCollege.code})
                   </span>
                 ) : (
-                  <span className="font-semibold text-slate-500">Unlocked (Open to any college)</span>
+                  <span className="font-semibold text-slate-500 dark:text-slate-400">Unlocked (Open to any college)</span>
                 )}
               </div>
               <div className="text-right">
                 <span className="text-slate-400 text-[10px] uppercase font-bold block">Occupancy</span>
-                <span className="font-heading font-black text-sm text-slate-800">
+                <span className="font-heading font-black text-sm text-slate-800 dark:text-slate-200">
                   {selectedRoomDetails.occupiedCount || 0} / {selectedRoomDetails.capacity} Beds
                 </span>
               </div>
@@ -2955,40 +2955,40 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
             {/* Occupants List */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <h4 className="font-heading font-black text-xs text-slate-700 uppercase tracking-wider">
+                <h4 className="font-heading font-black text-xs text-slate-700 dark:text-slate-300 uppercase tracking-wider">
                   Assigned Occupants ({selectedRoomDetails.occupants?.length || 0})
                 </h4>
                 {selectedRoomDetails.occupants && selectedRoomDetails.occupants.length > 0 && (
                   <button
                     type="button"
                     onClick={() => handleCheckoutRoom(selectedRoomDetails.id, selectedRoomDetails.number)}
-                    className="px-2.5 py-1 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold transition-all flex items-center gap-1 shadow-sm"
+                    className="px-2.5 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/50 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 text-xs font-bold transition-all flex items-center gap-1 shadow-sm"
                     title={`Checkout all ${selectedRoomDetails.occupants.length} students from Room ${selectedRoomDetails.number}`}
                   >
-                    <LogOut className="w-3 h-3 text-amber-700" />
+                    <LogOut className="w-3 h-3 text-amber-700 dark:text-amber-400" />
                     <span>Checkout Room ({selectedRoomDetails.occupants.length})</span>
                   </button>
                 )}
               </div>
 
               {!selectedRoomDetails.occupants || selectedRoomDetails.occupants.length === 0 ? (
-                <div className="p-8 rounded-2xl bg-slate-50 border border-dashed border-slate-200 text-center text-slate-400 space-y-1">
-                  <p className="font-bold text-xs text-slate-600">No students currently allotted to this room</p>
-                  <p className="text-[11px]">Beds are completely vacant and ready for same-college student allotment.</p>
+                <div className="p-8 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-dashed border-slate-200 dark:border-slate-800 text-center text-slate-400 space-y-1">
+                  <p className="font-bold text-xs text-slate-600 dark:text-slate-300">No students currently allotted to this room</p>
+                  <p className="text-[11px] text-slate-400">Beds are completely vacant and ready for same-college student allotment.</p>
                 </div>
               ) : (
-                <div className="divide-y divide-slate-100 border border-slate-100 rounded-2xl overflow-hidden">
+                <div className="divide-y divide-slate-100 dark:divide-slate-800 border border-slate-100 dark:border-slate-800 rounded-2xl overflow-hidden">
                   {selectedRoomDetails.occupants.map((occ: any, i: number) => (
-                    <div key={i} className="p-3 bg-white hover:bg-slate-50 transition-colors flex items-center justify-between gap-3 text-xs">
+                    <div key={i} className="p-3 bg-white dark:bg-slate-800/60 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors flex items-center justify-between gap-3 text-xs">
                       <div className="flex items-center gap-2.5">
-                        <span className="w-8 h-8 rounded-xl bg-blue-100 text-blue-700 font-bold font-mono text-[11px] flex items-center justify-center shrink-0 shadow-sm">
+                        <span className="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 font-bold font-mono text-[11px] flex items-center justify-center shrink-0 shadow-sm">
                           {occ.bedLabel || `B${i + 1}`}
                         </span>
                         <div>
                           <div className="flex items-center gap-1.5 flex-wrap">
-                            <p className="font-bold text-slate-900 leading-snug">{occ.userName}</p>
+                            <p className="font-bold text-slate-900 dark:text-white leading-snug">{occ.userName}</p>
                             {occ.rollNo && (
-                              <span className="font-mono text-[10px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 border border-slate-200">
+                              <span className="font-mono text-[10px] font-bold px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                                 {occ.rollNo}
                               </span>
                             )}
@@ -2996,17 +2996,17 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                               <span className="text-[10px] text-slate-400">· {occ.age} yrs</span>
                             )}
                           </div>
-                          <p className="text-[11px] text-slate-500 mt-0.5">
-                            <span className="font-semibold text-slate-700">{occ.collegeName || selectedRoomDetails.lockedCollege?.name}</span>
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                            <span className="font-semibold text-slate-700 dark:text-slate-200">{occ.collegeName || selectedRoomDetails.lockedCollege?.name}</span>
                             {(occ.city || occ.state) && (
                               <span className="text-slate-400"> ({[occ.city, occ.state].filter(Boolean).join(', ')})</span>
                             )}
                             {occ.course && (
-                              <span className="text-slate-500 font-medium"> · {occ.course} {occ.year ? `(${occ.year})` : ''}</span>
+                              <span className="text-slate-500 dark:text-slate-400 font-medium"> · {occ.course} {occ.year ? `(${occ.year})` : ''}</span>
                             )}
                           </p>
                           {occ.specificActivity && (
-                            <p className="text-[10px] text-indigo-600 font-semibold mt-0.5 flex items-center gap-1">
+                            <p className="text-[10px] text-indigo-600 dark:text-indigo-400 font-semibold mt-0.5 flex items-center gap-1">
                               <span>🎯 {occ.activityCategory ? `${occ.activityCategory}: ` : ''}{occ.specificActivity}</span>
                             </p>
                           )}
@@ -3015,7 +3015,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
 
                       <button
                         onClick={() => handleUnassignBed(occ.allocationId, occ.userName)}
-                        className="px-2.5 py-1 rounded-lg text-[10px] font-bold text-rose-600 hover:bg-rose-50 border border-rose-200 transition-colors shrink-0"
+                        className="px-2.5 py-1 rounded-lg text-[10px] font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200 dark:border-rose-800 transition-colors shrink-0"
                         title="Unassign student from this bed"
                       >
                         Unassign
@@ -3029,7 +3029,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
             <div className="pt-2 flex justify-end">
               <button
                 onClick={() => setShowRoomDetailsModal(false)}
-                className="px-5 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition-all"
+                className="px-5 py-2 rounded-xl bg-slate-900 dark:bg-slate-800 text-white text-xs font-bold hover:bg-slate-800 dark:hover:bg-slate-700 transition-all"
               >
                 Close
               </button>
@@ -3041,15 +3041,15 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       {/* MODAL 7: HOSTEL FACILITY OCCUPANTS ROSTER MODAL */}
       {showRosterModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl space-y-4 border border-slate-100 my-8 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl space-y-4 border border-slate-100 dark:border-slate-800 my-8 max-h-[90vh] overflow-y-auto">
             {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-100 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                   <Users className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-black text-base text-slate-900">
+                  <h3 className="font-heading font-black text-base text-slate-900 dark:text-white">
                     Hostel Allotment Occupants Roster
                   </h3>
                   <p className="text-xs text-slate-400">
@@ -3059,7 +3059,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
               </div>
               <button
                 onClick={() => setShowRosterModal(false)}
-                className="p-1 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                className="p-1 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               >
                 ✕
               </button>
@@ -3075,14 +3075,14 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                     value={rosterSearch}
                     onChange={(e) => setRosterSearch(e.target.value)}
                     placeholder="Search by student, room, or college..."
-                    className="w-full pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 text-xs bg-slate-50 focus:bg-white focus:outline-none focus:ring-1 focus:ring-primary"
+                    className="w-full pl-8 pr-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:bg-white dark:focus:bg-slate-900 focus:outline-none focus:ring-1 focus:ring-primary placeholder:text-slate-400"
                   />
                 </div>
 
                 <select
                   value={selectedRosterHostelId}
                   onChange={(e) => setSelectedRosterHostelId(e.target.value)}
-                  className="py-1.5 px-3 rounded-xl border border-slate-200 text-xs font-bold bg-slate-50 text-slate-700"
+                  className="py-1.5 px-3 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
                 >
                   <option value="ALL">All Hostels ({hostelsList.length})</option>
                   {hostelsList.map((h) => (
@@ -3098,9 +3098,9 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   const targetName = selectedRosterHostelId === 'ALL' ? 'all_hostels' : (hostelsList.find((h) => h.id === selectedRosterHostelId)?.name || 'hostel');
                   handleExportHostelRoster(selectedRosterHostelId, targetName);
                 }}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all shadow-sm self-start sm:self-auto"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold transition-all shadow-sm self-start sm:self-auto"
               >
-                <Download className="w-3.5 h-3.5 text-slate-600" />
+                <Download className="w-3.5 h-3.5 text-slate-600 dark:text-slate-400" />
                 <span>Export CSV</span>
               </button>
             </div>
@@ -3141,9 +3141,9 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
               });
 
               return filteredRoster.length === 0 ? (
-                <div className="p-12 rounded-3xl bg-slate-50 border border-slate-200 text-center text-slate-400 space-y-2">
-                  <Users className="w-10 h-10 text-slate-300 mx-auto" />
-                  <p className="font-heading font-bold text-sm text-slate-700">No occupants found</p>
+                <div className="p-12 rounded-3xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-800 text-center text-slate-400 space-y-2">
+                  <Users className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto" />
+                  <p className="font-heading font-bold text-sm text-slate-700 dark:text-slate-200">No occupants found</p>
                   <p className="text-xs text-slate-400">
                     {allOccupantsList.length === 0
                       ? 'No students have been allotted rooms in this facility yet. Use "Allot from Excel / CSV" to allot students.'
@@ -3151,9 +3151,9 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                   </p>
                 </div>
               ) : (
-                <div className="border border-slate-200 rounded-2xl overflow-hidden max-h-80 overflow-y-auto">
+                <div className="border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden max-h-80 overflow-y-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-50 text-slate-500 font-bold text-[10px] uppercase border-b border-slate-200 sticky top-0">
+                    <thead className="bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 font-bold text-[10px] uppercase border-b border-slate-200 dark:border-slate-800 sticky top-0">
                       <tr>
                         <th className="py-2.5 px-3">Roll No</th>
                         <th className="py-2.5 px-3">Student</th>
@@ -3163,46 +3163,46 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                         <th className="py-2.5 px-3 text-right">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                       {filteredRoster.map((occ, idx) => (
-                        <tr key={idx} className="hover:bg-slate-50/80 transition-colors">
-                          <td className="py-2.5 px-3 font-mono font-bold text-slate-700 text-[11px]">
+                        <tr key={idx} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                          <td className="py-2.5 px-3 font-mono font-bold text-slate-700 dark:text-slate-300 text-[11px]">
                             {occ.rollNo || '—'}
                           </td>
                           <td className="py-2.5 px-3">
-                            <p className="font-bold text-slate-900">{occ.userName}</p>
+                            <p className="font-bold text-slate-900 dark:text-white">{occ.userName}</p>
                             <p className="text-[10px] text-slate-400">
                               {occ.userGender === 'MALE' ? '♂ Male' : '♀ Female'}{occ.age ? ` · ${occ.age} yrs` : ''}
                             </p>
                           </td>
                           <td className="py-2.5 px-3">
-                            <p className="font-semibold text-slate-800">{occ.collegeName}</p>
+                            <p className="font-semibold text-slate-800 dark:text-slate-200">{occ.collegeName}</p>
                             {(occ.city || occ.state) && (
                               <p className="text-[10px] text-slate-400">{[occ.city, occ.state].filter(Boolean).join(', ')}</p>
                             )}
                           </td>
                           <td className="py-2.5 px-3">
                             {occ.course && (
-                              <p className="text-slate-700 font-medium">{occ.course} {occ.year ? `(${occ.year})` : ''}</p>
+                              <p className="text-slate-700 dark:text-slate-300 font-medium">{occ.course} {occ.year ? `(${occ.year})` : ''}</p>
                             )}
                             {occ.specificActivity && (
-                              <p className="text-[10px] text-indigo-600 font-semibold flex items-center gap-1 mt-0.5">
+                              <p className="text-[10px] text-indigo-600 dark:text-indigo-400 font-semibold flex items-center gap-1 mt-0.5">
                                 <span>🎯 {occ.activityCategory ? `${occ.activityCategory}: ` : ''}{occ.specificActivity}</span>
                               </p>
                             )}
                             {!occ.course && !occ.specificActivity && <span className="text-slate-400">—</span>}
                           </td>
                           <td className="py-2.5 px-3">
-                            <p className="text-slate-700 font-medium">{occ.hostelName}</p>
+                            <p className="text-slate-700 dark:text-slate-300 font-medium">{occ.hostelName}</p>
                             <p className="text-[10px]">
-                              <span className="font-mono font-bold text-indigo-600">Room {occ.roomNumber}</span>
+                              <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400">Room {occ.roomNumber}</span>
                               <span className="text-slate-400 ml-1 font-mono">({occ.bedLabel || 'Bed'})</span>
                             </p>
                           </td>
                           <td className="py-2.5 px-3 text-right">
                             <button
                               onClick={() => handleUnassignBed(occ.allocationId, occ.userName)}
-                              className="px-2 py-0.5 rounded-lg text-[10px] font-bold text-rose-600 hover:bg-rose-50 border border-rose-200 transition-colors"
+                              className="px-2 py-0.5 rounded-lg text-[10px] font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-rose-200 dark:border-rose-800 transition-colors"
                             >
                               Unassign
                             </button>
@@ -3218,7 +3218,7 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
             <div className="pt-2 flex justify-end">
               <button
                 onClick={() => setShowRosterModal(false)}
-                className="px-5 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition-all"
+                className="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-800 text-white text-xs font-bold hover:bg-slate-800 dark:hover:bg-slate-700 transition-all"
               >
                 Close
               </button>

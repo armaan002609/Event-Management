@@ -140,8 +140,8 @@ export function EventManagerView() {
       {/* Title Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="font-heading font-extrabold text-2xl text-slate-900">Event Management & Scheduling</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h2 className="font-heading font-extrabold text-2xl text-slate-900 dark:text-slate-100">Event Management & Scheduling</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             Modify event times, change venues, and trigger targeted alerts to registered participants.
           </p>
         </div>
@@ -163,12 +163,12 @@ export function EventManagerView() {
       {loading ? (
         <div className="text-center py-12">
           <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-          <p className="text-xs text-slate-500">Loading events catalog...</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Loading events catalog...</p>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 border-b border-slate-200 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+            <thead className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px]">
               <tr>
                 <th className="py-3 px-4">Event</th>
                 <th className="py-3 px-4">Category</th>
@@ -178,39 +178,39 @@ export function EventManagerView() {
                 <th className="py-3 px-4 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
               {events.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="py-14 text-center">
-                    <Calendar className="w-9 h-9 text-slate-300 mx-auto mb-2" />
-                    <p className="font-bold text-slate-700 text-sm">No Events Scheduled Yet</p>
-                    <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+                    <Calendar className="w-9 h-9 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+                    <p className="font-bold text-slate-700 dark:text-slate-200 text-sm">No Events Scheduled Yet</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-sm mx-auto">
                       Use the "Create New Event" button above to schedule festival sports tournaments or cultural competitions.
                     </p>
                   </td>
                 </tr>
               ) : (
                 events.map((evt) => (
-                  <tr key={evt.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="py-3.5 px-4 font-bold text-slate-900">{evt.title}</td>
+                  <tr key={evt.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                    <td className="py-3.5 px-4 font-bold text-slate-900 dark:text-slate-100">{evt.title}</td>
                     <td className="py-3.5 px-4">
                       <span
                         className={`text-[10px] font-bold px-2 py-0.5 rounded ${
                           evt.type === 'SPORTS'
-                            ? 'bg-sports/10 text-sports dark:text-teal-700'
-                            : 'bg-folk/10 text-folk-dark'
+                            ? 'bg-sports/10 text-sports dark:text-teal-400 dark:bg-teal-500/10'
+                            : 'bg-folk/10 text-folk-dark dark:text-orange-400 dark:bg-orange-500/10'
                         }`}
                       >
                         {evt.type}
                       </span>
                     </td>
-                    <td className="py-3.5 px-4 text-slate-600 truncate max-w-xs">{evt.venue}</td>
-                    <td className="py-3.5 px-4 text-slate-600 whitespace-nowrap">
+                    <td className="py-3.5 px-4 text-slate-600 dark:text-slate-300 truncate max-w-xs">{evt.venue}</td>
+                    <td className="py-3.5 px-4 text-slate-600 dark:text-slate-300 whitespace-nowrap">
                       {new Date(evt.startsAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{' '}
                       {new Date(evt.endsAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </td>
                     <td className="py-3.5 px-4">
-                      <span className="font-semibold text-slate-800">
+                      <span className="font-semibold text-slate-800 dark:text-slate-200">
                         {evt.registrationsCount || 0}
                         {evt.capacity ? ` / ${evt.capacity}` : ''}
                       </span>
@@ -218,7 +218,7 @@ export function EventManagerView() {
                     <td className="py-3.5 px-4 text-right">
                       <button
                         onClick={() => handleOpenEdit(evt)}
-                        className="px-3 py-1.5 rounded-lg border border-slate-200 text-primary hover:bg-primary/10 text-xs font-bold transition-colors inline-flex items-center gap-1"
+                        className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700 text-primary dark:text-teal-400 hover:bg-primary/10 dark:hover:bg-teal-500/10 text-xs font-bold transition-colors inline-flex items-center gap-1"
                       >
                         <Edit2 className="w-3 h-3" /> Edit / Move
                       </button>
@@ -233,81 +233,81 @@ export function EventManagerView() {
 
       {/* Edit Event Modal with Real-time Alert Warning */}
       {editingEvent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm animate-in fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in">
           <form
             onSubmit={handleSaveEdit}
-            className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative border border-slate-100 space-y-4"
+            className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative border border-slate-100 dark:border-slate-800 space-y-4"
           >
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
               <div>
-                <h3 className="font-heading font-extrabold text-base text-slate-900">
+                <h3 className="font-heading font-extrabold text-base text-slate-900 dark:text-slate-100">
                   Update Event Schedule
                 </h3>
-                <p className="text-xs text-slate-500">{editingEvent.title}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{editingEvent.title}</p>
               </div>
               <button
                 type="button"
                 onClick={() => setEditingEvent(null)}
-                className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400"
+                className="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 dark:text-slate-300"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Targeted Notification Alert (BR-9) */}
-            <div className="bg-indigo-50 border border-indigo-200 p-3 rounded-xl flex items-start gap-2.5 text-xs text-indigo-950">
-              <Bell className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+            <div className="bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 p-3 rounded-xl flex items-start gap-2.5 text-xs text-indigo-950 dark:text-indigo-200">
+              <Bell className="w-4 h-4 text-primary dark:text-teal-400 shrink-0 mt-0.5" />
               <div>
                 <span className="font-bold">Targeted Real-time Broadcast:</span>
-                <p className="text-[11px] text-indigo-800 mt-0.5">
+                <p className="text-[11px] text-indigo-800 dark:text-indigo-300 mt-0.5">
                   Any change to venue or time will trigger immediate notifications to all{' '}
-                  <strong className="text-primary">{registeredCount} registered students</strong> for this event, and a global alert to managers.
+                  <strong className="text-primary dark:text-teal-400">{registeredCount} registered students</strong> for this event, and a global alert to managers.
                 </p>
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Venue Location</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Venue Location</label>
               <input
                 type="text"
                 value={editVenue}
                 onChange={(e) => setEditVenue(e.target.value)}
-                className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                 required
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Start Time</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Start Time</label>
                 <input
                   type="datetime-local"
                   value={editStartsAt}
                   onChange={(e) => setEditStartsAt(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                   required
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">End Time</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">End Time</label>
                 <input
                   type="datetime-local"
                   value={editEndsAt}
                   onChange={(e) => setEditEndsAt(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                   required
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Reason for Change (Audited)</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Reason for Change (Audited)</label>
               <input
                 type="text"
                 value={editReason}
                 onChange={(e) => setEditReason(e.target.value)}
                 placeholder="e.g., Rain forecast, pitch maintenance..."
-                className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
               />
             </div>
 
@@ -315,7 +315,7 @@ export function EventManagerView() {
               <button
                 type="button"
                 onClick={() => setEditingEvent(null)}
-                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100"
+                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
               >
                 Cancel
               </button>
@@ -333,102 +333,102 @@ export function EventManagerView() {
 
       {/* Create Event Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm animate-in fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in">
           <form
             onSubmit={handleCreateEvent}
-            className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative border border-slate-100 space-y-3.5"
+            className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative border border-slate-100 dark:border-slate-800 space-y-3.5"
           >
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="font-heading font-extrabold text-base text-slate-900">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <h3 className="font-heading font-extrabold text-base text-slate-900 dark:text-slate-100">
                 Create Festival Event
               </h3>
               <button
                 type="button"
                 onClick={() => setShowCreateModal(false)}
-                className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400"
+                className="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 dark:text-slate-300"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Event Title</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Event Title</label>
               <input
                 type="text"
                 value={newTitle}
                 onChange={(e) => setNewTitle(e.target.value)}
                 placeholder="e.g., Classical Kathak Solo"
-                className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                 required
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Category</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Category</label>
                 <select
                   value={newType}
                   onChange={(e) => setNewType(e.target.value as any)}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                 >
                   <option value="SPORTS">Sports Championship</option>
                   <option value="FOLK">Folk / Cultural Event</option>
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Capacity</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Capacity</label>
                 <input
                   type="number"
                   value={newCapacity}
                   onChange={(e) => setNewCapacity(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Venue</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Venue</label>
               <input
                 type="text"
                 value={newVenue}
                 onChange={(e) => setNewVenue(e.target.value)}
                 placeholder="e.g., Main Auditorium Hall"
-                className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                 required
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Starts At</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Starts At</label>
                 <input
                   type="datetime-local"
                   value={newStartsAt}
                   onChange={(e) => setNewStartsAt(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                   required
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Ends At</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Ends At</label>
                 <input
                   type="datetime-local"
                   value={newEndsAt}
                   onChange={(e) => setNewEndsAt(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                   required
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Description & Rules</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Description & Rules</label>
               <textarea
                 value={newDescription}
                 onChange={(e) => setNewDescription(e.target.value)}
                 rows={2}
                 placeholder="Brief event overview, equipment requirements, rules..."
-                className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
               />
             </div>
 
@@ -436,7 +436,7 @@ export function EventManagerView() {
               <button
                 type="button"
                 onClick={() => setShowCreateModal(false)}
-                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100"
+                className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
               >
                 Cancel
               </button>

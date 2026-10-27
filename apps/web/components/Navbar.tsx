@@ -120,7 +120,7 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                       className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1.5 ${
                         activeTab === 'dashboard'
                           ? 'bg-primary text-white shadow-sm shadow-primary/30'
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                          : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
                       <Home className="w-4 h-4" /> Dashboard
@@ -130,7 +130,7 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                       className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1.5 ${
                         activeTab === 'events'
                           ? 'bg-primary text-white shadow-sm shadow-primary/30'
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                          : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
                       <Sparkles className="w-4 h-4" /> Events & Schedule
@@ -140,7 +140,7 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                       className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1.5 ${
                         activeTab === 'qr'
                           ? 'bg-primary text-white shadow-sm shadow-primary/30'
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                          : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
                       <QrCode className="w-4 h-4" /> My QR Pass
@@ -150,7 +150,7 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                       className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1.5 ${
                         activeTab === 'meals'
                           ? 'bg-primary text-white shadow-sm shadow-primary/30'
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                          : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
                       <Utensils className="w-4 h-4" /> Meals
@@ -164,7 +164,7 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                         className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1.5 ${
                           activeTab === 'admin-center'
                             ? 'bg-rose-600 text-white shadow-sm shadow-rose-600/30'
-                            : 'text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200'
+                            : 'text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/50 border border-rose-200 dark:border-rose-900/60'
                         }`}
                       >
                         <Shield className="w-4 h-4" /> Admin Center
@@ -175,7 +175,7 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                       className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1.5 ${
                         activeTab === 'overview'
                           ? 'bg-primary text-white shadow-sm shadow-primary/30'
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                          : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
                       <Home className="w-4 h-4" /> Overview
@@ -185,7 +185,7 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                       className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1.5 ${
                         activeTab === 'allocation-matrix'
                           ? 'bg-primary text-white shadow-sm shadow-primary/30'
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                          : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
                       <Layers className="w-4 h-4" /> Hostel Matrix
@@ -195,7 +195,7 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                       className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1.5 ${
                         activeTab === 'event-manager'
                           ? 'bg-primary text-white shadow-sm shadow-primary/30'
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                          : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
                       <Calendar className="w-4 h-4" /> Event Manager
@@ -205,7 +205,7 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                       className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1.5 ${
                         activeTab === 'meals-live'
                           ? 'bg-primary text-white shadow-sm shadow-primary/30'
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                          : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
                       <Utensils className="w-4 h-4" /> Mess Board
@@ -215,7 +215,7 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                       className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1.5 ${
                         activeTab === 'broadcast'
                           ? 'bg-primary text-white shadow-sm shadow-primary/30'
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                          : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
                       <Bell className="w-4 h-4" /> Alerts
@@ -225,7 +225,7 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                       className={`px-3 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-1.5 ${
                         activeTab === 'audit'
                           ? 'bg-primary text-white shadow-sm shadow-primary/30'
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                          : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800'
                       }`}
                     >
                       <Shield className="w-4 h-4" /> Audit Log
@@ -279,30 +279,30 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
 
                 {/* Notifications Drawer Dropdown */}
                 {showNotifications && (
-                  <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 p-4 z-50 toast-enter">
-                    <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                  <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-4 z-50 toast-enter">
+                    <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                       <div className="flex items-center gap-2">
-                        <Bell className="w-4 h-4 text-primary" />
-                        <h4 className="font-heading font-bold text-sm text-slate-900">Notifications & Alerts</h4>
+                        <Bell className="w-4 h-4 text-primary dark:text-primary-light" />
+                        <h4 className="font-heading font-bold text-sm text-slate-900 dark:text-white">Notifications & Alerts</h4>
                       </div>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-semibold">
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-light font-semibold">
                         {notifications.length}
                       </span>
                     </div>
 
-                    <div className="max-h-80 overflow-y-auto mt-2 space-y-2.5 divide-y divide-slate-100">
+                    <div className="max-h-80 overflow-y-auto mt-2 space-y-2.5 divide-y divide-slate-100 dark:divide-slate-800">
                       {notifications.length === 0 ? (
-                        <p className="text-xs text-slate-500 text-center py-6">No notifications yet.</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 text-center py-6">No notifications yet.</p>
                       ) : (
                         notifications.slice(0, 10).map((n) => (
                           <div key={n.id} className="pt-2 text-xs">
                             <div className="flex items-start justify-between gap-1 mb-1">
-                              <span className="font-bold text-slate-900 leading-snug">{n.subject}</span>
-                              <span className="text-[10px] text-slate-400 whitespace-nowrap">
+                              <span className="font-bold text-slate-900 dark:text-white leading-snug">{n.subject}</span>
+                              <span className="text-[10px] text-slate-400 dark:text-slate-500 whitespace-nowrap">
                                 {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                               </span>
                             </div>
-                            <p className="text-slate-600 leading-relaxed line-clamp-2">{n.body}</p>
+                            <p className="text-slate-600 dark:text-slate-300 leading-relaxed line-clamp-2">{n.body}</p>
                           </div>
                         ))
                       )}
@@ -320,7 +320,7 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                       setShowUserDropdown(!showUserDropdown);
                       setShowNotifications(false);
                     }}
-                    className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 hover:border-slate-300 bg-slate-50/80 hover:bg-slate-100 transition-all text-xs"
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700/80 hover:border-slate-300 dark:hover:border-slate-600 bg-slate-50/80 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700/80 transition-all text-xs"
                   >
                     {activeUser.avatarUrl ? (
                       <img
@@ -334,21 +334,21 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                       </div>
                     )}
                     <div className="text-left hidden sm:block">
-                      <p className="font-bold text-slate-800 leading-tight truncate max-w-[120px]">
+                      <p className="font-bold text-slate-800 dark:text-slate-200 leading-tight truncate max-w-[120px]">
                         {activeUser.name}
                       </p>
-                      <p className="text-[10px] text-primary font-semibold leading-none">
+                      <p className="text-[10px] text-primary dark:text-primary-light font-semibold leading-none">
                         {activeUser.role}
                         {activeUser.college ? ` · ${activeUser.college.code}` : ''}
                       </p>
                     </div>
-                    <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
                   </button>
 
                   {showUserDropdown && (
-                    <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-slate-200 p-3 z-50 toast-enter space-y-3">
+                    <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 p-3 z-50 toast-enter space-y-3">
                       {/* User Info Header */}
-                      <div className="pb-3 border-b border-slate-100">
+                      <div className="pb-3 border-b border-slate-100 dark:border-slate-800">
                         <div className="flex items-center gap-2.5 mb-2">
                           {activeUser.avatarUrl ? (
                             <img
@@ -357,26 +357,26 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                               className="w-9 h-9 rounded-xl object-cover border border-primary/20 shrink-0 shadow-sm"
                             />
                           ) : (
-                            <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary font-bold flex items-center justify-center text-sm shrink-0">
+                            <div className="w-9 h-9 rounded-xl bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-light font-bold flex items-center justify-center text-sm shrink-0">
                               {activeUser.name?.charAt(0) || 'U'}
                             </div>
                           )}
                           <div className="truncate">
-                            <p className="font-bold text-xs text-slate-900 truncate">{activeUser.name}</p>
-                            <p className="text-[11px] text-slate-500 truncate">{activeUser.email}</p>
+                            <p className="font-bold text-xs text-slate-900 dark:text-white truncate">{activeUser.name}</p>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{activeUser.email}</p>
                           </div>
                         </div>
 
                         <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-primary/10 text-primary border border-primary/20">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-light border border-primary/20">
                             {activeUser.role}
                           </span>
                           {activeUser.college && (
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700">
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
                               {activeUser.college.code}
                             </span>
                           )}
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 flex items-center gap-1">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 flex items-center gap-1">
                             <CheckCircle2 className="w-3 h-3" /> Verified
                           </span>
                         </div>
@@ -388,13 +388,13 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                           setShowUserDropdown(false);
                           setActiveTab('qr');
                         }}
-                        className="w-full flex items-center justify-between py-2 px-3 rounded-xl text-xs font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-100"
+                        className="w-full flex items-center justify-between py-2 px-3 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors border border-slate-100 dark:border-slate-700"
                       >
                         <span className="flex items-center gap-1.5">
-                          <QrCode className="w-3.5 h-3.5 text-primary" />
+                          <QrCode className="w-3.5 h-3.5 text-primary dark:text-primary-light" />
                           <span>My QR Pass</span>
                         </span>
-                        <span className="text-[9px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-bold">
+                        <span className="text-[9px] bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-light px-1.5 py-0.5 rounded-full font-bold">
                           Digital Badge
                         </span>
                       </button>
@@ -404,10 +404,10 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                         <Link
                           href="/admin"
                           onClick={() => setShowUserDropdown(false)}
-                          className="w-full flex items-center justify-between py-2 px-3 rounded-xl text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 transition-colors border border-rose-100"
+                          className="w-full flex items-center justify-between py-2 px-3 rounded-xl text-xs font-bold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/50 transition-colors border border-rose-100 dark:border-rose-900/60"
                         >
                           <span className="flex items-center gap-1.5">
-                            <Shield className="w-3.5 h-3.5 text-rose-600" />
+                            <Shield className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
                             <span>Admin Command Center</span>
                           </span>
                           <span className="text-[9px] bg-rose-600 text-white px-1.5 py-0.5 rounded-full font-bold">
@@ -423,18 +423,18 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                             setShowUserDropdown(false);
                             onOpenProfileModal();
                           }}
-                          className="w-full flex items-center justify-between py-2 px-3 rounded-xl text-xs font-bold text-slate-700 bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-100"
+                          className="w-full flex items-center justify-between py-2 px-3 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors border border-slate-100 dark:border-slate-700"
                         >
                           <span className="flex items-center gap-1.5">
-                            <UserIcon className="w-3.5 h-3.5 text-primary" />
+                            <UserIcon className="w-3.5 h-3.5 text-primary dark:text-primary-light" />
                             <span>My Student Details</span>
                           </span>
                           {!isUserProfileComplete(activeUser) ? (
-                            <span className="text-[9px] bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded-full font-bold">
+                            <span className="text-[9px] bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 px-1.5 py-0.5 rounded-full font-bold">
                               Incomplete
                             </span>
                           ) : (
-                            <span className="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.5 rounded-full font-bold">
+                            <span className="text-[9px] bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 px-1.5 py-0.5 rounded-full font-bold">
                               Complete
                             </span>
                           )}
@@ -444,7 +444,7 @@ export function Navbar({ activeUser, onUserSwitched, activeTab, setActiveTab, on
                       {/* Sign Out Action */}
                       <button
                         onClick={handleSignOut}
-                        className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 transition-colors"
+                        className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/50 transition-colors border border-rose-100 dark:border-rose-900/40"
                       >
                         <LogOut className="w-4 h-4" />
                         <span>Sign Out</span>

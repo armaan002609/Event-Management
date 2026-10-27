@@ -146,16 +146,16 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab, onOpenPro
 
       {/* Profile Incomplete Banner */}
       {!isUserProfileComplete(user) && (
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm mb-6 animate-in fade-in">
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 border border-amber-200 dark:border-amber-800/80 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm mb-6 animate-in fade-in">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-100 border border-amber-200 text-amber-700 flex items-center justify-center shrink-0">
-              <AlertCircle className="w-5 h-5 text-amber-600" />
+            <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/50 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0">
+              <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
             </div>
             <div>
-              <h4 className="font-heading font-bold text-xs sm:text-sm text-slate-900">
+              <h4 className="font-heading font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
                 Complete Your Student Profile
               </h4>
-              <p className="text-[11px] text-slate-600">
+              <p className="text-[11px] text-slate-600 dark:text-slate-300">
                 Add your Father&apos;s name &amp; phone, address, college, roll no, course, and photo to unlock festival event registrations.
               </p>
             </div>
@@ -173,9 +173,9 @@ export function StudentDashboard({ user, onOpenQrModal, onNavigateTab, onOpenPro
 
       {/* Conflicts Banner (if any) */}
       {scheduleData?.conflicts && scheduleData.conflicts.length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-          <div className="text-xs text-amber-800 space-y-1">
+        <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/80 rounded-2xl p-4 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+          <div className="text-xs text-amber-800 dark:text-amber-200 space-y-1">
             <span className="font-bold">Schedule Conflict Detected:</span>
             {scheduleData.conflicts.map((c, i) => (
               <p key={i}>{c.message}</p>

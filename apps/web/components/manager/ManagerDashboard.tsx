@@ -168,55 +168,55 @@ export function ManagerDashboard({ onNavigateTab }: ManagerDashboardProps) {
       {/* KPI Tiles */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3.5">
         {/* Total Registered */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Students</span>
-            <Users className="w-4 h-4 text-primary" />
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between transition-colors">
+          <div className="flex items-center justify-between text-slate-400 dark:text-slate-500 mb-2">
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Students</span>
+            <Users className="w-4 h-4 text-primary dark:text-primary-light" />
           </div>
           <div>
-            <span className="font-heading font-extrabold text-2xl text-slate-900">{stats.totalRegistered}</span>
-            <p className="text-[11px] text-slate-500 mt-0.5">Verified Participants</p>
+            <span className="font-heading font-extrabold text-2xl text-slate-900 dark:text-white">{stats.totalRegistered}</span>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Verified Participants</p>
           </div>
         </div>
 
         {/* Hostel Allocated */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Allocated</span>
-            <Home className="w-4 h-4 text-blue-600" />
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between transition-colors">
+          <div className="flex items-center justify-between text-slate-400 dark:text-slate-500 mb-2">
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Allocated</span>
+            <Home className="w-4 h-4 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
             <div className="flex items-baseline gap-1.5">
-              <span className="font-heading font-extrabold text-2xl text-slate-900">{stats.allocatedBeds}</span>
-              <span className="text-xs text-slate-400 font-medium">/ {stats.totalBeds} beds</span>
+              <span className="font-heading font-extrabold text-2xl text-slate-900 dark:text-white">{stats.allocatedBeds}</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">/ {stats.totalBeds} beds</span>
             </div>
-            <div className="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden">
-              <div className="bg-blue-600 h-full rounded-full" style={{ width: `${occupancyPercent}%` }} />
+            <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
+              <div className="bg-blue-600 dark:bg-blue-500 h-full rounded-full" style={{ width: `${occupancyPercent}%` }} />
             </div>
           </div>
         </div>
 
         {/* Checked In */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Checked In</span>
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between transition-colors">
+          <div className="flex items-center justify-between text-slate-400 dark:text-slate-500 mb-2">
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Checked In</span>
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
           </div>
           <div>
-            <span className="font-heading font-extrabold text-2xl text-emerald-600">{stats.checkedInCount}</span>
-            <p className="text-[11px] text-slate-500 mt-0.5">Currently on Campus</p>
+            <span className="font-heading font-extrabold text-2xl text-emerald-600 dark:text-emerald-400">{stats.checkedInCount}</span>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Currently on Campus</p>
           </div>
         </div>
 
         {/* Meals Served */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-          <div className="flex items-center justify-between text-slate-400 mb-2">
-            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Meals Served</span>
-            <Utensils className="w-4 h-4 text-amber-600" />
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between transition-colors">
+          <div className="flex items-center justify-between text-slate-400 dark:text-slate-500 mb-2">
+            <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Meals Served</span>
+            <Utensils className="w-4 h-4 text-amber-600 dark:text-amber-400" />
           </div>
           <div>
-            <span className="font-heading font-extrabold text-2xl text-amber-600">{stats.mealsServedCount}</span>
-            <p className="text-[11px] text-slate-500 mt-0.5">Redemptions Today</p>
+            <span className="font-heading font-extrabold text-2xl text-amber-600 dark:text-amber-400">{stats.mealsServedCount}</span>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Redemptions Today</p>
           </div>
         </div>
 
@@ -225,19 +225,19 @@ export function ManagerDashboard({ onNavigateTab }: ManagerDashboardProps) {
           onClick={() => onNavigateTab('allocation-matrix')}
           className={`p-5 rounded-2xl border shadow-sm flex flex-col justify-between cursor-pointer transition-all hover:scale-[1.02] ${
             stats.shortfallsCount > 0
-              ? 'bg-rose-50 border-rose-200 text-rose-900'
-              : 'bg-white border-slate-200 text-slate-900'
+              ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/60 text-rose-900 dark:text-rose-200'
+              : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white'
           }`}
         >
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs font-bold uppercase tracking-wider">Capacity Shortfalls</span>
-            <ShieldAlert className={`w-4 h-4 ${stats.shortfallsCount > 0 ? 'text-rose-600 animate-bounce' : 'text-slate-400'}`} />
+            <ShieldAlert className={`w-4 h-4 ${stats.shortfallsCount > 0 ? 'text-rose-600 dark:text-rose-400 animate-bounce' : 'text-slate-400 dark:text-slate-500'}`} />
           </div>
           <div>
-            <span className={`font-heading font-extrabold text-2xl ${stats.shortfallsCount > 0 ? 'text-rose-600' : 'text-slate-900'}`}>
+            <span className={`font-heading font-extrabold text-2xl ${stats.shortfallsCount > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white'}`}>
               {stats.shortfallsCount}
             </span>
-            <p className="text-[11px] text-slate-500 mt-0.5">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
               {stats.shortfallsCount > 0 ? 'Action required in Matrix' : 'Zero shortfalls'}
             </p>
           </div>
@@ -247,14 +247,14 @@ export function ManagerDashboard({ onNavigateTab }: ManagerDashboardProps) {
       {/* Main 2-Column: Alert Feed and Recent Scans Stream */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Real-time Alert Feed */}
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between transition-colors">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 mb-3">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-amber-600" />
-                <h3 className="font-heading font-bold text-sm text-slate-900">Live Operation Alerts</h3>
+                <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                <h3 className="font-heading font-bold text-sm text-slate-900 dark:text-white">Live Operation Alerts</h3>
               </div>
-              <span className="text-[11px] font-semibold text-slate-400">Broadcasts & Shortfalls</span>
+              <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-500">Broadcasts & Shortfalls</span>
             </div>
 
             <div className="space-y-3 max-h-72 overflow-y-auto">

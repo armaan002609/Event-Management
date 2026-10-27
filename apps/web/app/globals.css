@@ -5,28 +5,34 @@
 @tailwind utilities;
 
 :root {
-  --primary: #3B3FD9;
-  --primary-dark: #1E1F5C;
-  --primary-light: #6366F1;
-  --folk: #F5A524;
-  --sports: #0FA3A3;
+  --primary: #4F46E5;
+  --primary-dark: #3730A3;
+  --primary-light: #818CF8;
+  --folk: #D97706;
+  --sports: #0D9488;
   --bg: #F8FAFC;
   --surface: #FFFFFF;
+  --surface-raised: #F1F5F9;
   --text: #0F172A;
+  --text-muted: #64748B;
   --border: #E2E8F0;
+  --border-subtle: #F1F5F9;
   --bottom-nav-height: 64px;
 }
 
 :root.dark {
-  --primary: #6366F1;
-  --primary-dark: #4338CA;
-  --primary-light: #818CF8;
-  --folk: #F59E0B;
-  --sports: #14B8A6;
-  --bg: #090D16;
+  --primary: #818CF8;
+  --primary-dark: #6366F1;
+  --primary-light: #A5B4FC;
+  --folk: #FBBF24;
+  --sports: #2DD4BF;
+  --bg: #0B0F19;
   --surface: #0F172A;
+  --surface-raised: #1E293B;
   --text: #F8FAFC;
+  --text-muted: #94A3B8;
   --border: #1E293B;
+  --border-subtle: #334155;
   color-scheme: dark;
 }
 
@@ -172,6 +178,11 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 12px;
 }
 
+:root.dark .skeleton {
+  background: linear-gradient(90deg, #1E293B 25%, #334155 50%, #1E293B 75%);
+  background-size: 200% 100%;
+}
+
 @keyframes shimmer {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
@@ -284,6 +295,11 @@ h1, h2, h3, h4, h5, h6 {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
+:root.dark .bottom-nav {
+  background: rgba(15, 23, 42, 0.94);
+  border-top: 1px solid rgba(51, 65, 85, 0.8);
+}
+
 .bottom-nav-item {
   display: flex;
   flex-direction: column;
@@ -300,8 +316,16 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-tap-highlight-color: transparent;
 }
 
+:root.dark .bottom-nav-item {
+  color: #64748B;
+}
+
 .bottom-nav-item.active {
   color: var(--primary);
+}
+
+:root.dark .bottom-nav-item.active {
+  color: var(--primary-light);
 }
 
 .bottom-nav-item.active::before {
@@ -316,8 +340,38 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 0 0 4px 4px;
 }
 
+:root.dark .bottom-nav-item.active::before {
+  background: var(--primary-light);
+}
+
 .bottom-nav-item:active {
   transform: scale(0.92);
+}
+
+/* ─── Dark Mode Form Controls Harmonization ──────────────────── */
+:root.dark input:not([type="checkbox"]):not([type="radio"]),
+:root.dark select,
+:root.dark textarea {
+  background-color: #0F172A;
+  color: #F8FAFC;
+  border-color: #334155;
+}
+
+:root.dark input:not([type="checkbox"]):not([type="radio"]):focus,
+:root.dark select:focus,
+:root.dark textarea:focus {
+  background-color: #1E293B;
+  border-color: #818CF8;
+}
+
+:root.dark input::placeholder,
+:root.dark textarea::placeholder {
+  color: #64748B;
+}
+
+:root.dark select option {
+  background-color: #0F172A;
+  color: #F8FAFC;
 }
 
 /* ─── QR FAB (Floating Action Button) ─────────────────────────── */

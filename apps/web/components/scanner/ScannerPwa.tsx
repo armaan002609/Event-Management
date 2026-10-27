@@ -765,37 +765,37 @@ export function ScannerPwa() {
 
             {/* ROOM ALLOTMENT HIGHLIGHT CARD (When room details are present) */}
             {scanResultOverlay.details?.roomNumber && (
-              <div className="w-full bg-white text-slate-900 rounded-3xl p-5 sm:p-6 shadow-2xl border-4 border-emerald-400 text-left my-2 animate-in zoom-in-95 duration-200">
+              <div className="w-full bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-3xl p-5 sm:p-6 shadow-2xl border-4 border-emerald-400 dark:border-emerald-500 text-left my-2 animate-in zoom-in-95 duration-200">
                 {/* Allotment Badge */}
-                <div className="flex items-center justify-between pb-3 border-b border-slate-200 mb-4">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800 mb-4">
                   <div className="flex items-center gap-2">
-                    <Building2 className="w-5 h-5 text-indigo-600" />
-                    <span className="text-sm font-extrabold uppercase tracking-wider text-slate-800">
+                    <Building2 className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                    <span className="text-sm font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-200">
                       {scanResultOverlay.details.hostelName || 'Hostel Allotment'}
                     </span>
                   </div>
                   {scanResultOverlay.details.isNewlyAllocated ? (
-                    <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-xs font-black flex items-center gap-1 shadow-sm">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-600" /> Newly Assigned
+                    <span className="px-2.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/70 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-800 text-xs font-black flex items-center gap-1 shadow-sm">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" /> Newly Assigned
                     </span>
                   ) : (
-                    <span className="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold">
+                    <span className="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 text-xs font-bold">
                       Confirmed Room
                     </span>
                   )}
                 </div>
 
                 {/* Giant Room & Bed Numbers */}
-                <div className="grid grid-cols-2 gap-3 mb-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                <div className="grid grid-cols-2 gap-3 mb-4 bg-slate-50 dark:bg-slate-950/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
                   <div className="flex flex-col">
-                    <span className="text-[11px] font-black uppercase tracking-wider text-slate-500">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
                       Room Number
                     </span>
-                    <span className="font-heading font-black text-4xl sm:text-5xl text-slate-900 tracking-tight">
+                    <span className="font-heading font-black text-4xl sm:text-5xl text-slate-900 dark:text-slate-100 tracking-tight">
                       {scanResultOverlay.details.roomNumber}
                     </span>
                     {typeof scanResultOverlay.details.floor === 'number' && (
-                      <span className="text-[11px] font-semibold text-slate-500 mt-0.5">
+                      <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">
                         {scanResultOverlay.details.floor === 0
                           ? 'Ground Floor'
                           : `Floor ${scanResultOverlay.details.floor}`}
@@ -803,16 +803,16 @@ export function ScannerPwa() {
                     )}
                   </div>
 
-                  <div className="flex flex-col border-l border-slate-200 pl-4">
-                    <span className="text-[11px] font-black uppercase tracking-wider text-slate-500">
+                  <div className="flex flex-col border-l border-slate-200 dark:border-slate-800 pl-4">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
                       Assigned Bed
                     </span>
                     <div className="flex items-baseline gap-1 mt-0.5">
-                      <span className="font-heading font-black text-3xl sm:text-4xl text-emerald-600">
+                      <span className="font-heading font-black text-3xl sm:text-4xl text-emerald-600 dark:text-emerald-400">
                         {scanResultOverlay.details.bedLabel || 'Bed A'}
                       </span>
                     </div>
-                    <span className="text-[11px] font-bold text-emerald-700 mt-1 flex items-center gap-1">
+                    <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 mt-1 flex items-center gap-1">
                       <Bed className="w-3.5 h-3.5" /> Vacant bed reserved
                     </span>
                   </div>
@@ -820,22 +820,22 @@ export function ScannerPwa() {
 
                 {/* Student Card Summary inside Room Card */}
                 {scanResultOverlay.user && (
-                  <div className="pt-3 border-t border-slate-200 flex flex-col gap-1.5 text-xs text-slate-700">
+                  <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex flex-col gap-1.5 text-xs text-slate-700 dark:text-slate-300">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-slate-900 text-sm">
+                      <span className="font-bold text-slate-900 dark:text-slate-100 text-sm">
                         {scanResultOverlay.user.name}
                       </span>
-                      <span className="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 font-extrabold text-[11px] border border-indigo-200">
+                      <span className="px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-extrabold text-[11px] border border-indigo-200 dark:border-indigo-800">
                         {scanResultOverlay.user.gender}
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between text-slate-600 text-[11px]">
+                    <div className="flex items-center justify-between text-slate-600 dark:text-slate-400 text-[11px]">
                       <span className="font-medium truncate max-w-[240px]">
                         🎓 {scanResultOverlay.details.collegeName || scanResultOverlay.user.collegeName}
                       </span>
                       {scanResultOverlay.user.rollNo && (
-                        <span className="font-mono font-bold text-slate-800">
+                        <span className="font-mono font-bold text-slate-800 dark:text-slate-200">
                           Roll: {scanResultOverlay.user.rollNo}
                         </span>
                       )}

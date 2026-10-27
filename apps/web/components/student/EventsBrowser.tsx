@@ -155,18 +155,20 @@ export function EventsBrowser() {
       {/* Title & Filter Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="font-heading font-extrabold text-2xl text-slate-900">Festival Events & Schedule</h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h2 className="font-heading font-extrabold text-2xl text-slate-900 dark:text-white">Festival Events & Schedule</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             Register for inter-college sports competitions and cultural folk performances.
           </p>
         </div>
 
         {/* Filter Pills */}
-        <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl self-start sm:self-auto">
+        <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl self-start sm:self-auto">
           <button
             onClick={() => setFilterType('ALL')}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-              filterType === 'ALL' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-600 hover:text-slate-900'
+              filterType === 'ALL'
+                ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             All Events
@@ -176,7 +178,7 @@ export function EventsBrowser() {
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${
               filterType === 'SPORTS'
                 ? 'bg-sports text-white shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <Trophy className="w-3.5 h-3.5" /> Sports
@@ -186,7 +188,7 @@ export function EventsBrowser() {
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 ${
               filterType === 'FOLK'
                 ? 'bg-folk text-white shadow-sm'
-                : 'text-slate-600 hover:text-slate-900'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <Music className="w-3.5 h-3.5" /> Folk & Cultural
@@ -196,13 +198,13 @@ export function EventsBrowser() {
 
       {/* Search Bar */}
       <div className="relative">
-        <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400" />
+        <Search className="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400 dark:text-slate-500" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by event title, sport, dance form, or venue..."
-          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-xs focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent placeholder-slate-400 dark:placeholder-slate-500 transition-colors"
         />
       </div>
 
@@ -213,10 +215,10 @@ export function EventsBrowser() {
           <p className="text-xs text-slate-500 font-medium">Loading festival schedule...</p>
         </div>
       ) : filteredEvents.length === 0 ? (
-        <div className="bg-white rounded-2xl p-12 text-center border border-slate-200">
-          <Calendar className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-          <h4 className="font-heading font-bold text-slate-700 text-sm">No Events Found</h4>
-          <p className="text-xs text-slate-400 mt-1">Try adjusting your filters or search query.</p>
+        <div className="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center border border-slate-200 dark:border-slate-800">
+          <Calendar className="w-10 h-10 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+          <h4 className="font-heading font-bold text-slate-700 dark:text-slate-200 text-sm">No Events Found</h4>
+          <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Try adjusting your filters or search query.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 stagger-children">
@@ -231,7 +233,7 @@ export function EventsBrowser() {
             return (
               <div
                 key={evt.id}
-                className={`bg-white rounded-2xl p-5 border border-slate-200 shadow-sm card-hover-lift flex flex-col justify-between relative overflow-hidden ${
+                className={`bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm card-hover-lift flex flex-col justify-between relative overflow-hidden transition-colors ${
                   evt.isRegistered ? 'registered-shimmer ring-1 ring-primary/20' : ''
                 } ${isLive ? 'ring-2 ring-emerald-500/40' : ''}`}
               >
@@ -248,40 +250,40 @@ export function EventsBrowser() {
                       <span
                         className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md ${
                           evt.type === 'SPORTS'
-                            ? 'bg-sports/10 text-sports dark:text-teal-700'
-                            : 'bg-folk/10 text-folk-dark'
+                            ? 'bg-sports/10 text-sports dark:text-teal-400'
+                            : 'bg-folk/10 text-folk-dark dark:text-amber-400'
                         }`}
                       >
                         {evt.type}
                       </span>
                       {isLive && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 flex items-center gap-1 border border-emerald-200 shadow-sm animate-pulse">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" /> LIVE NOW
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 flex items-center gap-1 border border-emerald-200 dark:border-emerald-800 shadow-sm animate-pulse">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 dark:bg-emerald-400" /> LIVE NOW
                         </span>
                       )}
                     </div>
 
                     {evt.isRegistered && (
-                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 flex items-center gap-1">
+                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 flex items-center gap-1">
                         <CheckCircle2 className="w-3 h-3" /> Registered
                       </span>
                     )}
                   </div>
 
-                  <h3 className="font-heading font-bold text-base text-slate-900 leading-snug">
+                  <h3 className="font-heading font-bold text-base text-slate-900 dark:text-white leading-snug">
                     {evt.title}
                   </h3>
 
                   {evt.description && (
-                    <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 line-clamp-2 leading-relaxed">
                       {evt.description}
                     </p>
                   )}
 
-                  <div className="space-y-2 my-3 text-xs text-slate-600 bg-slate-50/90 p-3.5 rounded-2xl border border-slate-100">
+                  <div className="space-y-2 my-3 text-xs text-slate-600 dark:text-slate-300 bg-slate-50/90 dark:bg-slate-800/60 p-3.5 rounded-2xl border border-slate-100 dark:border-slate-700/80">
                     <div className="flex items-center gap-2">
                       <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span className="font-medium text-slate-700">
+                      <span className="font-medium text-slate-700 dark:text-slate-200">
                         {new Date(evt.startsAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}{' · '}
                         {new Date(evt.startsAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} -{' '}
                         {new Date(evt.endsAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -290,21 +292,21 @@ export function EventsBrowser() {
 
                     <div className="flex items-center gap-2">
                       <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                      <span className="truncate font-medium text-slate-700">{evt.venue}</span>
+                      <span className="truncate font-medium text-slate-700 dark:text-slate-200">{evt.venue}</span>
                     </div>
 
                     {evt.capacity && (
-                      <div className="pt-1.5 border-t border-slate-200/60">
+                      <div className="pt-1.5 border-t border-slate-200/60 dark:border-slate-700/60">
                         <div className="flex items-center justify-between text-[11px] mb-1">
-                          <span className="flex items-center gap-1 text-slate-500 font-medium">
+                          <span className="flex items-center gap-1 text-slate-500 dark:text-slate-400 font-medium">
                             <Users className="w-3 h-3 text-slate-400" /> Seats Capacity
                           </span>
-                          <span className={`font-bold ${isFull ? 'text-rose-600' : 'text-slate-700'}`}>
+                          <span className={`font-bold ${isFull ? 'text-rose-600 dark:text-rose-400' : 'text-slate-700 dark:text-slate-200'}`}>
                             {evt.registrationsCount || 0} / {evt.capacity} {isFull ? '(Full)' : ''}
                           </span>
                         </div>
                         {/* Visual Progress Bar */}
-                        <div className="w-full h-1.5 bg-slate-200/80 rounded-full overflow-hidden">
+                        <div className="w-full h-1.5 bg-slate-200/80 dark:bg-slate-700 rounded-full overflow-hidden">
                           <div
                             className={`h-full rounded-full transition-all duration-500 ${
                               isFull
@@ -324,8 +326,8 @@ export function EventsBrowser() {
                 </div>
 
                 {/* Card Action */}
-                <div className="pt-2 flex items-center justify-between border-t border-slate-100">
-                  <span className="text-[11px] font-medium text-slate-400">
+                <div className="pt-2 flex items-center justify-between border-t border-slate-100 dark:border-slate-800">
+                  <span className="text-[11px] font-medium text-slate-400 dark:text-slate-500">
                     {evt.status === 'SCHEDULED' ? 'Status: On Schedule' : evt.status}
                   </span>
 
@@ -333,7 +335,7 @@ export function EventsBrowser() {
                     <button
                       onClick={() => handleWithdraw(evt.id)}
                       disabled={isActing}
-                      className="px-3 py-1.5 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-bold transition-colors disabled:opacity-50"
+                      className="px-3 py-1.5 rounded-xl border border-rose-200 dark:border-rose-900/60 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-xs font-bold transition-colors disabled:opacity-50"
                     >
                       {isActing ? 'Updating...' : 'Withdraw'}
                     </button>
@@ -343,8 +345,8 @@ export function EventsBrowser() {
                       disabled={isActing || isFull}
                       className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all shadow-sm ${
                         isFull
-                          ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                          : 'bg-primary text-white hover:bg-primary-dark active:scale-95'
+                          ? 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed'
+                          : 'bg-primary text-white hover:bg-primary-dark active:scale-95 shadow-primary/20'
                       }`}
                     >
                       {isActing ? 'Registering...' : isFull ? 'Event Full' : 'Register Now'}

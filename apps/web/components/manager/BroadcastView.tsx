@@ -99,33 +99,33 @@ export function BroadcastView() {
     <div className="space-y-6">
       {/* Title */}
       <div>
-        <h2 className="font-heading font-extrabold text-2xl text-slate-900">Notifications & Broadcasts</h2>
-        <p className="text-xs text-slate-500 mt-0.5">
+        <h2 className="font-heading font-extrabold text-2xl text-slate-900 dark:text-slate-100">Notifications & Broadcasts</h2>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
           Deliver targeted alerts to specific cohorts with delivery tracking.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Compose Form */}
-        <div className="lg:col-span-1 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-          <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
-            <Send className="w-4 h-4 text-primary" />
-            <h3 className="font-heading font-bold text-sm text-slate-900">Compose Broadcast</h3>
+        <div className="lg:col-span-1 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
+            <Send className="w-4 h-4 text-primary dark:text-teal-400" />
+            <h3 className="font-heading font-bold text-sm text-slate-900 dark:text-slate-100">Compose Broadcast</h3>
           </div>
 
           {broadcastResult && (
-            <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-xl font-medium">
+            <div className="p-3 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs rounded-xl font-medium">
               {broadcastResult}
             </div>
           )}
 
           <form onSubmit={handleSendBroadcast} className="space-y-3.5">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Target Audience</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Target Audience</label>
               <select
                 value={audienceType}
                 onChange={(e) => setAudienceType(e.target.value as any)}
-                className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
               >
                 <option value="ALL">All Registered Students</option>
                 <option value="COLLEGE">Filter by College</option>
@@ -136,11 +136,11 @@ export function BroadcastView() {
 
             {audienceType === 'COLLEGE' && (
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Select College</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Select College</label>
                 <select
                   value={selectedCollegeId}
                   onChange={(e) => setSelectedCollegeId(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                 >
                   <option value="">-- Choose College --</option>
                   <option value="col-pce">Punjab College of Engineering (PCE)</option>
@@ -154,11 +154,11 @@ export function BroadcastView() {
 
             {audienceType === 'GENDER' && (
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Select Gender</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Select Gender</label>
                 <select
                   value={selectedGender}
                   onChange={(e) => setSelectedGender(e.target.value as any)}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                 >
                   <option value="MALE">Male Students Only</option>
                   <option value="FEMALE">Female Students Only</option>
@@ -168,11 +168,11 @@ export function BroadcastView() {
 
             {audienceType === 'EVENT' && (
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Select Event</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Select Event</label>
                 <select
                   value={selectedEventId}
                   onChange={(e) => setSelectedEventId(e.target.value)}
-                  className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                 >
                   <option value="">-- Choose Event --</option>
                   {events.map((evt) => (
@@ -185,25 +185,25 @@ export function BroadcastView() {
             )}
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Subject</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Subject</label>
               <input
                 type="text"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 placeholder="e.g., Campus Bus Schedule for Evening Folk Gala"
-                className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Message Content</label>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Message Content</label>
               <textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 rows={4}
                 placeholder="Write message to students..."
-                className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs focus:ring-2 focus:ring-primary focus:outline-none"
+                className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-xs focus:ring-2 focus:ring-primary focus:outline-none"
                 required
               />
             </div>
@@ -219,36 +219,36 @@ export function BroadcastView() {
         </div>
 
         {/* Outgoing Notification Logs Table */}
-        <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div className="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
             <div className="flex items-center gap-2">
-              <Bell className="w-4 h-4 text-primary" />
-              <h3 className="font-heading font-bold text-sm text-slate-900">Sent Notifications Feed</h3>
+              <Bell className="w-4 h-4 text-primary dark:text-teal-400" />
+              <h3 className="font-heading font-bold text-sm text-slate-900 dark:text-slate-100">Sent Notifications Feed</h3>
             </div>
-            <span className="text-xs text-slate-400">{logs.length} logged</span>
+            <span className="text-xs text-slate-400 dark:text-slate-500">{logs.length} logged</span>
           </div>
 
           <div className="space-y-3 max-h-[500px] overflow-y-auto">
             {logs.length === 0 ? (
-              <p className="text-xs text-slate-400 py-8 text-center">No notifications sent yet.</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500 py-8 text-center">No notifications sent yet.</p>
             ) : (
               logs.map((log) => (
                 <div
                   key={log.id}
-                  className="p-3.5 rounded-xl bg-slate-50 border border-slate-100 text-xs space-y-1.5"
+                  className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 text-xs space-y-1.5"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-slate-900">{log.subject}</span>
-                    <span className="text-[10px] text-slate-400">
+                    <span className="font-bold text-slate-900 dark:text-slate-100">{log.subject}</span>
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500">
                       {new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
 
-                  <p className="text-slate-600 text-[11px] leading-relaxed">{log.body}</p>
+                  <p className="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed">{log.body}</p>
 
-                  <div className="flex items-center justify-between pt-1 text-[10px] text-slate-400">
+                  <div className="flex items-center justify-between pt-1 text-[10px] text-slate-400 dark:text-slate-500">
                     <span>Recipient: {log.userName || log.userEmail || 'Cohort'}</span>
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 font-bold">
                       {log.status}
                     </span>
                   </div>
