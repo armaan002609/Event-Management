@@ -31,12 +31,10 @@ export function getOptionalActiveUserId(req?: NextRequest | Request): string | n
   return null;
 }
 
-// Admin status is assigned strictly from the database (users.role === 'ADMIN') or master portal admin emails
+// Admin status is assigned strictly from the database (users.role === 'ADMIN')
 export function isAdminUser(user?: User | null): boolean {
   if (!user) return false;
-  if (user.role === 'ADMIN') return true;
-  if (user.email && MASTER_ADMIN_EMAILS.includes(user.email.toLowerCase())) return true;
-  return false;
+  return user.role === 'ADMIN';
 }
 
 export function getOptionalActiveUser(req?: NextRequest | Request): User | null {
@@ -45,9 +43,6 @@ export function getOptionalActiveUser(req?: NextRequest | Request): User | null 
   const db = readDatabase();
   const user = db.users.find((u) => u.id === userId);
   if (user) {
-    if (user.email && MASTER_ADMIN_EMAILS.includes(user.email.toLowerCase())) {
-      user.role = 'ADMIN';
-    }
     const college = db.colleges.find((c) => c.id === user.collegeId);
     return { ...user, college };
   }
@@ -79,9 +74,6 @@ export async function getOptionalActiveUserAsync(req?: NextRequest | Request): P
   }
 
   if (user) {
-    if (user.email && MASTER_ADMIN_EMAILS.includes(user.email.toLowerCase())) {
-      user.role = 'ADMIN';
-    }
     const college = db.colleges.find((c) => c.id === user.collegeId);
     return { ...user, college };
   }
@@ -109,9 +101,6 @@ export function getActiveUser(req?: NextRequest | Request): User {
       role: 'STUDENT',
       emailVerified: false,
     };
-  }
-  if (fallback.email && MASTER_ADMIN_EMAILS.includes(fallback.email.toLowerCase())) {
-    fallback.role = 'ADMIN';
   }
   const college = db.colleges.find((c) => c.id === fallback.collegeId);
   return { ...fallback, college };

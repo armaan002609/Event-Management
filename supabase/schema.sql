@@ -272,9 +272,19 @@ INSERT INTO meal_slots (id, date, type) VALUES
   ('slot-lunch-1', TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD'), 'LUNCH'),
   ('slot-dinner-1', TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD'), 'DINNER')
 ON CONFLICT (id) DO NOTHING;
+-- ==============================================================================
+-- ROLE MANAGEMENT & USER UTILITIES (Run in Supabase SQL Editor as needed)
+-- ==============================================================================
 
+-- 1. Grant Administrator Privileges:
+-- UPDATE users SET role = 'ADMIN' WHERE email = 'armaankapoor2609@gmail.com';
 
+-- 2. Remove / Revoke Administrator Privileges (Demote to Student or Manager):
+-- UPDATE users SET role = 'STUDENT' WHERE email = 'user@example.com';
+-- UPDATE users SET role = 'MANAGER' WHERE email = 'user@example.com';
 
-UPDATE users
-SET role = 'ADMIN'
-WHERE email = 'user@example.com';
+-- 3. Permanently Delete a User Account and their allocations/registrations:
+-- DELETE FROM allocations WHERE user_id = 'usr-target-id';
+-- DELETE FROM registrations WHERE user_id = 'usr-target-id';
+-- DELETE FROM qr_tickets WHERE user_id = 'usr-target-id';
+-- DELETE FROM users WHERE email = 'user@example.com';

@@ -144,6 +144,8 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
   const [eventRosterSearch, setEventRosterSearch] = useState('');
   const [eventToDeleteAdmin, setEventToDeleteAdmin] = useState<{ id: string; title: string; count?: number } | null>(null);
   const [isDeletingEventAdmin, setIsDeletingEventAdmin] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [isDeletingUser, setIsDeletingUser] = useState(false);
 
   useEffect(() => {
     loadAllAdminData();
@@ -340,6 +342,31 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
       }
     } catch {
       toast.error('Network Error', 'Failed to toggle verification');
+    }
+  };
+
+  const handleDeleteUser = (user: User) => {
+    setUserToDelete(user);
+  };
+
+  const executeDeleteUser = async (userId: string) => {
+    setIsDeletingUser(true);
+    try {
+      const res = await fetch(`/api/admin/users?userId=${userId}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUsersList((prev) => prev.filter((u) => u.id !== userId));
+        setUserToDelete(null);
+        toast.success('User Deleted', data.message || 'User account has been permanently removed.');
+      } else {
+        toast.error('Deletion Failed', data.error || 'Failed to delete user account.');
+      }
+    } catch {
+      toast.error('Network Error', 'Failed to reach server to delete user.');
+    } finally {
+      setIsDeletingUser(false);
     }
   };
 
@@ -1709,18 +1736,27 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                             </button>
                           </td>
                           <td className="py-3.5 px-4 text-right">
-                            <button
-                              onClick={() => handleCopyUserId(user.id)}
-                              className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-mono text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                              title="Click to copy full user ID"
-                            >
-                              {copiedUserId === user.id ? (
-                                <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-                              ) : (
-                                <Copy className="w-3 h-3" />
-                              )}
-                              <span>{user.id.slice(0, 10)}...</span>
-                            </button>
+                            <div className="flex items-center justify-end gap-1.5">
+                              <button
+                                onClick={() => handleCopyUserId(user.id)}
+                                className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-mono text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                title="Click to copy full user ID"
+                              >
+                                {copiedUserId === user.id ? (
+                                  <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                                ) : (
+                                  <Copy className="w-3 h-3" />
+                                )}
+                                <span>{user.id.slice(0, 8)}...</span>
+                              </button>
+                              <button
+                                onClick={() => handleDeleteUser(user)}
+                                className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors cursor-pointer"
+                                title={`Delete user account: ${user.name}`}
+                              >
+                                <Trash2 className="w-3.5 h-3.5 text-rose-500 hover:text-rose-600" />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       );
@@ -3683,6 +3719,67 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 {isDeletingEventAdmin ? 'Deleting...' : 'Yes, Delete Competition'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete User Confirmation Modal */}
+      {userToDelete && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-rose-100 dark:border-rose-900/50">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+                <Trash2 className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white">
+                  Delete User Account?
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Permanently remove user from the portal & database.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 text-xs space-y-1.5">
+              <div className="flex items-center justify-between font-bold text-slate-800 dark:text-slate-200">
+                <span>{userToDelete.name}</span>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                  userToDelete.role === 'ADMIN' ? 'bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300' :
+                  userToDelete.role === 'MANAGER' ? 'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300' :
+                  userToDelete.role === 'SCANNER' ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300' :
+                  'bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300'
+                }`}>
+                  {userToDelete.role}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                Email: {userToDelete.email}
+              </p>
+              <p className="text-[11px] text-rose-600 dark:text-rose-400 font-semibold">
+                ⚠️ All hostel room allocations, event registrations, QR tickets, and check-in logs for this user will also be permanently removed.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5 pt-2">
+              <button
+                type="button"
+                onClick={() => setUserToDelete(null)}
+                disabled={isDeletingUser}
+                className="px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors disabled:opacity-50 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => executeDeleteUser(userToDelete.id)}
+                disabled={isDeletingUser}
+                className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-md shadow-rose-600/20 transition-all inline-flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                {isDeletingUser ? 'Deleting User...' : 'Yes, Delete User'}
               </button>
             </div>
           </div>
