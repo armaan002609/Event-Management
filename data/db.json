@@ -41,8 +41,13 @@
       "fatherPhone": "9876543211",
       "address": "123 Campus Greens, Chandigarh",
       "collegeId": "col-cgc-univ-mohali",
-      "collegeName": null,
-      "college": null,
+      "collegeName": "CGC University, Mohali",
+      "college": {
+        "id": "col-cgc-univ-mohali",
+        "code": "CGC-M",
+        "name": "CGC University, Mohali",
+        "color": "#4F46E5"
+      },
       "rollNo": "CGC-2026-088",
       "course": "B.Tech CSE",
       "passingYear": 2026,
@@ -77,8 +82,28 @@
       "verificationCode": null
     }
   ],
-  "events": [],
-  "registrations": [],
+  "events": [
+    {
+      "id": "evt-1793046766550",
+      "title": "Kabaddi",
+      "type": "SPORTS",
+      "description": null,
+      "venue": "Milkha Singh Arena",
+      "startsAt": "2026-10-31T05:00:00+00:00",
+      "endsAt": "2026-10-31T07:00:00+00:00",
+      "capacity": 24,
+      "status": "SCHEDULED"
+    }
+  ],
+  "registrations": [
+    {
+      "id": "reg-1793077461329-8777",
+      "userId": "usr-mvpbtfrm-8777",
+      "eventId": "evt-1793046766550",
+      "status": "CONFIRMED",
+      "createdAt": "2026-10-27T05:04:21.329Z"
+    }
+  ],
   "hostels": [
     {
       "id": "hostel-1793036398955",
@@ -915,13 +940,318 @@
       "label": "Bed E"
     }
   ],
-  "allocations": [],
-  "qrTickets": [],
-  "checkinLogs": [],
+  "allocations": [
+    {
+      "id": "alloc-usr-mvpbtfrm-8777-mvpq3mj6",
+      "userId": "usr-mvpbtfrm-8777",
+      "bedId": "bed-room-1793047023855-1",
+      "allocatedBy": "usr-scanner",
+      "isOverride": false,
+      "reason": "Auto-allotted on QR Check-in (Same College Rule Enforced)",
+      "createdAt": "2026-10-26T20:42:36.114Z"
+    }
+  ],
+  "qrTickets": [
+    {
+      "id": "ticket-usr-mvpbtfrm-8777",
+      "userId": "usr-mvpbtfrm-8777",
+      "tokenId": "jti-usr-mvpbtfrm-8777-1793047354078",
+      "version": 1,
+      "issuedAt": "2026-10-26T20:42:34.112Z"
+    }
+  ],
+  "checkinLogs": [
+    {
+      "id": "chk-1793047395192",
+      "userId": "usr-mvpbtfrm-8777",
+      "type": "CHECK_OUT",
+      "scannedBy": "usr-scanner",
+      "at": "2026-10-26T20:43:15.192Z"
+    },
+    {
+      "id": "chk-1793047357545",
+      "userId": "usr-mvpbtfrm-8777",
+      "type": "CHECK_IN",
+      "scannedBy": "usr-scanner",
+      "at": "2026-10-26T20:42:37.545Z"
+    }
+  ],
   "mealSlots": [],
   "mealBatches": [],
   "mealLogs": [],
-  "scanLogs": [],
-  "notificationLogs": [],
-  "auditLogs": []
+  "scanLogs": [
+    {
+      "id": "scan-1793047395452",
+      "ticketId": "jti-usr-mvpbtfrm-8777-1793047391806",
+      "userId": "usr-mvpbtfrm-8777",
+      "userName": "Armaan",
+      "collegeCode": "CGC-M",
+      "context": "HOSTEL_CHECKOUT",
+      "result": "ALLOWED",
+      "scannedBy": "usr-scanner",
+      "deviceInfo": "Test Gate Scanner #1",
+      "at": "2026-10-26T20:43:15.452Z"
+    },
+    {
+      "id": "scan-1793047395183",
+      "ticketId": "jti-usr-mvpbtfrm-8777-1793047391806",
+      "userId": "usr-mvpbtfrm-8777",
+      "userName": "Armaan",
+      "collegeCode": "CGC-M",
+      "context": "HOSTEL_CHECKIN",
+      "result": "ALLOWED",
+      "scannedBy": "usr-scanner",
+      "deviceInfo": "Test Gate Scanner #1",
+      "at": "2026-10-26T20:43:15.183Z"
+    },
+    {
+      "id": "scan-1793047393267",
+      "ticketId": "jti-usr-mvpbtfrm-8777-1793047391806",
+      "userId": "usr-mvpbtfrm-8777",
+      "userName": "Armaan",
+      "collegeCode": "CGC-M",
+      "context": "HOSTEL_CHECKIN",
+      "result": "ALLOWED",
+      "scannedBy": "usr-scanner",
+      "deviceInfo": "Test Gate Scanner #1",
+      "at": "2026-10-26T20:43:13.267Z"
+    },
+    {
+      "id": "scan-1793047358053",
+      "ticketId": "jti-usr-mvpbtfrm-8777-1793047354078",
+      "userId": "usr-mvpbtfrm-8777",
+      "userName": "Armaan",
+      "collegeCode": "CGC-M",
+      "context": "HOSTEL_CHECKIN",
+      "result": "ALLOWED",
+      "scannedBy": "usr-scanner",
+      "deviceInfo": "Test Gate Scanner #1",
+      "at": "2026-10-26T20:42:38.053Z"
+    },
+    {
+      "id": "scan-1793047304347",
+      "context": "HOSTEL_CHECKIN",
+      "result": "DENIED_INVALID",
+      "scannedBy": "usr-scanner",
+      "deviceInfo": "Test Gate Scanner #1",
+      "at": "2026-10-26T20:41:44.347Z"
+    }
+  ],
+  "notificationLogs": [
+    {
+      "id": "notif-mgr-1793078311199-usr-g-1793019998926",
+      "userId": "usr-g-1793019998926",
+      "userEmail": "armaan002609@gmail.com",
+      "userName": "Armaan",
+      "type": "EVENT_CANCELLED",
+      "subject": "[Manager Alert] [Event Cancelled] Temporary Test Event",
+      "body": "Alert triggered by Armaan:\nThe competition \"Temporary Test Event\" has been cancelled and removed from the festival schedule.",
+      "status": "SENT",
+      "eventId": "evt-1793078309009",
+      "attempts": 1,
+      "createdAt": "2026-10-27T05:18:31.199Z"
+    },
+    {
+      "id": "notif-1793077462803-usr-mvpbtfrm-8777",
+      "userId": "usr-mvpbtfrm-8777",
+      "userEmail": "armaankapoor2609@gmail.com",
+      "userName": "Armaan",
+      "type": "EVENT_REGISTRATION",
+      "subject": "Registration Confirmed: Kabaddi",
+      "body": "Armaan (CGC University, Mohali, Roll: CGC-2026-088) registered for Kabaddi. Venue: Milkha Singh Arena, Time: 10:30 am. Total participants: 1 / 24.",
+      "status": "SENT",
+      "eventId": "evt-1793046766550",
+      "attempts": 1,
+      "createdAt": "2026-10-27T05:04:22.803Z"
+    },
+    {
+      "id": "notif-mgr-1793077462803-usr-g-1793019998926",
+      "userId": "usr-g-1793019998926",
+      "userEmail": "armaan002609@gmail.com",
+      "userName": "Armaan",
+      "type": "EVENT_REGISTRATION",
+      "subject": "[New Registration] Kabaddi",
+      "body": "Armaan (CGC University, Mohali, Roll: CGC-2026-088) registered for Kabaddi. Venue: Milkha Singh Arena, Time: 10:30 am. Total participants: 1 / 24.",
+      "status": "SENT",
+      "eventId": "evt-1793046766550",
+      "attempts": 1,
+      "createdAt": "2026-10-27T05:04:22.803Z"
+    },
+    {
+      "id": "notif-1793077396933-usr-mvpbtfrm-8777",
+      "userId": "usr-mvpbtfrm-8777",
+      "userEmail": "armaankapoor2609@gmail.com",
+      "userName": "Armaan",
+      "type": "EVENT_REGISTRATION",
+      "subject": "Registration Confirmed: Kabaddi",
+      "body": "Armaan (CGC University, Mohali, Roll: CGC-2026-088) registered for Kabaddi. Venue: Milkha Singh Arena, Time: 10:30 am. Total participants: 1 / 24.",
+      "status": "SENT",
+      "eventId": "evt-1793046766550",
+      "attempts": 1,
+      "createdAt": "2026-10-27T05:03:16.933Z"
+    },
+    {
+      "id": "notif-mgr-1793077396933-usr-g-1793019998926",
+      "userId": "usr-g-1793019998926",
+      "userEmail": "armaan002609@gmail.com",
+      "userName": "Armaan",
+      "type": "EVENT_REGISTRATION",
+      "subject": "[New Registration] Kabaddi",
+      "body": "Armaan (CGC University, Mohali, Roll: CGC-2026-088) registered for Kabaddi. Venue: Milkha Singh Arena, Time: 10:30 am. Total participants: 1 / 24.",
+      "status": "SENT",
+      "eventId": "evt-1793046766550",
+      "attempts": 1,
+      "createdAt": "2026-10-27T05:03:16.933Z"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": "audit-1793078311197",
+      "actorId": "usr-g-1793019998926",
+      "actorName": "Armaan",
+      "action": "EVENT_DELETE",
+      "entity": "Event",
+      "entityId": "evt-1793078309009",
+      "reason": "Event \"Temporary Test Event\" permanently deleted by ADMIN Armaan",
+      "before": {
+        "id": "evt-1793078309009",
+        "title": "Temporary Test Event",
+        "type": "SPORTS",
+        "description": "Will be deleted",
+        "venue": "Test Court",
+        "startsAt": "2026-10-31T10:00:00.000Z",
+        "endsAt": "2026-10-31T12:00:00.000Z",
+        "capacity": 10,
+        "status": "SCHEDULED"
+      },
+      "after": null,
+      "at": "2026-10-27T05:18:31.197Z"
+    },
+    {
+      "id": "audit-1793078309009",
+      "actorId": "usr-g-1793019998926",
+      "actorName": "Armaan",
+      "action": "EVENT_CREATE",
+      "entity": "Event",
+      "entityId": "evt-1793078309009",
+      "reason": "Created new event: Temporary Test Event",
+      "before": null,
+      "after": {
+        "id": "evt-1793078309009",
+        "title": "Temporary Test Event",
+        "type": "SPORTS",
+        "description": "Will be deleted",
+        "venue": "Test Court",
+        "startsAt": "2026-10-31T10:00:00.000Z",
+        "endsAt": "2026-10-31T12:00:00.000Z",
+        "capacity": 10,
+        "status": "SCHEDULED"
+      },
+      "at": "2026-10-27T05:18:29.009Z"
+    },
+    {
+      "id": "audit-1793077462802",
+      "actorId": "usr-mvpbtfrm-8777",
+      "actorName": "Armaan",
+      "action": "EVENT_REGISTRATION",
+      "entity": "Event",
+      "entityId": "evt-1793046766550",
+      "reason": "Student Armaan registered for Kabaddi",
+      "before": null,
+      "after": {
+        "eventId": "evt-1793046766550",
+        "userId": "usr-mvpbtfrm-8777",
+        "studentName": "Armaan",
+        "college": "CGC University, Mohali",
+        "eventTitle": "Kabaddi",
+        "status": "CONFIRMED"
+      },
+      "at": "2026-10-27T05:04:21.329Z"
+    },
+    {
+      "id": "audit-1793077460658",
+      "actorId": "usr-mvpbtfrm-8777",
+      "actorName": "Armaan",
+      "action": "EVENT_CANCEL",
+      "entity": "Event",
+      "entityId": "evt-1793046766550",
+      "reason": "Student Armaan cancelled registration for Kabaddi",
+      "before": {
+        "eventId": "evt-1793046766550",
+        "userId": "usr-mvpbtfrm-8777"
+      },
+      "after": null,
+      "at": "2026-10-27T05:04:20.658Z"
+    },
+    {
+      "id": "audit-1793077396931",
+      "actorId": "usr-mvpbtfrm-8777",
+      "actorName": "Armaan",
+      "action": "EVENT_REGISTRATION",
+      "entity": "Event",
+      "entityId": "evt-1793046766550",
+      "reason": "Student Armaan registered for Kabaddi",
+      "before": null,
+      "after": {
+        "eventId": "evt-1793046766550",
+        "userId": "usr-mvpbtfrm-8777",
+        "studentName": "Armaan",
+        "college": "CGC University, Mohali",
+        "eventTitle": "Kabaddi",
+        "status": "CONFIRMED"
+      },
+      "at": "2026-10-27T05:03:15.448Z"
+    },
+    {
+      "id": "audit-1793077093211",
+      "actorId": "usr-mvpbtfrm-8777",
+      "actorName": "Armaan",
+      "action": "EVENT_CANCEL",
+      "entity": "Event",
+      "entityId": "evt-1793046766550",
+      "reason": "Student Armaan cancelled registration for Kabaddi",
+      "before": {
+        "eventId": "evt-1793046766550",
+        "userId": "usr-mvpbtfrm-8777"
+      },
+      "after": null,
+      "at": "2026-10-27T04:58:13.211Z"
+    },
+    {
+      "id": "audit-1793076799726",
+      "actorId": "usr-mvpbtfrm-8777",
+      "actorName": "Armaan",
+      "action": "EVENT_REGISTRATION",
+      "entity": "Event",
+      "entityId": "evt-1793046766550",
+      "reason": "Student Armaan registered for Kabaddi",
+      "before": null,
+      "after": {
+        "eventId": "evt-1793046766550",
+        "userId": "usr-mvpbtfrm-8777",
+        "studentName": "Armaan",
+        "college": "CGC University, Mohali",
+        "eventTitle": "Kabaddi",
+        "status": "CONFIRMED"
+      },
+      "at": "2026-10-27T04:53:19.481Z"
+    },
+    {
+      "id": "audit-1793047356860",
+      "actorId": "usr-scanner",
+      "actorName": "Gate Scanner Staff",
+      "action": "AUTO_ALLOCATION_RUN",
+      "entity": "HOSTEL_ALLOCATION",
+      "entityId": "alloc-usr-mvpbtfrm-8777-mvpq3mj6",
+      "reason": "Auto-allotted Room 301 (Chanakya Hall, Bed A) to Armaan on check-in.",
+      "before": null,
+      "after": {
+        "userId": "usr-mvpbtfrm-8777",
+        "bedId": "bed-room-1793047023855-1",
+        "roomId": "room-1793047023855",
+        "hostelId": "hostel-1793036398955"
+      },
+      "at": "2026-10-26T20:42:36.860Z"
+    }
+  ]
 }

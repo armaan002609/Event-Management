@@ -84,61 +84,6 @@
   ],
   "events": [
     {
-      "id": "evt-1",
-      "title": "Inter-College 100m Sprint Men",
-      "type": "SPORTS",
-      "description": "Men sprint finals. Top 8 qualifiers from preliminary college heats.",
-      "venue": "Main Athletics Track, Sector 4",
-      "startsAt": "2026-10-27T06:44:21.934Z",
-      "endsAt": "2026-10-27T08:14:21.934Z",
-      "capacity": 16,
-      "status": "SCHEDULED"
-    },
-    {
-      "id": "evt-2",
-      "title": "Punjab Folk Bhangra Championship",
-      "type": "FOLK",
-      "description": "Traditional Folk Dance group competition. Live Dhol accompaniment.",
-      "venue": "Open Air Amphitheatre",
-      "startsAt": "2026-10-27T08:44:21.934Z",
-      "endsAt": "2026-10-27T11:44:21.934Z",
-      "capacity": 30,
-      "status": "SCHEDULED"
-    },
-    {
-      "id": "evt-3",
-      "title": "Badminton Singles Men & Women",
-      "type": "SPORTS",
-      "description": "Knockout tournament under BWF standard tournament rules.",
-      "venue": "Indoor Badminton Arena, Court 1 & 2",
-      "startsAt": "2026-10-28T04:44:21.934Z",
-      "endsAt": "2026-10-28T08:44:21.934Z",
-      "capacity": 24,
-      "status": "SCHEDULED"
-    },
-    {
-      "id": "evt-4",
-      "title": "Ghazal & Sufi Fusion Night",
-      "type": "FOLK",
-      "description": "Classical and contemporary Sufi vocal performances by college troupes.",
-      "venue": "Central Auditorium Hall",
-      "startsAt": "2026-10-28T09:44:21.934Z",
-      "endsAt": "2026-10-28T13:44:21.934Z",
-      "capacity": 200,
-      "status": "SCHEDULED"
-    },
-    {
-      "id": "evt-5",
-      "title": "Inter-College Football 7s",
-      "type": "SPORTS",
-      "description": "High-intensity 7-a-side football tournament.",
-      "venue": "West Campus Sports Ground",
-      "startsAt": "2026-10-29T04:44:21.934Z",
-      "endsAt": "2026-10-29T10:44:21.934Z",
-      "capacity": 40,
-      "status": "SCHEDULED"
-    },
-    {
       "id": "evt-1793046766550",
       "title": "Kabaddi",
       "type": "SPORTS",
@@ -1094,6 +1039,19 @@
   ],
   "notificationLogs": [
     {
+      "id": "notif-mgr-1793078311199-usr-g-1793019998926",
+      "userId": "usr-g-1793019998926",
+      "userEmail": "armaan002609@gmail.com",
+      "userName": "Armaan",
+      "type": "EVENT_CANCELLED",
+      "subject": "[Manager Alert] [Event Cancelled] Temporary Test Event",
+      "body": "Alert triggered by Armaan:\nThe competition \"Temporary Test Event\" has been cancelled and removed from the festival schedule.",
+      "status": "SENT",
+      "eventId": "evt-1793078309009",
+      "attempts": 1,
+      "createdAt": "2026-10-27T05:18:31.199Z"
+    },
+    {
       "id": "notif-1793077462803-usr-mvpbtfrm-8777",
       "userId": "usr-mvpbtfrm-8777",
       "userEmail": "armaankapoor2609@gmail.com",
@@ -1147,6 +1105,50 @@
     }
   ],
   "auditLogs": [
+    {
+      "id": "audit-1793078311197",
+      "actorId": "usr-g-1793019998926",
+      "actorName": "Armaan",
+      "action": "EVENT_DELETE",
+      "entity": "Event",
+      "entityId": "evt-1793078309009",
+      "reason": "Event \"Temporary Test Event\" permanently deleted by ADMIN Armaan",
+      "before": {
+        "id": "evt-1793078309009",
+        "title": "Temporary Test Event",
+        "type": "SPORTS",
+        "description": "Will be deleted",
+        "venue": "Test Court",
+        "startsAt": "2026-10-31T10:00:00.000Z",
+        "endsAt": "2026-10-31T12:00:00.000Z",
+        "capacity": 10,
+        "status": "SCHEDULED"
+      },
+      "after": null,
+      "at": "2026-10-27T05:18:31.197Z"
+    },
+    {
+      "id": "audit-1793078309009",
+      "actorId": "usr-g-1793019998926",
+      "actorName": "Armaan",
+      "action": "EVENT_CREATE",
+      "entity": "Event",
+      "entityId": "evt-1793078309009",
+      "reason": "Created new event: Temporary Test Event",
+      "before": null,
+      "after": {
+        "id": "evt-1793078309009",
+        "title": "Temporary Test Event",
+        "type": "SPORTS",
+        "description": "Will be deleted",
+        "venue": "Test Court",
+        "startsAt": "2026-10-31T10:00:00.000Z",
+        "endsAt": "2026-10-31T12:00:00.000Z",
+        "capacity": 10,
+        "status": "SCHEDULED"
+      },
+      "at": "2026-10-27T05:18:29.009Z"
+    },
     {
       "id": "audit-1793077462802",
       "actorId": "usr-mvpbtfrm-8777",

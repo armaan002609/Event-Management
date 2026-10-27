@@ -234,6 +234,34 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
     toast.success('Roster Exported', 'Event attendees CSV spreadsheet exported successfully.');
   };
 
+  const handleDeleteEventAdmin = async (eventId: string) => {
+    const targetEvent = eventRegistrationsData?.events?.find((e: any) => e.id === eventId);
+    const eventName = targetEvent?.title || eventId;
+    if (!confirm(`Are you sure you want to permanently delete "${eventName}"? All student registrations for this competition will be cancelled.`)) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/events/${eventId}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success('Event Deleted', `"${eventName}" was permanently deleted.`);
+        setSelectedEventIdForRoster('ALL');
+        const evRegRes = await fetch('/api/admin/events/registrations').then((r) => r.json()).catch(() => null);
+        if (evRegRes?.events) setEventRegistrationsData(evRegRes);
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('unifest:event-unregistered'));
+          window.dispatchEvent(new CustomEvent('unifest:event-deleted', { detail: { eventId } }));
+        }
+      } else {
+        toast.error('Deletion Failed', data.error || 'Failed to delete event');
+      }
+    } catch {
+      toast.error('Network Error', 'Failed to delete event');
+    }
+  };
+
   const handleRefresh = async () => {
     setIsRefreshing(true);
     await loadAllAdminData();
@@ -3420,13 +3448,25 @@ export function AdminDashboard({ currentUser, onNavigateTab }: AdminDashboardPro
                 </div>
               </div>
 
-              <button
-                onClick={handleExportEventRosterCSV}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/50 border border-purple-200 dark:border-purple-800 font-bold transition-colors shrink-0"
-              >
-                <Download className="w-3.5 h-3.5" />
-                Export CSV
-              </button>
+              <div className="flex items-center gap-2 shrink-0">
+                {selectedEventIdForRoster !== 'ALL' && (
+                  <button
+                    onClick={() => handleDeleteEventAdmin(selectedEventIdForRoster)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900/50 border border-rose-200 dark:border-rose-800 font-bold transition-colors cursor-pointer"
+                    title="Permanently delete this event competition"
+                  >
+                    <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                    Delete Event
+                  </button>
+                )}
+                <button
+                  onClick={handleExportEventRosterCSV}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 text-purple-700 dark:bg-purple-950/40 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/50 border border-purple-200 dark:border-purple-800 font-bold transition-colors shrink-0"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  Export CSV
+                </button>
+              </div>
             </div>
 
             {/* Content Table */}

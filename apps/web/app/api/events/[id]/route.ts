@@ -176,3 +176,83 @@ export async function PATCH(
     return NextResponse.json({ error: (err as Error).message }, { status: 400 });
   }
 }
+
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const activeUser = getActiveUser();
+  if (activeUser.role !== 'MANAGER' && activeUser.role !== 'ADMIN') {
+    return NextResponse.json({ error: 'Forbidden. Only managers and admins can delete events.' }, { status: 403 });
+  }
+
+  const db = readDatabase();
+  const eventIndex = db.events.findIndex((e) => e.id === params.id);
+  let eventTitle = eventIndex !== -1 ? db.events[eventIndex].title : params.id;
+  let deletedEvent = eventIndex !== -1 ? { ...db.events[eventIndex] } : null;
+
+  // 1. Delete from Supabase
+  try {
+    const { getSupabase } = await import('@/lib/supabase');
+    const sb = getSupabase();
+    if (sb) {
+      if (!deletedEvent) {
+        const { data: sbEvt } = await sb.from('events').select('*').eq('id', params.id).single();
+        if (sbEvt) {
+          eventTitle = sbEvt.title;
+          deletedEvent = sbEvt;
+        }
+      }
+      // Delete registrations first
+      await sb.from('registrations').delete().eq('event_id', params.id);
+      // Delete event
+      await sb.from('events').delete().eq('id', params.id);
+    }
+  } catch (err) {
+    console.warn('Supabase event deletion error:', err);
+  }
+
+  // 2. Delete from local database
+  if (eventIndex !== -1) {
+    db.events.splice(eventIndex, 1);
+  }
+  db.registrations = db.registrations.filter((r) => r.eventId !== params.id);
+
+  // 3. Audit log
+  db.auditLogs.unshift({
+    id: `audit-${Date.now()}`,
+    actorId: activeUser.id,
+    actorName: activeUser.name,
+    action: 'EVENT_DELETE',
+    entity: 'Event',
+    entityId: params.id,
+    reason: `Event "${eventTitle}" permanently deleted by ${activeUser.role} ${activeUser.name}`,
+    before: deletedEvent as unknown as Record<string, unknown>,
+    after: null,
+    at: new Date().toISOString(),
+  });
+
+  writeDatabase(db);
+
+  // 4. Notify any registered students of cancellation
+  try {
+    emitDomainNotification(
+      'EVENT_CANCELLED',
+      {
+        eventId: params.id,
+        title: eventTitle,
+        subject: `[Event Cancelled] ${eventTitle}`,
+        message: `The competition "${eventTitle}" has been cancelled and removed from the festival schedule.`,
+      },
+      activeUser.name
+    );
+  } catch (notifErr) {
+    console.warn('Notification emission error on event delete:', notifErr);
+  }
+
+  return NextResponse.json({
+    success: true,
+    message: `Event "${eventTitle}" deleted successfully.`,
+    deletedId: params.id,
+  });
+}
